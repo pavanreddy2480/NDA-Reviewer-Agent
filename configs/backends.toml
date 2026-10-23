@@ -27,6 +27,14 @@ model = "llama3.1:8b"
 family = "llama"
 structured = "json_schema"
 
+# Stronger local option on a 16 GB machine (~9 GB at Q4): `ollama pull qwen3:14b`. Keep the context at 16k.
+[backends.qwen-ollama]
+provider = "openai_compat"
+base_url = "http://localhost:11434/v1"
+model = "qwen3:14b"
+family = "qwen"
+structured = "json_schema"
+
 # Full stage-1 runs on Kaggle (see docs/guides/kaggle-vllm.md):
 # vllm serve hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4 --max-model-len 16384
 [backends.llama-vllm]
