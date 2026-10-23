@@ -12,7 +12,7 @@ cd code
 python -m venv .venv && source .venv/bin/activate
 pip install -e '.[dev]'          # add ,gemini for stage 2 and ,dense for embeddings/reranker
 cc data download                 # ContractNLI (607 NDAs) into data/raw/
-pytest -q                        # 38 tests, no network or GPU needed
+pytest -q                        # 39 tests, no network or GPU needed
 ```
 
 ## Running with a real model
@@ -53,6 +53,7 @@ re-running a finished experiment costs nothing. `--no-cache` turns this off.
 | `cc plant --pack P --law-pack L --split test` | Plants omissions, violations, distractors, loopholes and 30 California-law cases, re-deriving every touched label; writes a manifest with gold repairs |
 | `cc retrieval --split dev [--dense M] [--rerank M]` | Gold-evidence recall@k of segment retrieval, no LLM needed |
 | `cc batch submit/collect` | Gemini Batch API rounds for `rq1 --batch-queue` runs |
+| `cc batch export/load` | Rounds answered by Claude agents instead of an API (`--backend claude-sonnet-agent`, also haiku and opus): export writes the queued requests as shards, agents write `{"key","text"}` answers, load puts them in the cache. `scripts/claude_pilot.sh` runs the RQ1 pilot this way; results in `../claude_pilot_results.md` |
 
 Useful `rq1` flags: `--law-pack`, `--planted`, `--labels`, `--hide-facts` (reviewer must read
 personal data and governing law from the NDA), `--checker-backend` (same checker model for every
