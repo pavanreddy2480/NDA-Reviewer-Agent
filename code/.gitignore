@@ -1,7 +1,0 @@
-__pycache__/
-*.egg-info/
-.venv/
-data/raw/
-data/cache/
-runs/
-.env

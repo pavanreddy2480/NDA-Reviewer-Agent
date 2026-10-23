@@ -1,0 +1,102 @@
+# LLM backends. Pick one with `--backend <name>` on any command.
+# Prices are dollars per million tokens and are only used for cost reports.
+# Re-check Gemini prices and model ids before stage 2 (proposal §10: checked 2 Oct 2026).
+# Prices are list prices; the Gemini Batch API halves them (cost reports apply that per run).
+# `family` says which model family a backend belongs to. Benchmark data (policy packs, auto labels)
+# must come from a family that none of the systems under test, the compiler or the RQ2 evaluator use,
+# so no system is graded on data its own family wrote (audit 22 Oct 2026). `cc` checks this.
+
+[roles]
+backbones = ["llama-vllm", "gemini-flash"]  # the systems under test (RQ1 and RQ2)
+compiler = "gemini-pro"  # policy prose -> rules, once per pack (shared by every system)
+evaluator = "gemini-pro"  # RQ2 judge; validated on ContractNLI labels and 100 human labels
+# Data makers. Since 23 Oct 2026 the packs (and the labels) are written by Claude agents in the project thread, not
+# through an API: Claude is a family no backbone, compiler or judge uses. Imported with `cc packs import`.
+# The API settings below stay as the fallback (`cc packs generate`, `cc labels auto`).
+pack_generator = "qwen-hosted"  # API fallback; must be a family no other role uses
+labellers = ["qwen-hosted", "gemini-pro"]  # API fallback; two different families; disagreements go to a person
+
+[cache]
+path = "data/cache/llm.sqlite"
+
+# Small tests on a laptop: `ollama pull llama3.1:8b` then `ollama serve`.
+[backends.llama-ollama]
+provider = "openai_compat"
+base_url = "http://localhost:11434/v1"
+model = "llama3.1:8b"
+family = "llama"
+structured = "json_schema"
+
+# Full stage-1 runs on Kaggle (see docs/guides/kaggle-vllm.md):
+# vllm serve hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4 --max-model-len 16384
+[backends.llama-vllm]
+provider = "openai_compat"
+base_url = "http://localhost:8000/v1"
+model = "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4"
+family = "llama"
+structured = "json_schema"
+
+# Fallback if Kaggle quota runs out: any hosted OpenAI-compatible Llama endpoint.
+# Set OPENAI_API_KEY to that provider's key.
+[backends.llama-hosted]
+provider = "openai_compat"
+base_url = "https://api.together.xyz/v1"
+model = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
+family = "llama"
+price_in = 0.18
+price_out = 0.18
+
+# Benchmark data maker (policy packs, second labeller): a family that is neither Llama nor Gemini.
+# Same Together account as llama-hosted (set OPENAI_API_KEY). Check the price before use.
+[backends.qwen-hosted]
+provider = "openai_compat"
+base_url = "https://api.together.xyz/v1"
+model = "Qwen/Qwen2.5-72B-Instruct-Turbo"
+family = "qwen"
+price_in = 1.20
+price_out = 1.20
+
+# Stage 2. Set GEMINI_API_KEY. Use the Batch API for full runs (half price).
+[backends.gemini-flash]
+provider = "gemini"
+model = "gemini-3.8-flash"
+family = "gemini"
+price_in = 0.75
+price_out = 3.75
+# Thinking tokens are billed as output. Cap them, and count them in cost reports
+# (review problem 8). Raise only for the verifier if dev results justify it.
+thinking_budget = 512
+
+# Policy compilation (once) and the independent RQ2 evaluator, which must never be the
+# backend used inside the repair loop.
+[backends.gemini-pro]
+provider = "gemini"
+model = "gemini-3.1-pro"
+family = "gemini"
+price_in = 2.0
+price_out = 12.0
+
+# Claude answered by agents in the project thread (no API, no cost). Batch mode only:
+# rq1 --batch-queue, then `cc batch export`, agents answer the shards, `cc batch load`, run again.
+# Caution: Claude also wrote the packs and labels, so a Claude system under test is graded on its
+# own family's data (pilot use; see docs/results/2026-10-23-claude-pilot.md).
+[backends.claude-haiku-agent]
+provider = "agent"
+model = "claude-haiku (agent)"
+family = "claude"
+
+[backends.claude-sonnet-agent]
+provider = "agent"
+model = "claude-sonnet (agent)"
+family = "claude"
+
+[backends.claude-opus-agent]
+provider = "agent"
+model = "claude-opus (agent)"
+family = "claude"
+
+# No network: deterministic replies, for tests and dry runs of the pipeline.
+[backends.fake]
+provider = "fake"
+model = "fake"
+family = "fake"
