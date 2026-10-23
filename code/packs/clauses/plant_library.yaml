@@ -1,0 +1,43 @@
+# Clauses the defect planter inserts. Each says which ContractNLI hypotheses it makes true
+# (`entails`), so the planter can re-derive the gold label of every anchored rule it touches,
+# and which planted defect topic it serves. Written to read like real NDA text.
+clauses:
+  - id: nonsolicit_12m
+    topic: non_solicit
+    entails: [nda-18]
+    text: "During the term of this Agreement and for twelve (12) months thereafter, neither party shall, directly or indirectly, solicit for employment or hire any employee of the other party with whom it had contact in connection with the Purpose."
+  - id: noncompete_24m
+    topic: non_compete
+    entails: []
+    text: "For a period of twenty-four (24) months after the termination of this Agreement, the Receiving Party shall not engage in, or assist any person in, any business that competes with the business of the Disclosing Party."
+  - id: residuals
+    topic: residuals
+    loophole: true
+    entails: [nda-20]
+    text: "Nothing in this Agreement shall restrict the Receiving Party from using, for any purpose, information retained in the unaided memory of its personnel who had access to Confidential Information."
+  - id: independent_dev_unlimited
+    topic: independent_development
+    loophole: true
+    entails: [nda-12]
+    text: "The Receiving Party may develop, acquire or market products or services similar to those of the Disclosing Party, and nothing herein shall prevent it from doing so, whether or not such development uses ideas learned from the Disclosing Party."
+  - id: penalty_fixed
+    topic: penalty
+    entails: []
+    text: "In the event of any breach of this Agreement, the breaching party shall pay the other party a sum of US$500,000 as a penalty, irrespective of the actual loss suffered."
+  - id: claims_limit_3m
+    topic: limitation_period
+    entails: []
+    text: "Any claim arising under this Agreement must be brought within three (3) months of the date of the breach, failing which it shall be permanently barred."
+  - id: technical_only_definition
+    topic: technical_only
+    loophole: true
+    entails: [nda-2]
+    text: "For the avoidance of doubt, Confidential Information shall be limited to technical information, including specifications, source code and designs, and shall not include business or financial information."
+  - id: governing_law_state
+    topic: governing_law_state
+    entails: []
+    text: "This Agreement shall be governed by and construed in accordance with the laws of the State of {STATE}, without regard to its conflict of laws principles."
+  - id: no_reporting
+    topic: no_reporting
+    entails: []
+    text: "The Receiving Party shall not disclose any Confidential Information or the existence of any dispute to any government agency, regulator or other third party without the prior written consent of the Disclosing Party."

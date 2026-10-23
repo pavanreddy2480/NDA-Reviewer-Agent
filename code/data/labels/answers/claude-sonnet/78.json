@@ -1,0 +1,40 @@
+{
+ "is_template": false,
+ "mutual": true,
+ "parties": [
+  "Kitty Haven Sanctuary of Utah",
+  "Volunteer Applicant"
+ ],
+ "disclosing_party": "Kitty Haven Sanctuary of Utah",
+ "governing_law": "utah",
+ "personal_data": false,
+ "confidentiality_term_months": null,
+ "survival_months": 12,
+ "return_deadline_days": null,
+ "non_solicit_months": null,
+ "dispute_forum": null,
+ "non_compete": false,
+ "terms": {
+  "LAW-DTSA-1833B": false,
+  "LAW-SEC-21F17": false,
+  "LAW-SPEAK-OUT": false,
+  "LAW-CA-BPC-16600": false,
+  "LAW-CA-BPC-16600-NONSOLICIT": false,
+  "LAW-PENALTY": false,
+  "LAW-CCPA-SP": false,
+  "Northwind Cloud, Inc.:P-09": false,
+  "Northwind Cloud, Inc.:P-20": false,
+  "Northwind Cloud, Inc.:P-24": false,
+  "Northwind Cloud, Inc.:P-25": false,
+  "Northwind Cloud, Inc.:P-28": false,
+  "Bayview Health Partners:P-14": false,
+  "Bayview Health Partners:P-15": false,
+  "Bayview Health Partners:P-18": false,
+  "Bayview Health Partners:P-25": false,
+  "Bayview Health Partners:P-26": false,
+  "Keystone Precision Manufacturing, Inc.:P-18": false,
+  "Keystone Precision Manufacturing, Inc.:P-25": false,
+  "Keystone Precision Manufacturing, Inc.:P-27": false,
+  "Keystone Precision Manufacturing, Inc.:P-30": false
+ }
+}

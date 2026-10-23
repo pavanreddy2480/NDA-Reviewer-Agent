@@ -1,0 +1,11 @@
+{
+ "generator": "claude-sonnet (agent)",
+ "crosschecker": "claude-haiku (agent)",
+ "words": 27606,
+ "log": [
+  "imported from packs/policynda/saas"
+ ],
+ "spec_problems": [],
+ "quote_problems": [],
+ "flagged": {}
+}

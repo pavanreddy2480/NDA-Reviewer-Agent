@@ -1,0 +1,98 @@
+# DRAFT US law pack. NOT CHECKED: every provision needs two teammates in `checked_by`
+# (proposal safety plan) before it is used in any reported result. `cc` warns until then.
+# Keep to clear-cut, well-documented provisions; word findings as "risk under ...", never as advice.
+# `requires_law`: [] = applies whatever law governs (federal law, or data-protection law that
+# follows the data); ["us"] = any US state's law; ["california"] = only California law.
+# The old India pack is kept in archive/ (jurisdiction changed to the USA on 16 Oct 2026).
+jurisdiction: United States
+version: draft-0
+as_of: "2026-10-16"
+provisions:
+  - id: LAW-DTSA-1833B
+    act: Defend Trade Secrets Act (18 U.S.C.)
+    section: "§1833(b)(3)"
+    title: Whistleblower immunity notice
+    summary: An employer must give notice of the whistleblower immunity in §1833(b) in any contract with an employee, contractor or consultant that governs the use of trade secrets (entered or updated after 11 May 2016); without it the employer cannot recover exemplary damages or attorney fees under the DTSA against that person.
+    risk_pattern: The agreement gives notice that an individual is immune from liability for disclosing a trade secret in confidence to a government official or an attorney solely to report a suspected violation of law, or in a sealed court filing.
+    kind: require
+    applies_if: counterparty == 'employee'
+    requires_law: []
+    risk_level: risk
+    severity: medium
+    source_url: https://www.law.cornell.edu/uscode/text/18/1833
+    checked_by: []
+
+  - id: LAW-SEC-21F17
+    act: Securities Exchange Act Rule 21F-17 (17 C.F.R. §240.21F-17)
+    section: "21F-17(a)"
+    title: No impeding reports to the SEC
+    summary: No person may take any action, including enforcing or threatening to enforce a confidentiality agreement, to impede an individual from communicating directly with the SEC about a possible securities law violation. The SEC has fined companies for NDAs without a carve-out for such reports.
+    risk_pattern: The NDA stops a party from reporting possible violations of law to, or communicating with, government agencies or regulators, with no exception for such reports.
+    requires_law: []
+    risk_level: possible_risk
+    severity: high
+    source_url: https://www.law.cornell.edu/cfr/text/17/240.21F-17
+    checked_by: []
+
+  - id: LAW-SPEAK-OUT
+    act: Speak Out Act (42 U.S.C. §§19401-19404)
+    section: "§19403"
+    title: Pre-dispute NDAs and sexual harassment
+    summary: A nondisclosure or nondisparagement clause agreed before a dispute arises is not judicially enforceable against a party who later discloses a sexual assault or sexual harassment dispute.
+    risk_pattern: The confidentiality obligations would stop a party from disclosing sexual harassment or sexual assault, with no exception for such disclosures.
+    applies_if: counterparty == 'employee'
+    requires_law: []
+    risk_level: possible_risk
+    severity: medium
+    source_url: https://www.law.cornell.edu/uscode/text/42/19403
+    checked_by: []
+
+  - id: LAW-CA-BPC-16600
+    act: California Business and Professions Code
+    section: "§16600"
+    title: Non-compete clauses void in California
+    summary: Every contract restraining anyone from engaging in a lawful profession, trade or business is void to that extent, subject to narrow statutory exceptions (e.g. sale of a business). Since 2024, §16600.5 also makes such clauses unenforceable regardless of where they were signed.
+    risk_pattern: A party is restricted from engaging in a business, trade or profession, or from competing with the other party, during or after the agreement.
+    requires_law: [california]
+    risk_level: risk
+    severity: high
+    source_url: https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600
+    checked_by: []
+
+  - id: LAW-CA-BPC-16600-NONSOLICIT
+    act: California Business and Professions Code
+    section: "§16600"
+    title: Employee non-solicitation in California
+    summary: California appellate courts (e.g. AMN Healthcare v. Aya, 2018) have held employee non-solicitation clauses void under §16600; enforceability is unsettled. Flag only as a possible risk.
+    risk_pattern: A party is restricted from hiring or soliciting the other party's employees after the agreement ends.
+    requires_law: [california]
+    risk_level: possible_risk
+    severity: medium
+    source_url: https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600
+    checked_by: []
+
+  - id: LAW-PENALTY
+    act: Common law of contracts (Restatement (Second) of Contracts)
+    section: "§356"
+    title: Liquidated damages that are a penalty
+    summary: A fixed sum payable on breach is enforceable only if it is reasonable in light of the anticipated or actual loss; an unreasonably large sum is unenforceable as a penalty. The test varies by state.
+    risk_pattern: A fixed sum or penalty is payable on breach regardless of the actual loss suffered.
+    requires_law: [us]
+    risk_level: possible_risk
+    severity: medium
+    source_url: https://www.law.cornell.edu/wex/liquidated_damages
+    checked_by: []
+
+  - id: LAW-CCPA-SP
+    act: California Consumer Privacy Act (Cal. Civ. Code §1798.100 et seq.)
+    section: "§1798.100(d), §1798.140(ag)"
+    title: Service-provider contract terms for personal information
+    summary: A business that discloses California residents' personal information to a service provider or contractor must have a contract that limits use to the specified business purpose and prohibits selling or sharing it. Applies only to businesses above the CCPA thresholds, so flag as a possible risk.
+    risk_pattern: The Receiving Party may use personal information only for the specified business purpose and may not sell or share it.
+    kind: require
+    applies_if: personal_data and counterparty == 'vendor'
+    requires_law: []
+    risk_level: possible_risk
+    severity: high
+    source_url: https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1798.100
+    checked_by: []

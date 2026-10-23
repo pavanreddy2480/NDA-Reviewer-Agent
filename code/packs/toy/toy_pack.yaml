@@ -1,0 +1,119 @@
+# TOY POLICY PACK: for testing the code only. NOT part of PolicyNDA.
+# The real packs must be written by teammates who don't build the reviewer (design D17),
+# with ~30 rules each buried in ~40k tokens of policy prose. This file shows the format the
+# policy compiler must output and that `cc rq1` scores against.
+company: ToyCo
+description: Fictional US (Delaware) SaaS company, toy rule base for smoke tests.
+version: toy-1
+rules:
+  - id: P-01
+    title: Return or destruction of information
+    requirement: Vendor and partner NDAs must oblige the counterparty to return or destroy our confidential information when the agreement ends.
+    term: The Receiving Party must return or destroy Confidential Information when the agreement ends or on request.
+    kind: require
+    applies_if: counterparty in ['vendor', 'partner']
+    severity: high
+    anchor: {hypothesis: nda-16}
+    keywords: [return, destroy, termination]
+    source: {document: Vendor Management Policy, section: "4.2"}
+
+  - id: P-02
+    title: Oral disclosures covered
+    requirement: Information we share orally must be covered by the NDA.
+    term: Confidential Information includes information disclosed orally or verbally.
+    kind: require
+    severity: medium
+    anchor: {hypothesis: nda-3}
+    keywords: [oral, orally, verbal]
+
+  - id: P-03
+    title: Survival of obligations
+    requirement: Confidentiality obligations must survive termination of the agreement.
+    term: Some obligations of the agreement survive its termination or expiry.
+    kind: require
+    severity: high
+    anchor: {hypothesis: nda-19}
+    keywords: [survive, termination]
+
+  - id: P-04
+    title: Notice of compelled disclosure
+    requirement: The counterparty must notify us before disclosing our information under a legal order.
+    term: The Receiving Party must notify the Disclosing Party if it is required by law or court order to disclose Confidential Information.
+    kind: require
+    severity: medium
+    anchor: {hypothesis: nda-8}
+    keywords: [required by law, subpoena, court order, notify]
+
+  - id: P-05
+    title: Purpose limitation
+    requirement: Our information may only be used for the purpose of the engagement.
+    term: The Receiving Party shall not use Confidential Information for any purpose other than the stated purpose.
+    kind: require
+    severity: high
+    anchor: {hypothesis: nda-4}
+    keywords: [purpose, use]
+
+  - id: P-06
+    title: No reverse engineering by vendors
+    requirement: Vendor NDAs must prohibit reverse engineering of anything we share.
+    term: The Receiving Party shall not reverse engineer, decompile or disassemble materials containing Confidential Information.
+    kind: require
+    applies_if: counterparty == 'vendor'
+    severity: medium
+    anchor: {hypothesis: nda-11}
+    keywords: [reverse engineer, decompile, disassemble]
+
+  - id: P-07
+    title: No non-solicitation in customer NDAs
+    requirement: Customer NDAs must not contain a non-solicitation of personnel clause.
+    term: A party shall not solicit or hire the other party's employees or representatives.
+    kind: forbid
+    applies_if: counterparty == 'customer'
+    severity: medium
+    anchor: {hypothesis: nda-18}
+    keywords: [solicit, hire, employ]
+
+  - id: P-08
+    title: Confidentiality of the agreement itself
+    requirement: Partner NDAs must keep the existence of the deal confidential.
+    term: The parties shall not disclose the existence or terms of this agreement or the discussions.
+    kind: require
+    applies_if: counterparty == 'partner'
+    severity: low
+    anchor: {hypothesis: nda-10}
+    keywords: [existence, terms of this agreement, discussions]
+
+  - id: P-09
+    title: No licence granted
+    requirement: The NDA must state that no licence or right to our information is granted.
+    term: Nothing in the agreement grants the Receiving Party any licence or right to Confidential Information.
+    kind: require
+    severity: medium
+    anchor: {hypothesis: nda-15}
+    keywords: [license, licence, right, title]
+
+  - id: P-10
+    title: Confidential information not limited to technical information
+    requirement: The definition of confidential information must cover business, not only technical, information.
+    term: Confidential Information is limited to technical information only.
+    kind: forbid
+    severity: medium
+    anchor: {hypothesis: nda-2}
+    keywords: [technical, business, definition]
+
+  - id: P-11
+    title: Minimum confidentiality term
+    requirement: When personal data is shared, confidentiality must last at least 36 months.
+    kind: field
+    applies_if: personal_data
+    constraint: {field: confidentiality_term_months, op: ">=", value: 36}
+    severity: high
+    refs: [P-12]
+
+  - id: P-12
+    title: Governing law
+    requirement: The NDA must be governed by Delaware or New York law unless the General Counsel approves otherwise.
+    kind: field
+    constraint: {field: governing_law, op: in, value: [delaware, new york]}
+    approval: General Counsel
+    severity: high

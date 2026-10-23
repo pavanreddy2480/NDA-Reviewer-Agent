@@ -1,0 +1,23 @@
+{
+ "LAW-DTSA-1833B": "The agreement gives notice that an individual is immune from liability for disclosing a trade secret in confidence to a government official or an attorney solely to report a suspected violation of law, or in a sealed court filing.",
+ "LAW-SEC-21F17": "The NDA stops a party from reporting possible violations of law to, or communicating with, government agencies or regulators, with no exception for such reports.",
+ "LAW-SPEAK-OUT": "The confidentiality obligations would stop a party from disclosing sexual harassment or sexual assault, with no exception for such disclosures.",
+ "LAW-CA-BPC-16600": "A party is restricted from engaging in a business, trade or profession, or from competing with the other party, during or after the agreement.",
+ "LAW-CA-BPC-16600-NONSOLICIT": "A party is restricted from hiring or soliciting the other party's employees after the agreement ends.",
+ "LAW-PENALTY": "A fixed sum or penalty is payable on breach regardless of the actual loss suffered.",
+ "LAW-CCPA-SP": "The Receiving Party may use personal information only for the specified business purpose and may not sell or share it.",
+ "Northwind Cloud, Inc.:P-09": "The Receiving Party may freely use residual knowledge, ideas or know-how retained in unaided memory from Confidential Information.",
+ "Northwind Cloud, Inc.:P-20": "The Agreement incorporates the EU Standard Contractual Clauses or an approved equivalent mechanism for cross-border transfers of personal data.",
+ "Northwind Cloud, Inc.:P-24": "The Agreement restricts the Receiving Party from competing with the Disclosing Party or from engaging in a lawful profession, trade or business.",
+ "Northwind Cloud, Inc.:P-25": "The Agreement assigns or transfers ownership of the Disclosing Party's Confidential Information or derivative works to the Receiving Party.",
+ "Northwind Cloud, Inc.:P-28": "The Agreement includes the notice of immunity under the Defend Trade Secrets Act for disclosures of trade secrets to government officials or attorneys.",
+ "Bayview Health Partners:P-14": "The Receiving Party may store, access or process Confidential Information outside the United States.",
+ "Bayview Health Partners:P-15": "The Receiving Party shall promptly notify the Disclosing Party of any unauthorized use or disclosure of Confidential Information.",
+ "Bayview Health Partners:P-18": "The Receiving Party shall protect Confidential Information with reasonable administrative, physical and technical safeguards.",
+ "Bayview Health Partners:P-25": "The Receiving Party shall pay liquidated damages or a contractual penalty for breach of the agreement.",
+ "Bayview Health Partners:P-26": "The agreement restricts a party from competing with the other party or from engaging in a lawful profession or business.",
+ "Keystone Precision Manufacturing, Inc.:P-18": "The agreement imposes a fixed penalty or liquidated damages payable on breach of confidentiality.",
+ "Keystone Precision Manufacturing, Inc.:P-25": "The Receiving Party shall process personal data only for the stated purpose and protect it with appropriate security measures.",
+ "Keystone Precision Manufacturing, Inc.:P-27": "The Receiving Party shall comply with applicable export control laws and shall not export or re-export technical data without authorization.",
+ "Keystone Precision Manufacturing, Inc.:P-30": "The agreement includes notice of the immunity for confidential disclosure of trade secrets to government officials or an attorney in reporting a suspected violation of law."
+}

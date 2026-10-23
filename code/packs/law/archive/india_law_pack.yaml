@@ -1,0 +1,66 @@
+# DRAFT India law pack. NOT CHECKED: every provision needs two teammates in `checked_by`
+# (proposal §9) before it is used in any reported result. `cc` warns while any are unchecked.
+# Keep to clear-cut provisions; word findings as "risk under s.27", never as advice.
+# Statutes apply only when the NDA is governed by Indian law (requires_indian_law: true),
+# except the DPDP Act, which applies to personal data processed in India whatever the contract says.
+jurisdiction: India
+version: draft-0
+as_of: "2026-10-15"
+provisions:
+  - id: LAW-ICA-27-NONCOMPETE
+    act: Indian Contract Act, 1872
+    section: s.27
+    title: Agreement in restraint of trade
+    summary: Every agreement restraining anyone from exercising a lawful profession, trade or business is void to that extent; the only statutory exception is the sale of goodwill.
+    risk_pattern: A party is restricted from carrying on a business, trade or profession, or from competing with the other party, during or after the agreement.
+    risk_level: risk
+    severity: high
+    source_url: https://www.indiacode.nic.in/handle/123456789/2187
+    checked_by: []
+
+  - id: LAW-ICA-27-NONSOLICIT
+    act: Indian Contract Act, 1872
+    section: s.27
+    title: Non-solicitation of employees after the agreement ends
+    summary: Courts are split; post-term restrictions on hiring or soliciting staff are sometimes held void under s.27 and sometimes upheld as reasonable. Flag only as a possible risk.
+    risk_pattern: A party is restricted from hiring or soliciting the other party's employees after the agreement ends.
+    risk_level: possible_risk
+    severity: medium
+    source_url: https://www.indiacode.nic.in/handle/123456789/2187
+    checked_by: []
+
+  - id: LAW-ICA-28
+    act: Indian Contract Act, 1872
+    section: s.28
+    title: Agreement in restraint of legal proceedings
+    summary: An agreement that absolutely restricts a party from enforcing its contractual rights through ordinary legal proceedings, or limits the time to do so, is void to that extent; referring disputes to arbitration is an exception.
+    risk_pattern: A party is barred from enforcing its rights in courts or tribunals, or the time to bring a claim is shortened, other than by referring disputes to arbitration.
+    risk_level: risk
+    severity: high
+    source_url: https://www.indiacode.nic.in/handle/123456789/2187
+    checked_by: []
+
+  - id: LAW-ICA-74
+    act: Indian Contract Act, 1872
+    section: s.74
+    title: Penalty and liquidated damages
+    summary: Where a contract names a sum payable on breach, the court awards only reasonable compensation up to that sum, so a fixed penalty may not be recoverable in full.
+    risk_pattern: A fixed sum or penalty is payable on breach regardless of the actual loss suffered.
+    risk_level: possible_risk
+    severity: medium
+    source_url: https://www.indiacode.nic.in/handle/123456789/2187
+    checked_by: []
+
+  - id: LAW-DPDP-8-7
+    act: Digital Personal Data Protection Act, 2023
+    section: s.8(7)
+    title: Erasure of personal data when the purpose ends
+    summary: A data fiduciary must erase personal data (and make its processors erase it) once the specified purpose is no longer being served, unless retention is required by law. Obligations phase in under the DPDP Rules, 2025; check commencement before use.
+    risk_pattern: The Receiving Party must delete or return personal data once the purpose of the disclosure is served.
+    kind: require
+    applies_if: personal_data
+    requires_indian_law: false
+    risk_level: risk
+    severity: high
+    source_url: https://www.meity.gov.in/data-protection-framework
+    checked_by: []

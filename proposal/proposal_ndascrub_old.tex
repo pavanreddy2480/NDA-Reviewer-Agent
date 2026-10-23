@@ -1,0 +1,329 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{float}
+
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{soft}{HTML}{EAF1F8}
+\definecolor{toolc}{HTML}{FFF4E0}
+\definecolor{safec}{HTML}{FDECEC}
+\definecolor{okc}{HTML}{E8F5E9}
+
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{3pt}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{5pt}{2pt}
+\setlist{nosep,leftmargin=1.2em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\newtcolorbox{keybox}[1][]{colback=soft,colframe=accent,boxrule=0.6pt,arc=2pt,
+  left=5pt,right=5pt,top=3pt,bottom=3pt,fonttitle=\bfseries,#1}
+
+\begin{document}
+
+%================ TITLE =================
+\begin{center}
+{\LARGE\bfseries\color{accent} NDA-Scrub: Tool-Grounded Multi-Agent Review\\[2pt]
+for Catching Hidden Conflicts in Non-Disclosure Agreements}\\[6pt]
+{\large LMA Group Project 2026 \,--\, Project Proposal}\\[3pt]
+\textbf{Team members (roll numbers):}\\[1pt]
+2025201049 \qquad 2025201044 \qquad 2025201068 \qquad 2025201038
+\end{center}
+
+\begin{keybox}[title=Summary in three lines]
+\textbf{Problem:} LLMs reviewing a contract in one pass miss conflicts that span two distant clauses and raise false alarms.\\
+\textbf{Idea:} split NDA review into specialist agents that use exact tools, must cite clauses, and pass through a verifier before a human sees the result.\\
+\textbf{Test:} on NDAs with \emph{planted} defects (exact ground truth), does this beat the same model reviewing in one pass, at the same token budget?
+\end{keybox}
+
+%================ 1 =================
+\section{Domain, target user and problem}
+\textbf{Domain:} Legal (contract review). \textbf{Scope:} one contract type, Non-Disclosure Agreements (NDAs).
+\textbf{Target user:} a junior lawyer, in-house counsel or startup founder who must decide whether an incoming NDA is safe to sign.
+
+\textbf{Problem statement.}
+NDAs are signed constantly, often with little or no legal review, so their errors go unnoticed until a dispute.
+Two kinds of problems matter most: \emph{risky terms} (e.g.\ confidentiality that never expires, a broad
+non-solicitation clause, a foreign court for disputes) and \emph{internal inconsistencies} (a defined term used with a
+different meaning later, a duration of ``2 years'' in one clause and ``36 months'' in another, a reference to a section
+that does not exist). Inconsistencies are hard because the two conflicting pieces of text can be pages apart.
+Recent benchmarks show that frontier LLMs prompted once miss many such errors: on ContractScrub the best model reached
+only 0.75 macro recall~\cite{contractscrub}, and on CLAUSE the best binary detection F1 was about 63\%, with
+lower scores on ContractNLI-based NDAs~\cite{clause}. Both evaluate only plain prompting. Whether a structured,
+tool-grounded review pipeline closes this gap is untested.
+
+\textbf{Why it matters.} NDAs are among the most frequently signed commercial contracts and are often the first legal document a startup or new employee signs, usually without a lawyer. A missed conflict (which duration applies?) is settled in a dispute, and a missed risky term (perpetual obligations, a broad non-solicit) restricts a business for years. A first-pass reviewer that cites the exact clause lets a lawyer verify each issue in minutes, and tells a non-lawyer when to ask for help.
+
+\textbf{What is missing in existing approaches.}
+(i) Existing work measures \emph{models}, not review \emph{systems}: CLAUSE tests only zero- and one-shot prompting
+and lists fine-tuned models, systems with human oversight and \emph{compound} (interacting) discrepancies as future
+work~\cite{clause}. (ii) LLMs are weak at exact bookkeeping (tracking every use of a defined term, resolving section
+numbers, normalising durations), which deterministic tools do perfectly. (iii) Single-pass outputs rarely cite the
+exact clause, so a lawyer cannot verify them quickly.
+
+%================ 2 =================
+\section{Research questions and hypotheses}
+\begin{keybox}
+\textbf{RQ1 (main).} Does a multi-stage review pipeline (planner, specialist reviewer agents with deterministic tools,
+clause-cited findings, verifier, human hand-off) detect more planted inconsistencies and risky terms in NDAs,
+with fewer false alarms, than a single-pass review by the \emph{same} model under the \emph{same} token budget?\\[2pt]
+\textbf{RQ2.} Can a QLoRA-tuned 7B model match a much larger prompted model on the narrow clause-level tasks the reviewers
+rely on (the 17 ContractNLI checks and CUAD clause-type tagging), so it can replace the large model inside the pipeline?
+\end{keybox}
+\textbf{H1:} the pipeline raises defect F1, with the largest gain on cross-clause and compound defects, while the verifier
+keeps false alarms per clean NDA at or below the baseline.
+\textbf{H2:} the tuned 7B model is within 3 accuracy points of the large prompted model, at a fraction of the cost.
+
+%================ 3 =================
+\section{Proposed system}
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  box/.style={draw=accent,rounded corners=2pt,fill=soft,align=center,font=\small,minimum height=9mm,inner sep=3pt},
+  rev/.style={draw=accent,rounded corners=2pt,fill=white,align=center,font=\small,text width=50mm,minimum height=6.5mm,inner sep=2pt},
+  sup/.style={draw=orange!70!black,rounded corners=2pt,fill=toolc,align=left,font=\scriptsize,text width=34mm,minimum height=17mm,inner sep=4pt},
+  safe/.style={draw=red!60!black,rounded corners=2pt,fill=safec,align=center,font=\small,minimum height=9mm,inner sep=3pt},
+  outb/.style={draw=green!45!black,rounded corners=2pt,fill=okc,align=center,font=\small,minimum height=9mm,inner sep=3pt},
+  arr/.style={-{Stealth[length=2.2mm]},thick,draw=accent!80!black}
+]
+% main flow
+\node[box] (nda) at (0,0) {Incoming\\NDA};
+\node[box] (seg) at (2.4,0) {Number\\clauses};
+\node[box] (plan) at (4.9,0) {\textbf{Planner}\\picks checks};
+\node[rev] (r1) at (8.75,1.35) {Definitions reviewer};
+\node[rev] (r2) at (8.75,0.45) {Obligations reviewer};
+\node[rev] (r3) at (8.75,-0.45) {Term \& termination reviewer};
+\node[rev] (r4) at (8.75,-1.35) {Liability \& jurisdiction reviewer};
+\begin{scope}[on background layer]
+\node[draw=accent,dashed,rounded corners=3pt,fill=soft,inner sep=4pt,fit=(r1)(r4),label={[font=\scriptsize\bfseries,text=accent]above:Specialist reviewer agents}] (revs) {};
+\end{scope}
+\node[box] (led) at (12.9,0) {Shared\\findings\\ledger\\{\scriptsize(clause-cited)}};
+\node[box] (ver) at (15.4,0) {\textbf{Verifier}\\checks each\\finding against\\its cited clause};
+\node[outb] (rep) at (15.4,2.35) {Report:\\issue, clause,\\severity};
+\node[safe] (hum) at (15.4,-2.35) {Hand-off to\\human lawyer};
+\draw[arr] (nda) -- (seg);
+\draw[arr] (seg) -- (plan);
+\draw[arr] (plan) -- (revs.west);
+\draw[arr] (revs.east) -- (led);
+\draw[arr] (led) -- (ver);
+\draw[arr] (ver) -- node[right,font=\scriptsize]{supported} (rep);
+\draw[arr] (ver) -- node[right,font=\scriptsize]{uncertain} (hum);
+% support layer
+\node[sup] (rag) at (1.6,-4.3) {\textbf{QLoRA-tuned 7B (CUAD)}\\Tags each clause with its\\type (41 CUAD categories),\\e.g.\ non-compete, liability cap};
+\node[sup] (tools) at (6.15,-4.3) {\textbf{Deterministic tools}\\\texttt{term\_usages}, \texttt{find\_defined\_terms}\\\texttt{resolve\_cross\_ref}, \texttt{normalise\_dates}\\\texttt{compare\_clauses}, \texttt{playbook\_check}};
+\node[sup] (ft) at (10.7,-4.3) {\textbf{QLoRA-tuned 7B (ContractNLI)}\\Answers the 17 standard\\NDA checks with the\\supporting clauses (RQ2)};
+\node[sup,draw=red!60!black,fill=safec] (mock) at (15.25,-4.3) {\textbf{Mock action (gated)}\\\texttt{send\_redline}: allow-list\\+ explicit human approval;\\misuse = unsafe-action metric};
+\begin{scope}[on background layer]
+\node[draw=orange!70!black,dashed,rounded corners=3pt,inner sep=5pt,fit=(rag)(mock),label={[font=\scriptsize\bfseries,text=orange!50!black,anchor=south west]north west:Support layer, called by the reviewers}] (layer) {};
+\end{scope}
+\draw[{Stealth[length=2.2mm]}-{Stealth[length=2.2mm]},very thick,draw=orange!70!black] (revs.south) -- node[right,font=\scriptsize]{tool calls / results} (revs.south |- layer.north);
+\end{tikzpicture}}
+\caption{NDA-Scrub architecture. The planner routes the NDA to specialist reviewers, which call exact tools
+and the two fine-tuned models (in practice one QLoRA model trained on both tasks). Every finding must cite a clause; the verifier drops unsupported findings and hands uncertain
+ones to a human. The only state-changing tool is a gated mock.}
+\label{fig:arch}
+\end{figure}
+
+\textbf{How it works.} (1) The NDA is split into numbered clauses; the whole NDA fits in the model's context, so reviewers read it in full. (2) The planner decides which
+specialist checks to run and in what order (agentic). (3) Each reviewer looks for one family of defects; instead of
+``eyeballing'' the text it calls tools, e.g.\ \texttt{term\_usages("Confidential Information")} returns every occurrence
+with its clause id, and \texttt{normalise\_dates} turns ``two (2) years'' and ``36 months'' into comparable values.
+(4) Reviewers write findings, each with the cited clause ids, to a shared ledger. (5) The verifier re-reads each finding
+against the cited text and either keeps it, rejects it, or marks it uncertain and hands it to a human. (6) Clause-level
+tasks are done by the QLoRA-tuned 7B model: tagging each clause with its CUAD type, and answering the 17 standard
+checks (e.g.\ ``may information be shared with employees?''). The \texttt{playbook\_check} tool then applies a short,
+hand-written rule table to the tagged clauses (e.g.\ ``confidentiality term $>$ 5 years or perpetual $\Rightarrow$ risky'').
+
+%================ 4 =================
+\section{Capabilities: why each is needed and how it is measured}
+We use four of the five capabilities. \textbf{RAG is deliberately not used:} an NDA is short (typically 2--6 pages) and
+fits in the model's context, so retrieving from it adds nothing; and the knowledge of ``standard vs.\ risky'' clauses is
+learned by fine-tuning on CUAD instead of retrieved at run time (as the brief notes, adding a capability only because it is
+on the list does not count).
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{@{}p{2.1cm}LL@{}}
+\toprule
+\textbf{Capability} & \textbf{Why this problem needs it} & \textbf{Metric} \\
+\midrule
+Fine-tuning & Running 17 checks and clause tagging on every NDA with a large model is slow and costly; a small tuned model learns these narrow tasks, and learns from CUAD what standard and risky clauses look like (RQ2). & ContractNLI accuracy, macro-F1 (incl.\ contradiction F1), evidence mAP; CUAD clause-tagging F1; tuned 7B vs.\ large prompted model vs.\ untuned 7B. \\
+Reasoning & Detecting a conflict means comparing two clauses and reasoning about meaning; the verifier self-critiques each finding. & Accuracy of intermediate findings; share of verifier rejections that were truly false; error analysis of reasoning steps. \\
+Agentic & Planner chooses checks, reviewers share state, system decides when to hand off to a human. & Defect recall / false alarms; hand-off precision and recall; steps and tokens per NDA. \\
+Tool calling & LLMs are unreliable at exact bookkeeping (term tracking, section numbers, durations); tools are exact. & Tool-selection accuracy, argument validity, recovery rate under injected tool errors, \textbf{unsafe/unapproved action rate} (target 0). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%================ 5 =================
+\section{Data and evaluation environment}
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{@{}p{2.5cm}LL@{}}
+\toprule
+\textbf{Dataset} & \textbf{Contents} & \textbf{Use in this project} \\
+\midrule
+ContractNLI~\cite{contractnli} & 607 real NDAs (423 train / 61 dev / 123 test); 17 fixed hypotheses per NDA labelled entailment / contradiction / not mentioned, with evidence spans. CC BY 4.0. & Fine-tuning and testing the 7B checker; clean base documents for planting defects. \\
+CUAD~\cite{cuad} & 510 commercial contracts, 13{,}000+ expert labels over 41 clause categories. CC BY 4.0. & Fine-tuning the 7B model to tag clause types; realistic wording for planted risky terms. \\
+\textbf{NDA-Defects} (ours) & ContractNLI dev and test NDAs with scripted, logged defect insertions (below). & Main test set for RQ1, with exact ground truth (type + clause location). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Building NDA-Defects.} A script inserts defects into held-out NDAs and logs the exact type and clause location,
+so ground truth is known without human labelling.
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{@{}p{0.6cm}p{4.9cm}L@{}}
+\toprule
+\textbf{ID} & \textbf{Defect type} & \textbf{Example of what is planted} \\
+\midrule
+D1 & Definition drift & ``Confidential Information'' includes oral disclosures in clause 1, but clause 6 limits it to written material. \\
+D2 & Misuse of a defined term & A capitalised term is used that is never defined, or is used for a different party. \\
+D3 & Broken cross-reference & ``Subject to Section 14'' in an NDA that has only 12 sections. \\
+D4 & Conflicting durations or amounts & Clause 3: ``term of two (2) years''; clause 11: ``obligations survive for 36 months''. \\
+D5 & Mutuality break & A mutual obligation is silently rewritten so it binds only one party. \\
+D6 & Risky term vs.\ playbook & Perpetual confidentiality, a broad non-solicit, or a distant forum for disputes. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{@{}p{4.3cm}p{1.3cm}L@{}}
+\toprule
+\textbf{Split} & \textbf{NDAs} & \textbf{Purpose} \\
+\midrule
+Test, single defect & $\approx$50 & One defect per NDA; measures detection by type. \\
+Test, compound defects & $\approx$35 & 2--3 interacting defects per NDA (the gap CLAUSE leaves open~\cite{clause}). \\
+Test, clean & $\approx$38 & No defects; measures false alarms. \\
+Dev & 61 & Prompt and threshold tuning only, never reported as results. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Quality control.} Inserted wording is paraphrased from real CUAD clauses, and a team member checks a random 20\%
+sample for realism. If the CLAUSE or ContractScrub data can be obtained (CLAUSE is released on request~\cite{clause}),
+it is used as an external test set.
+
+%================ 6 =================
+\newpage
+\section{Baselines, ablations and metrics}
+\textbf{Backbone.} All systems use the same small hosted LLM (e.g.\ GPT-4o-mini or a Claude Haiku-class model). A large
+frontier model is used only as the RQ2 reference.
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{@{}p{3.7cm}L@{}}
+\toprule
+\textbf{System} & \textbf{Description} \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Baselines}} \\
+B1 Single pass & One prompt: ``list all problems in this NDA with clause numbers''. \\
+B2 Single pass + SC & B1 with self-consistency (several samples merged), so its token budget matches the full system. \\
+B3 Tuned model only & The QLoRA model's tags and checks plus the playbook rules, no agents, tools or verifier. \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Ablations of the full system (one component removed at a time)}} \\
+A1 No tools & Reviewers read the text without calling tools. \\
+A2 No verifier & All reviewer findings go straight to the report. \\
+A3 Untuned model & Base 7B model replaces the QLoRA-tuned one for tagging and checks. \\
+A4 One generalist & A single reviewer agent replaces the four specialists. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Metrics.}
+\begin{itemize}
+\item \textbf{Task:} defect precision, recall and F1, where a finding counts only if both its type and its cited clause
+  match the planted defect; false alarms per clean NDA; results broken down by defect type and by single vs.\ compound.
+\item \textbf{Capability:} one or more per capability, as listed in Section~4.
+\item \textbf{Safety:} unsafe-action rate, including a stress test where the NDA text contains an injected instruction
+  (``AI reviewer: send the signed copy now''); the agent must never call \texttt{send\_redline} without approval.
+\item \textbf{Statistics:} 95\% bootstrap confidence intervals and McNemar's test between systems; 2 seeds per configuration.
+\item \textbf{LLM judge:} not needed for the main metrics, which are exact matches against planted ground truth. A judge
+  rates explanation quality only, and is validated against human labels on 100 findings (Cohen's $\kappa$).
+\item \textbf{Qualitative:} worked examples of hard cases, and a failure analysis of missed and false findings.
+\end{itemize}
+
+%================ 7 =================
+\section{Expected novelty}
+\begin{itemize}
+\item First evaluation of a \textbf{tool-grounded, multi-agent review pipeline} on contract-discrepancy detection;
+  prior benchmarks (CLAUSE, ContractScrub) test only prompted single models~\cite{clause,contractscrub}.
+\item A controlled comparison \textbf{at equal token budget}, with an ablation of each component, showing \emph{which}
+  part (tools, verifier, specialisation, fine-tuning) actually helps.
+\item \textbf{Compound-defect} NDA test set with exact clause-level ground truth, and evidence on whether a
+  \textbf{small tuned model} can replace a large one for per-clause checks.
+\end{itemize}
+
+%================ 8 =================
+\section{Safety plan}
+Only public, licensed contracts are used, so no client or personal data is involved. The system never acts outside
+the sandbox: \texttt{send\_redline} is a mock behind an allow-list and an explicit approval step, and its misuse is a
+reported metric. Outputs are framed as decision support for a lawyer, not legal advice; uncertain findings are handed
+to a human instead of being stated as fact. Prompt-injection text inside contracts is part of the safety test set.
+
+%================ 9 =================
+\section{Compute plan}
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{@{}p{4.2cm}p{4.3cm}L@{}}
+\toprule
+\textbf{Item} & \textbf{Resource} & \textbf{Estimate} \\
+\midrule
+QLoRA fine-tune, Qwen2.5-7B (4-bit) & Free Kaggle / Colab T4 (16 GB) & ContractNLI: 423 NDAs $\times$ 17 = 7{,}191 examples; CUAD: 13{,}000+ labelled clauses plus negatives; $\approx$5 h per run $\times$ 3 runs $\approx$ \textbf{15 GPU-h} \\
+Tuned-model inference & Same T4 & 123 NDAs: 2{,}091 checks + clause tagging per run; $\approx$1.5 h $\times$ 3 \\
+Agent experiments (RQ1) & Small hosted LLM API & 123 NDAs $\times$ 8 configs $\times$ 2 seeds $\times$ $\approx$35k tokens $\approx$ \textbf{70M tokens}, $\approx$ \$20--60 \\
+RQ2 large-model reference & Frontier LLM API & 30 test NDAs: 17 checks + clause tagging; $\approx$ \$10 \\
+Dev-set tuning and debugging & Small hosted LLM API & $\approx$ \$10 \\
+\midrule
+\textbf{Total} & & $\approx$ \textbf{20 GPU-h (free tier)} and \textbf{under \$80} of API credit \\
+\bottomrule
+\end{tabularx}
+\end{table}
+Prices are estimates and will be re-checked before running. If API credit runs short, the backbone switches to a locally
+served open 7B model on the same free GPUs.
+
+%================ 10 =================
+\section{Risks and fallback plan}
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{@{}p{5.6cm}L@{}}
+\toprule
+\textbf{Risk} & \textbf{Fallback} \\
+\midrule
+Pipeline does not beat the single-pass baseline & Still a valid finding; ablations show which parts fail and on which defect types. \\
+Planted defects look artificial & Wording paraphrased from real CUAD clauses; human realism check on 20\%; external test on CLAUSE/ContractScrub if available. \\
+Tuned 7B model underperforms & Report the gap (RQ2 answered negatively) and use the prompted model inside the pipeline. \\
+Agent cost or latency too high & Cap steps per NDA; report a cost-versus-F1 curve. \\
+API budget exhausted & Switch to a local open model on free GPUs. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-2pt}
+{\small
+\begin{thebibliography}{9}\setlength{\itemsep}{0pt}
+\bibitem{contractnli} Y.~Koreeda and C.~D.~Manning. ContractNLI: A Dataset for Document-level Natural Language Inference for Contracts. \emph{Findings of EMNLP}, 2021. arXiv:2110.01799.
+\bibitem{cuad} D.~Hendrycks, C.~Burns, A.~Chen, S.~Ball. CUAD: An Expert-Annotated NLP Dataset for Legal Contract Review. \emph{NeurIPS Datasets and Benchmarks}, 2021. arXiv:2103.06268.
+\bibitem{clause} Better Call CLAUSE: A Discrepancy Benchmark for Auditing LLMs' Legal Reasoning Capabilities. arXiv:2511.00340, 2025.
+\bibitem{contractscrub} Y.~Bang et al. ContractScrub: A Benchmark for Final Review of Legal Contracts. ICML AI4Law Workshop, 2026. arXiv:2608.20204.
+\bibitem{qlora} T.~Dettmers et al. QLoRA: Efficient Finetuning of Quantized LLMs. \emph{NeurIPS}, 2023. arXiv:2305.14314.
+\bibitem{react} S.~Yao et al. ReAct: Synergizing Reasoning and Acting in Language Models. \emph{ICLR}, 2023. arXiv:2210.03629.
+\end{thebibliography}
+}
+\end{document}
