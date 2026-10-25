@@ -64,7 +64,8 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             "doc_id": doc.id, "deal": result.deal.model_dump(mode="json"),
             "deal_sources": deal_sources(labels.get(doc.id)),
             "inferred_facts": [vars(f) for f in result.inferred_facts],
-            "applicable_rules": result.applicable_rules, "rules_in_scope": result.rules_in_scope,
+            "applicable_rules": result.applicable_rules, "undecided_rules": result.undecided_rules,
+            "rules_in_scope": result.rules_in_scope,
             "n_checks": result.n_checks,
             "findings": [f.model_dump(mode="json") for f in result.findings],
             "gold": [{"rule_id": d.rule_id, "type": d.type.value, "evidence": list(d.evidence), "origin": d.origin}

@@ -25,11 +25,11 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 
 from ..data.draft import Draft
-from ..llm import LLMClient
-from ..policy.schema import DealContext, LawPack, PolicyPack, Rule
+from ..llm import LLMClient, PendingBatch
+from ..policy.schema import DealContext, LawPack, PolicyPack, Rule, applicability
 from ..retrieval.index import Encoder, HybridIndex, Passage, Reranker
 from .checker import CheckResult, finding_from_check, run_check
-from .fields import check_field_rule
+from .fields import extract_field, judge_field_rule
 from .deal_facts import InferredFact, resolve_deal
 from .findings import FindingType, Finding, Ledger
 
@@ -75,6 +75,7 @@ class ReviewResult:
     findings: list[Finding]
     checks: list[CheckLog] = field(default_factory=list)
     applicable_rules: list[str] = field(default_factory=list)  # under the (completed) deal, every preset
+    undecided_rules: list[str] = field(default_factory=list)  # a fact that decides them is still unknown
     deal: DealContext | None = None  # after inferring blank facts
     inferred_facts: list[InferredFact] = field(default_factory=list)
     rules_in_scope: list[str] = field(default_factory=list)  # what this preset checked
@@ -105,11 +106,41 @@ class PolicyReviewer:
         self.reranker = reranker
 
     # ------------------------------------------------------------------ helpers
-    def _rules_in_scope(self, deal: DealContext) -> list[Rule]:
+    def _applicability(self, deal: DealContext) -> dict[str, bool | None]:
+        """True / False per rule, or None when a fact that decides it is still unknown (the reply
+        was unreadable, or the NDA names no governing law). Unknown is never read as False."""
+        if deal.governing_law == "unknown":
+            deal = deal.model_copy(update={"governing_law": None})
+        return {r.id: applicability(r, deal) for r in list(self.pack.rules) + self.law_rules}
+
+    def _rules_in_scope(self, app: dict[str, bool | None]) -> list[Rule]:
         rules = list(self.pack.rules) + self.law_rules
-        if self.cfg.applicability_filter:
-            return [r for r in rules if r.applies_to(deal)]
+        if self.cfg.applicability_filter:  # undecided rules are checked rather than dropped
+            return [r for r in rules if app[r.id] is not False]
         return rules
+
+    def _read_fields(self, form: DealContext, inferred: list[InferredFact], fields: set[str],
+                     draft: Draft, seg_index: HybridIndex) -> dict[str, tuple | Exception]:
+        """Each field once per review. When governing law was read from the NDA for applicability,
+        the field rule reuses that reading, so the two never disagree (forward-pass audit, point 2).
+        A law written on the form is a deal fact, not the NDA's clause, so the clause is still read."""
+        values: dict[str, tuple | Exception] = {}
+        if "governing_law" in fields and form.governing_law is None:
+            f = next((f for f in inferred if f.name == "governing_law" and not f.error), None)
+            if f is not None:
+                values["governing_law"] = (f.value, f.evidence)
+        ids = list(range(len(draft.segments))) if self.cfg.exhaustive else None
+
+        def read(name: str):
+            try:
+                return name, extract_field(self.checker, name, draft, seg_index, ids=ids)
+            except PendingBatch:
+                raise
+            except Exception as e:  # malformed reply: the field's rules count under check_errors
+                return name, e
+
+        values.update(self.llm.map(read, sorted(fields - set(values)), self.cfg.max_workers))
+        return values
 
     def _expand(self, ids: list[int], n_segments: int) -> list[int]:
         out = set(ids)
@@ -125,8 +156,10 @@ class PolicyReviewer:
     # ------------------------------------------------------------------ main entry
     def review(self, draft: Draft, deal: DealContext) -> ReviewResult:
         seg_index = self._segment_index(draft)
+        form = deal
         deal, inferred = resolve_deal(self.llm, deal, draft, seg_index)
-        rules = self._rules_in_scope(deal)
+        app = self._applicability(deal)
+        rules = self._rules_in_scope(app)
         ledger = Ledger()
         logs: list[CheckLog] = []
 
@@ -134,8 +167,14 @@ class PolicyReviewer:
         field_rules = [r for r in rules if r.kind == "field"]
         term_rules = [r for r in rules if r.kind != "field"]
 
+        values = self._read_fields(form, inferred, {r.constraint.field for r in field_rules}, draft, seg_index)
+
         def do_field(rule: Rule):
-            f, res = check_field_rule(self.checker, rule, draft, seg_index)
+            v = values[rule.constraint.field]
+            if isinstance(v, Exception):
+                f, res = None, CheckResult("NotMentioned", [], 0.0, "", [], error=str(v)[:200])
+            else:
+                f, res = judge_field_rule(rule, draft.id, *v)
             if f is not None and f.type == FindingType.OMISSION and not (self.cfg.reverse or self.cfg.exhaustive):
                 f = None  # forward-only systems cannot report omissions, field rules included
             return rule, "field", res, f
@@ -176,8 +215,9 @@ class PolicyReviewer:
             if f is not None:
                 ledger.add(f)
 
-        applicable = [r.id for r in list(self.pack.rules) + self.law_rules if r.applies_to(deal)]
-        return ReviewResult(draft.id, ledger.all(), logs, applicable, deal, inferred, [r.id for r in rules])
+        applicable = [rid for rid, a in app.items() if a is True]
+        undecided = [rid for rid, a in app.items() if a is None]
+        return ReviewResult(draft.id, ledger.all(), logs, applicable, undecided, deal, inferred, [r.id for r in rules])
 
     # ------------------------------------------------------------------ forward path
     def _forward_candidates(self, draft: Draft, rules: list[Rule]) -> dict[str, list[int]]:

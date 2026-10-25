@@ -19,13 +19,11 @@
 
 from __future__ import annotations
 
-import ast
-import itertools
 from dataclasses import dataclass, field
 
 from ..data.contractnli import NDADocument, NLILabel
 from ..policy.jurisdictions import normalise_jurisdiction
-from ..policy.schema import INFERABLE_FACTS, DealContext, LawPack, PolicyPack, Rule, compile_condition
+from ..policy.schema import INFERABLE_FACTS, DealContext, LawPack, PolicyPack, Rule, applicability
 from ..review.findings import FindingType
 
 DISPUTED = "disputed"  # the two labelling models disagreed and no person has resolved it
@@ -94,26 +92,6 @@ def gold_deal(deal: DealContext, labels: dict | None) -> DealContext:
         elif f == "governing_law":
             upd[f] = normalise_jurisdiction(str(v))
     return deal.model_copy(update=upd)
-
-
-def _choices(rule: Rule, fact: str) -> tuple:
-    if fact == "personal_data":
-        return (True, False)
-    lits = {n.value.lower() for n in ast.walk(compile_condition(rule.applies_if))
-            if isinstance(n, ast.Constant) and isinstance(n.value, str)}
-    us = next(s for s in ("delaware", "texas", "ohio", "utah") if s not in lits)
-    return tuple(sorted(lits | {us, "united kingdom"}))
-
-
-def applicability(rule: Rule, deal: DealContext) -> bool | None:
-    """True / False, or None when an unknown fact decides it. Every value the rule's condition
-    mentions is tried, plus one other US state and one foreign law."""
-    unknown = deal.unknown_facts()
-    if not unknown:
-        return rule.applies_to(deal)
-    outcomes = {rule.applies_to(deal.model_copy(update=dict(zip(unknown, combo))))
-                for combo in itertools.product(*(_choices(rule, f) for f in unknown))}
-    return outcomes.pop() if len(outcomes) == 1 else None
 
 
 def field_value(rule: Rule, labels: dict, planted: dict | None = None):

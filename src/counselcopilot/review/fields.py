@@ -95,9 +95,12 @@ def _normalise(field: str, v):
     return str(v).strip().lower()
 
 
-def extract_field(llm: LLMClient, field: str, draft: Draft, index: HybridIndex, k: int = 6):
-    hits = index.search(FIELD_QUERIES[field], k=k)
-    ids = sorted(int(h.passage.id) for h in hits)
+def extract_field(llm: LLMClient, field: str, draft: Draft, index: HybridIndex, k: int = 6,
+                  ids: list[int] | None = None):
+    """Read one field from the NDA: from the top-k retrieved segments, or from `ids` (B4 passes
+    every segment)."""
+    if ids is None:
+        ids = sorted(int(h.passage.id) for h in index.search(FIELD_QUERIES[field], k=k))
     if not ids:
         return None, []
     out = llm.complete_json(
@@ -117,6 +120,12 @@ def check_field_rule(llm: LLMClient, rule: Rule, draft: Draft, index: HybridInde
         raise
     except Exception as e:  # malformed reply: no finding, counted under check_errors
         return None, CheckResult("NotMentioned", [], 0.0, "", [], error=str(e)[:200])
+    return judge_field_rule(rule, draft.id, value, ev)
+
+
+def judge_field_rule(rule: Rule, draft_id: str, value, ev: list[int]) -> tuple[Finding | None, CheckResult]:
+    """Judge a field rule on a value already read from the NDA (None = the NDA doesn't say)."""
+    c: FieldConstraint = rule.constraint  # type: ignore[assignment]
     if value == BLANK:
         # Template with the value left blank: tell the consultant to fill it in, but it is
         # neither compliant nor an omission, so it is not a finding (review problem 2).
@@ -129,6 +138,6 @@ def check_field_rule(llm: LLMClient, rule: Rule, draft: Draft, index: HybridInde
     else:
         res = CheckResult("Contradiction", ev, 0.8, f"{c.field}={value}, rule needs {c.op} {c.value}")
         ftype = FindingType.APPROVAL_NEEDED if rule.approval else FindingType.VIOLATION
-    return Finding(draft_id=draft.id, rule_id=rule.id, type=ftype, evidence=res.evidence,
+    return Finding(draft_id=draft_id, rule_id=rule.id, type=ftype, evidence=res.evidence,
                    explanation=res.rationale, confidence=res.confidence, reviewer="policy_reviewer",
                    direction="field", severity=rule.severity.value), res

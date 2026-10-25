@@ -16,6 +16,7 @@ ground truth on real NDAs from ContractNLI's expert labels.
 from __future__ import annotations
 
 import ast
+import itertools
 from enum import Enum
 from pathlib import Path
 from typing import Any, Literal
@@ -137,6 +138,27 @@ def _eval(node: ast.AST, env: dict[str, Any]) -> Any:
 
 def evaluate_condition(expr: str, deal: DealContext) -> bool:
     return bool(_eval(compile_condition(expr), deal.variables()))
+
+
+def _choices(rule: Rule, fact: str) -> tuple:
+    if fact == "personal_data":
+        return (True, False)
+    lits = {n.value.lower() for n in ast.walk(compile_condition(rule.applies_if))
+            if isinstance(n, ast.Constant) and isinstance(n.value, str)}
+    us = next(s for s in ("delaware", "texas", "ohio", "utah") if s not in lits)
+    return tuple(sorted(lits | {us, "united kingdom"}))
+
+
+def applicability(rule: Rule, deal: DealContext) -> bool | None:
+    """True / False, or None when an unknown fact decides it. Every value the rule's condition
+    mentions is tried, plus one other US state and one foreign law. Gold uses it to leave such
+    rules unscored; the reviewer uses it to check them anyway rather than drop them."""
+    unknown = deal.unknown_facts()
+    if not unknown:
+        return rule.applies_to(deal)
+    outcomes = {rule.applies_to(deal.model_copy(update=dict(zip(unknown, combo))))
+                for combo in itertools.product(*(_choices(rule, f) for f in unknown))}
+    return outcomes.pop() if len(outcomes) == 1 else None
 
 
 # ---------------------------------------------------------------- rules

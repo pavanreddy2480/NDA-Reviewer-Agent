@@ -31,6 +31,7 @@ class InferredFact:
     name: str
     value: object
     evidence: list[int]
+    error: str = ""  # the reply could not be read; the fact stays unknown
 
 
 def infer_personal_data(llm: LLMClient, draft: Draft, index: HybridIndex, k: int = 8) -> InferredFact:
@@ -61,8 +62,8 @@ def resolve_deal(llm: LLMClient, deal: DealContext, draft: Draft,
                 facts.append(InferredFact("governing_law", value, ev))
         except PendingBatch:
             raise
-        except Exception:  # a malformed reply leaves the fact unknown instead of crashing the run
-            facts.append(InferredFact(name, None, []))
+        except Exception as e:  # a malformed reply leaves the fact unknown instead of crashing the run
+            facts.append(InferredFact(name, None, [], error=str(e)[:200]))
     update = {f.name: f.value for f in facts}
     if "governing_law" in update and update["governing_law"] in (None, BLANK):
         update["governing_law"] = "unknown"

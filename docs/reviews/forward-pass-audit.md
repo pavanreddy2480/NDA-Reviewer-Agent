@@ -17,6 +17,26 @@ problems are in what the system is given, and in facts it reads more than once. 
 is point 1: RQ1 currently hands the reviewer the answer key's rule list, so it measures the
 checker, not the system the proposal describes.
 
+## Status
+
+Fixed on 25 Oct, with Pavan's go-ahead:
+- **Point 2.** Each field is read once per review. When governing law is read from the NDA
+  for applicability, the governing-law field rule reuses that reading. A law written on the form
+  is a deal fact, so the clause itself is still read for the field rule.
+- **Point 3.** A rule whose applicability depends on a fact that is still unknown is checked,
+  not dropped. That covers an unreadable personal-data reply and an NDA with no governing law.
+  Such rules are listed in `ReviewResult.undecided_rules`, and in the `rq1` rows.
+  `applicability()` moved to `policy/schema.py` so that gold and the reviewer share it.
+- **Point 4, B4 half.** Exhaustive presets now extract fields from the whole NDA. The
+  forward-only half is still open.
+- **Planted manifests.** `data/planted/test_seed0.json` was re-planted with the new deals:
+  - same 264 defects in 123 NDAs
+  - partner 62, vendor 24, customer 20, employee 17
+  - 12 foreign counterparties (was 33), 25 with personal data unknown
+
+Still open: point 1 (the policy compiler; design choice put to Pavan), and points 5 to 8 and the
+runner items.
+
 ## Severe
 
 ### 1. The reviewer is given the gold rules, and the anchored rules are ContractNLI's own questions
@@ -142,7 +162,7 @@ The verifier ablation and the "verifier precision" metric can't be run yet.
 - **The injection metric is unpaired.** It compares recall on the NDAs with injected text
   against recall on the other NDAs, which are different documents (about 20 in the pilot). The
   same NDA with and without the injection would isolate the effect.
-- **Planted manifests are stale.** The planter saves each deal in its manifest, and `rq1` uses
+- **Planted manifests were stale (re-planted 25 Oct).** The planter saves each deal in its manifest, and `rq1` uses
   that deal. In `data/planted/test_seed0.json`, 115 of 123 deals differ from what the current
   `deals.py` gives, so planted runs still use the old round-robin deals, with invented employees
   and foreign counterparties. **Fix:** re-plant (`cc plant ...`) after the counterparty labels
