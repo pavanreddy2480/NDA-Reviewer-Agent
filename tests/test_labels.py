@@ -186,3 +186,28 @@ def test_deals_round_trip(tmp_path):
     deals = generate_deals([1, 2, 3], ["A", "B"])
     save_deals(deals, tmp_path / "d" / "deals.json")
     assert load_deals(tmp_path / "d" / "deals.json") == deals
+
+
+# ------------------------------------------------------------------ logic audit, 25 Oct (docs/reviews/gold-deals-audit.md)
+
+@pytest.mark.xfail(strict=True, reason="BUG: deals are assigned by position in the sorted id list, so the same NDA gets "
+                                        "a different company and counterparty when the run covers a different subset")
+def test_an_ndas_deal_does_not_depend_on_which_other_ndas_are_in_the_run():
+    a = generate_deals([5, 10, 15], ["A", "B", "C"])
+    b = generate_deals([10, 15], ["A", "B", "C"])
+    assert (a[10].company, a[10].counterparty_type) == (b[10].company, b[10].counterparty_type)
+
+
+@pytest.mark.xfail(strict=True, reason="PROPOSAL MISMATCH: §7 promises 3 deal draws per NDA, but company and "
+                                        "counterparty type are fixed by position and never change with the seed")
+def test_deal_draws_vary_company_or_counterparty():
+    draws = [generate_deals(list(range(30)), ["A", "B", "C"], seed=s) for s in range(3)]
+    assert any((draws[0][i].company, draws[0][i].counterparty_type) != (d[i].company, d[i].counterparty_type)
+               for d in draws[1:] for i in range(30))
+
+
+@pytest.mark.xfail(strict=True, reason="GAP: the company is never on the receiving side, so rules conditioned on "
+                                        "company_side == 'receiving' (hospital P-13, P-27) can never apply")
+def test_deals_include_the_receiving_side():
+    deals = generate_deals(list(range(200)), ["A"], labels={i: {"mutual": False} for i in range(200)})
+    assert "receiving" in {d.company_side for d in deals.values()}

@@ -196,3 +196,36 @@ def test_every_rule_is_scored_unscored_or_not_applicable_exactly_once():
     every = [r.id for r in PACK.rules] + [r.id for r in LAW.as_rules()]
     seen = g.scored_rules + g.unscored_rules + g.not_applicable
     assert sorted(seen) == sorted(every)
+
+
+# ------------------------------------------------------------------ logic audit, 25 Oct (docs/reviews/gold-deals-audit.md)
+
+@pytest.mark.xfail(strict=True, reason="BUG: a field rule that only sets a maximum (survival <= 84 months, non-solicit "
+                                        "<= 12 months) is scored as an OMISSION when the NDA has no such clause; having "
+                                        "no non-solicit at all satisfies a 'non-solicit at most 12 months' rule")
+def test_absent_field_satisfies_a_maximum_only_rule():
+    g = gold({"fields": {"confidentiality_term_months": None}})
+    assert ("P-06", "omission") not in keys(g)  # P-06: term <= 60 months
+
+
+def test_planted_clause_that_breaks_an_unanchored_pack_rule_is_recorded():
+    """A clause the planter inserts for one rule must not silently break another applicable rule."""
+    import random
+
+    from conftest import make_doc
+    from counselcopilot.benchmark.planter import Planter, _Work
+
+    pack = make_pack(rules=[{"id": "P-01", "title": "No penalties", "kind": "forbid",
+                             "requirement": "The NDA must not contain a penalty.",
+                             "term": "A fixed penalty is payable on breach."}])
+    d = deal(governing_law="delaware")
+    w = _Work(make_doc(), d, random.Random(0))
+    planter = Planter(pack, LAW)
+    planted = planter.plant_forbidden_clause(w, next(r for r in LAW.as_rules() if r.id == "LAW-PENALTY"), d)
+    out = w.finish()
+    g = gold_for(make_doc(), d, pack, {"terms": {"TestCo:P-01": False, "LAW-PENALTY": False}}, LAW, out.gold_entry())
+    if planted:
+        pytest.xfail("BUG: the planter only knows anchored rules and law topics, so the penalty clause it planted "
+                     "for LAW-PENALTY also breaks the pack's unanchored no-penalty rule, which gold still scores as "
+                     "compliant (a correct flag becomes a false alarm)")
+    assert "P-01" not in g.scored_rules or ("P-01", "violation") in keys(g)
