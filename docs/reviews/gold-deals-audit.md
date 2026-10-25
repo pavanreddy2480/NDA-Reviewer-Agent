@@ -26,7 +26,7 @@ Points 4, 5, 6 and 8 are fixed (25 Oct, Pavan's go-ahead):
 - `deal_sources` records which facts were read and which were assigned. `rq1` writes it to every
   review row.
 
-Point 7 (no receiving side) and the rest are still open.
+Point 7 (no receiving side) and the rest are still open. The merged counterparty labels (25 Oct, 184 NDAs, 55 disputed keys) are in `data/labels/ndas_auto.yaml`; planted manifests still hold the old deals and must be re-planted (forward-pass-audit.md).
 
 ## Severe: these change the headline numbers
 

@@ -80,6 +80,9 @@
     - terms.Keystone Precision Manufacturing, Inc.:P-25
     needs_person: true
   company_party: JEA
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: florida
@@ -118,6 +121,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: Party A
         fields:
           confidentiality_term_months: blank
@@ -153,6 +157,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: true
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Party A
         fields:
           confidentiality_term_months: blank
@@ -192,8 +197,12 @@
     - claude-haiku
     disagree:
     - terms.Bayview Health Partners:P-18
+    - counterparty_role
     needs_person: true
   company_party: Party A
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: blank
     dispute_forum: michigan
@@ -311,6 +320,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: italy
@@ -425,6 +437,9 @@
     - personal_data
     needs_person: true
   company_party: Frodsham Town Council
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: united kingdom
@@ -539,6 +554,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: belgium
@@ -577,6 +595,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_country: null
         disclosing_party: Province of Nova Scotia
         fields:
           confidentiality_term_months: 9999.0
@@ -612,6 +631,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_country: canada
         disclosing_party: Province of Nova Scotia
         fields:
           confidentiality_term_months: 9999.0
@@ -654,8 +674,12 @@
     - personal_data
     - fields.survival_months
     - terms.Bayview Health Partners:P-18
+    - counterparty_country
     needs_person: true
   company_party: Province of Nova Scotia
+  counterparty_country: disputed
+  counterparty_kind: company
+  counterparty_role: customer
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -772,6 +796,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: singapore
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: singapore
@@ -886,6 +913,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: (Name of the Mission)
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: india
@@ -1002,6 +1032,9 @@
     - terms.Keystone Precision Manufacturing, Inc.:P-25
     needs_person: true
   company_party: Boston Public Schools
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: disputed
     dispute_forum: massachusetts
@@ -1040,6 +1073,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: company
         disclosing_party: Canadian Pacific Railway Company
         fields:
           confidentiality_term_months: 36.0
@@ -1075,6 +1109,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: unknown
         disclosing_party: Canadian Pacific Railway Company
         fields:
           confidentiality_term_months: 36.0
@@ -1115,8 +1150,12 @@
     disagree:
     - personal_data
     - terms.Bayview Health Partners:P-18
+    - counterparty_kind
     needs_person: true
   company_party: Canadian Pacific Railway Company
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: canada
@@ -1233,6 +1272,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: VIDAR Systems Corporation
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: virginia
@@ -1271,6 +1313,9 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_country: united states
+        counterparty_kind: company
+        counterparty_role: vendor
         disclosing_party: CLIENT
         fields:
           confidentiality_term_months: null
@@ -1306,6 +1351,9 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_country: null
+        counterparty_kind: unknown
+        counterparty_role: customer
         disclosing_party: CLIENT
         fields:
           confidentiality_term_months: 12.0
@@ -1345,8 +1393,14 @@
     - claude-haiku
     disagree:
     - fields.confidentiality_term_months
+    - counterparty_kind
+    - counterparty_role
+    - counterparty_country
     needs_person: true
   company_party: CLIENT
+  counterparty_country: disputed
+  counterparty_kind: disputed
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -1462,6 +1516,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: PJM Interconnection, L.L.C.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -1505,6 +1562,9 @@
     disagree: []
     needs_person: false
   company_party: Patriot Scientific Corporation
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: delaware
@@ -1620,6 +1680,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: The University of Bristol
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 120.0
     dispute_forum: united kingdom
@@ -1658,6 +1721,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: company
         disclosing_party: The NASDAQ OMX Group, Inc.
         fields:
           confidentiality_term_months: null
@@ -1693,6 +1757,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: unknown
         disclosing_party: The NASDAQ OMX Group, Inc.
         fields:
           confidentiality_term_months: 36.0
@@ -1732,8 +1797,12 @@
     - claude-haiku
     disagree:
     - fields.confidentiality_term_months
+    - counterparty_kind
     needs_person: true
   company_party: The NASDAQ OMX Group, Inc.
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -1772,6 +1841,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: company
         disclosing_party: United States Department of Veterans Affairs
         fields:
           confidentiality_term_months: null
@@ -1807,6 +1877,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: unknown
         disclosing_party: Department of Veterans Affairs
         fields:
           confidentiality_term_months: null
@@ -1847,8 +1918,12 @@
     disagree:
     - company_party
     - terms.Bayview Health Partners:P-18
+    - counterparty_kind
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -1965,6 +2040,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: The Business Partnership
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -2081,6 +2159,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -2195,6 +2276,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 72.0
     dispute_forum: sweden
@@ -2238,6 +2322,9 @@
     disagree: []
     needs_person: false
   company_party: NSK Europe Limited
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: united kingdom
@@ -2274,14 +2361,22 @@
   verified: false
 22:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_role: vendor
+      claude-sonnet:
+        counterparty_role: partner
     audit: true
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
+    disagree:
+    - counterparty_role
     needs_person: true
   company_party: Ministry of Defence of the Kingdom of Norway
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 84.0
     dispute_forum: norway
@@ -2320,6 +2415,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: vendor
         disclosing_party: Nordic Knowledge Partners ApS
         fields:
           confidentiality_term_months: 60.0
@@ -2355,6 +2451,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: employee
         disclosing_party: Nordic Knowledge Partners ApS
         fields:
           confidentiality_term_months: 60.0
@@ -2396,8 +2493,12 @@
     - terms.Bayview Health Partners:P-15
     - terms.Bayview Health Partners:P-18
     - terms.LAW-SEC-21F17
+    - counterparty_role
     needs_person: true
   company_party: Nordic Knowledge Partners ApS
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: denmark
@@ -2436,6 +2537,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: Ready4S, Ltd
         fields:
           confidentiality_term_months: 9999.0
@@ -2471,6 +2573,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: customer
         disclosing_party: Ready4S, Ltd
         fields:
           confidentiality_term_months: 9999.0
@@ -2510,8 +2613,12 @@
     - claude-haiku
     disagree:
     - fields.survival_months
+    - counterparty_role
     needs_person: true
   company_party: Ready4S, Ltd
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: united kingdom
@@ -2550,6 +2657,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_country: singapore
         disclosing_party: AdvanIDe Europe GmbH
         fields:
           confidentiality_term_months: 60.0
@@ -2585,6 +2693,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_country: null
         disclosing_party: AdvanIDe Europe GmbH
         fields:
           confidentiality_term_months: 60.0
@@ -2624,8 +2733,12 @@
     - claude-haiku
     disagree:
     - terms.Bayview Health Partners:P-18
+    - counterparty_country
     needs_person: true
   company_party: AdvanIDe Europe GmbH
+  counterparty_country: disputed
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: singapore
@@ -2741,6 +2854,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: AG Projects
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: customer
   fields:
     confidentiality_term_months: disputed
     dispute_forum: netherlands
@@ -2857,6 +2973,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: customer
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: blank
@@ -2895,6 +3014,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: (Company)
         fields:
           confidentiality_term_months: null
@@ -2930,6 +3050,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: '[Company]'
         fields:
           confidentiality_term_months: null
@@ -2969,8 +3090,12 @@
     - claude-haiku
     disagree:
     - company_party
+    - counterparty_role
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -3009,6 +3134,9 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_country: united states
+        counterparty_kind: company
+        counterparty_role: partner
         disclosing_party: Adobe Inc.
         fields:
           confidentiality_term_months: 9999.0
@@ -3044,6 +3172,9 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_country: null
+        counterparty_kind: unknown
+        counterparty_role: unknown
         disclosing_party: Adobe Inc.
         fields:
           confidentiality_term_months: null
@@ -3085,8 +3216,14 @@
     - fields.confidentiality_term_months
     - fields.survival_months
     - terms.Bayview Health Partners:P-18
+    - counterparty_kind
+    - counterparty_role
+    - counterparty_country
     needs_person: true
   company_party: Adobe Inc.
+  counterparty_country: disputed
+  counterparty_kind: disputed
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -3125,6 +3262,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: unknown
         disclosing_party: AfriGIS (Pty) Ltd
         fields:
           confidentiality_term_months: null
@@ -3160,6 +3298,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: customer
         disclosing_party: AfriGIS (Pty) Ltd
         fields:
           confidentiality_term_months: 24.0
@@ -3200,8 +3339,12 @@
     disagree:
     - fields.confidentiality_term_months
     - terms.Bayview Health Partners:P-18
+    - counterparty_role
     needs_person: true
   company_party: AfriGIS (Pty) Ltd
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: disputed
     dispute_forum: south africa
@@ -3320,6 +3463,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: customer
   fields:
     confidentiality_term_months: blank
     dispute_forum: null
@@ -3356,13 +3502,21 @@
   verified: false
 32:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_role: vendor
+      claude-sonnet:
+        counterparty_role: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_role
+    needs_person: true
   company_party: Champion Aerospace LLC
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: south carolina
@@ -3479,6 +3633,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: netherlands
@@ -3593,6 +3750,9 @@
     - personal_data
     needs_person: true
   company_party: Hernic Ferrochrome Proprietary Limited (in business rescue)
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: south africa
@@ -3708,6 +3868,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Aspiegel Limited
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: ireland
@@ -3746,6 +3909,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: vendor
         disclosing_party: Government Procurement Service
         fields:
           confidentiality_term_months: 9999.0
@@ -3781,6 +3945,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Government Procurement Service
         fields:
           confidentiality_term_months: 9999.0
@@ -3820,8 +3985,12 @@
     - claude-haiku
     disagree:
     - terms.LAW-CCPA-SP
+    - counterparty_role
     needs_person: true
   company_party: Government Procurement Service
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: united kingdom
@@ -3936,6 +4105,9 @@
     - fields.confidentiality_term_months
     needs_person: true
   company_party: State of Alaska
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: disputed
     dispute_forum: alaska
@@ -3972,13 +4144,21 @@
   verified: false
 39:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_kind: company
+      claude-sonnet:
+        counterparty_kind: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_kind
+    needs_person: true
   company_party: County of Loudoun, Virginia
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: virginia
@@ -4097,6 +4277,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Office of the Chief Administrative Officer of the U.S. House of Representatives
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -4211,6 +4394,9 @@
     - terms.LAW-CCPA-SP
     needs_person: true
   company_party: State of Maryland
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: maryland
@@ -4326,6 +4512,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: disputed
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: florida
@@ -4441,6 +4630,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: BEE Online (Pty) Ltd
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -4555,6 +4747,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: BOMI International, Inc.
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: customer
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: maryland
@@ -4591,13 +4786,21 @@
   verified: false
 45:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_kind: company
+      claude-sonnet:
+        counterparty_kind: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_kind
+    needs_person: true
   company_party: Brooks Technical Solutions, Inc.
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -4636,6 +4839,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: company
         disclosing_party: TRANSNET LIMITED
         fields:
           confidentiality_term_months: 60.0
@@ -4671,6 +4875,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: unknown
         disclosing_party: Transnet Limited
         fields:
           confidentiality_term_months: 60.0
@@ -4710,8 +4915,12 @@
     - claude-haiku
     disagree:
     - personal_data
+    - counterparty_kind
     needs_person: true
   company_party: Transnet Limited
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -4827,6 +5036,9 @@
     - personal_data
     needs_person: true
   company_party: Bacon Business Group
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -4941,6 +5153,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -5055,6 +5270,9 @@
     - is_template
     needs_person: true
   company_party: Energy Technologies Institute LLP
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 84.0
     dispute_forum: united kingdom
@@ -5171,6 +5389,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Ideology Consulting
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: united kingdom
@@ -5287,6 +5508,9 @@
     - fields.dispute_forum
     needs_person: true
   company_party: Data Owner
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 120.0
     dispute_forum: disputed
@@ -5402,6 +5626,9 @@
     - fields.survival_months
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -5516,6 +5743,9 @@
     - is_template
     needs_person: true
   company_party: Energy Technologies Institute LLP
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 84.0
     dispute_forum: united kingdom
@@ -5554,6 +5784,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: Fronius International GmbH
         fields:
           confidentiality_term_months: blank
@@ -5589,6 +5820,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Fronius International GmbH
         fields:
           confidentiality_term_months: blank
@@ -5628,8 +5860,12 @@
     - claude-haiku
     disagree:
     - fields.survival_months
+    - counterparty_role
     needs_person: true
   company_party: Fronius International GmbH
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: blank
     dispute_forum: austria
@@ -5673,6 +5909,9 @@
     disagree: []
     needs_person: false
   company_party: AMC-Consult A/S
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: denmark
@@ -5711,6 +5950,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: unknown
         disclosing_party: NGO
         fields:
           confidentiality_term_months: 36.0
@@ -5746,6 +5986,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: company
         disclosing_party: NGO (blank)
         fields:
           confidentiality_term_months: 36.0
@@ -5787,8 +6028,12 @@
     - company_party
     - terms.Bayview Health Partners:P-18
     - terms.LAW-SEC-21F17
+    - counterparty_kind
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: united kingdom
@@ -5827,6 +6072,8 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: unknown
+        counterparty_role: customer
         disclosing_party: PricewaterhouseCoopers LLP
         fields:
           confidentiality_term_months: 9999.0
@@ -5862,6 +6109,8 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: company
+        counterparty_role: unknown
         disclosing_party: PricewaterhouseCoopers LLP
         fields:
           confidentiality_term_months: 9999.0
@@ -5902,8 +6151,13 @@
     disagree:
     - personal_data
     - fields.survival_months
+    - counterparty_kind
+    - counterparty_role
     needs_person: true
   company_party: PricewaterhouseCoopers LLP
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: united kingdom
@@ -6024,6 +6278,9 @@
     - terms.Northwind Cloud, Inc.:P-28
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: customer
   fields:
     confidentiality_term_months: blank
     dispute_forum: blank
@@ -6139,6 +6396,9 @@
     - fields.survival_months
     needs_person: true
   company_party: Aldes Business Brokers Franchise Africa (Pty) Ltd
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -6177,6 +6437,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: vendor
         disclosing_party: Stockbridge-Munsee Community d.b.a. Mohican North Star Gaming
           and Resort
         fields:
@@ -6213,6 +6474,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Stockbridge-Munsee Community d.b.a. Mohican North Star Gaming
           and Resort
         fields:
@@ -6258,9 +6520,13 @@
     - terms.Keystone Precision Manufacturing, Inc.:P-25
     - terms.LAW-CCPA-SP
     - terms.LAW-SEC-21F17
+    - counterparty_role
     needs_person: true
   company_party: Stockbridge-Munsee Community d.b.a. Mohican North Star Gaming and
     Resort
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -6304,6 +6570,9 @@
     disagree: []
     needs_person: false
   company_party: Administrative Office of the Courts
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -6421,6 +6690,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: south carolina
@@ -6459,6 +6731,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: Commercial Investigations LLC
         fields:
           confidentiality_term_months: 60.0
@@ -6494,6 +6767,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Commercial Investigations LLC
         fields:
           confidentiality_term_months: 60.0
@@ -6534,8 +6808,12 @@
     disagree:
     - personal_data
     - terms.Bayview Health Partners:P-18
+    - counterparty_role
     needs_person: true
   company_party: Commercial Investigations LLC
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -6652,6 +6930,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -6766,6 +7047,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: canada
@@ -6880,6 +7164,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: DEFTA Group
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 120.0
     dispute_forum: france
@@ -6916,13 +7203,21 @@
   verified: false
 67:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_role: partner
+      claude-sonnet:
+        counterparty_role: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_role
+    needs_person: true
   company_party: Disclosing Party
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -7039,6 +7334,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: FTI Consulting Canada Inc.
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: canada
@@ -7075,13 +7373,21 @@
   verified: false
 69:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_kind: company
+      claude-sonnet:
+        counterparty_kind: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_kind
+    needs_person: true
   company_party: Chief Enterprises, LLC
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: illinois
@@ -7196,6 +7502,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: employee
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -7310,6 +7619,9 @@
     - fields.survival_months
     needs_person: true
   company_party: Listing Broker
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: blank
     dispute_forum: null
@@ -7425,6 +7737,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: BDO Canada Limited
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -7542,6 +7857,9 @@
     - terms.LAW-CCPA-SP
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: florida
@@ -7659,6 +7977,9 @@
     - terms.Keystone Precision Manufacturing, Inc.:P-25
     needs_person: true
   company_party: Arkansas State University
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: disputed
     dispute_forum: arkansas
@@ -7697,6 +8018,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: company
         disclosing_party: Owner
         fields:
           confidentiality_term_months: 9999.0
@@ -7732,6 +8054,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: unknown
         disclosing_party: Owner
         fields:
           confidentiality_term_months: 9999.0
@@ -7771,8 +8094,12 @@
     - claude-haiku
     disagree:
     - fields.survival_months
+    - counterparty_kind
     needs_person: true
   company_party: Owner
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -7889,6 +8216,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: austria
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 84.0
     dispute_forum: austria
@@ -7932,6 +8262,9 @@
     disagree: []
     needs_person: false
   company_party: Helu Kabel GmbH
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: customer
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: germany
@@ -8046,6 +8379,9 @@
     - mutual
     needs_person: true
   company_party: Kitty Haven Sanctuary of Utah
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: employee
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -8090,6 +8426,9 @@
     disagree: []
     needs_person: true
   company_party: CiF Lab Solutions LP
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: customer
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -8204,6 +8543,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Kansas Department of Labor
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -8240,13 +8582,21 @@
   verified: false
 81:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_kind: company
+      claude-sonnet:
+        counterparty_kind: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_kind
+    needs_person: true
   company_party: ClearCenter, Corp.
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -8362,6 +8712,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: blank
@@ -8405,6 +8758,9 @@
     disagree: []
     needs_person: false
   company_party: Minnesota Power
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: customer
   fields:
     confidentiality_term_months: blank
     dispute_forum: null
@@ -8521,6 +8877,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: sweden
@@ -8635,6 +8994,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -8673,6 +9035,8 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_country: united states
+        counterparty_kind: company
         disclosing_party: Party B (Reporting Entity)
         fields:
           confidentiality_term_months: null
@@ -8708,6 +9072,8 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_country: null
+        counterparty_kind: unknown
         disclosing_party: Reporting Entity
         fields:
           confidentiality_term_months: null
@@ -8747,8 +9113,13 @@
     - claude-haiku
     disagree:
     - company_party
+    - counterparty_kind
+    - counterparty_country
     needs_person: true
   company_party: disputed
+  counterparty_country: disputed
+  counterparty_kind: disputed
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -8864,6 +9235,9 @@
     - fields.survival_months
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -8980,6 +9354,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Partner Ireland Insurance Limited
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: united kingdom
@@ -9094,6 +9471,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -9212,6 +9592,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: disputed
+  counterparty_country: australia
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: australia
@@ -9327,6 +9710,9 @@
     - fields.survival_months
     needs_person: true
   company_party: REACH Consortium
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 144.0
     dispute_forum: null
@@ -9365,6 +9751,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: employee
         disclosing_party: Last Man Stands
         fields:
           confidentiality_term_months: 60.0
@@ -9400,6 +9787,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Last Man Stands
         fields:
           confidentiality_term_months: 60.0
@@ -9441,8 +9829,12 @@
     - terms.Bayview Health Partners:P-18
     - terms.LAW-SEC-21F17
     - terms.Northwind Cloud, Inc.:P-24
+    - counterparty_role
     needs_person: true
   company_party: Last Man Stands
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -9558,6 +9950,9 @@
     - fields.return_deadline_days
     needs_person: true
   company_party: Add-X Biotech AB
+  counterparty_country: canada
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 120.0
     dispute_forum: null
@@ -9596,6 +9991,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: Anderson Cargo Services, Inc.
         fields:
           confidentiality_term_months: 48.0
@@ -9631,6 +10027,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Anderson Cargo Services, Inc.
         fields:
           confidentiality_term_months: 24.0
@@ -9671,8 +10068,12 @@
     disagree:
     - fields.confidentiality_term_months
     - fields.survival_months
+    - counterparty_role
     needs_person: true
   company_party: Anderson Cargo Services, Inc.
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -9711,6 +10112,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: individual
         disclosing_party: Product Development Experts, Inc.
         fields:
           confidentiality_term_months: 60.0
@@ -9746,6 +10148,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: unknown
         disclosing_party: Product Development Experts, Inc.
         fields:
           confidentiality_term_months: 60.0
@@ -9785,8 +10188,12 @@
     - claude-haiku
     disagree:
     - personal_data
+    - counterparty_kind
     needs_person: true
   company_party: Product Development Experts, Inc.
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: florida
@@ -9903,6 +10310,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Acumen Business Systems Ltd
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: united kingdom
@@ -9939,13 +10349,24 @@
   verified: false
 190:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_kind: company
+        counterparty_role: partner
+      claude-sonnet:
+        counterparty_kind: unknown
+        counterparty_role: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_kind
+    - counterparty_role
+    needs_person: true
   company_party: iTagg Limited
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: united kingdom
@@ -9984,6 +10405,8 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_kind: company
+        counterparty_role: partner
         disclosing_party: No Reservations Pty. Ltd.
         fields:
           confidentiality_term_months: 72.0
@@ -10019,6 +10442,8 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_kind: unknown
+        counterparty_role: unknown
         disclosing_party: No Reservations Pty. Ltd.
         fields:
           confidentiality_term_months: 72.0
@@ -10059,8 +10484,13 @@
     disagree:
     - personal_data
     - terms.Keystone Precision Manufacturing, Inc.:P-25
+    - counterparty_kind
+    - counterparty_role
     needs_person: true
   company_party: No Reservations Pty. Ltd.
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 72.0
     dispute_forum: australia
@@ -10097,13 +10527,21 @@
   verified: false
 212:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_kind: unknown
+      claude-sonnet:
+        counterparty_kind: company
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_kind
+    needs_person: true
   company_party: Media News Group, Inc.
+  counterparty_country: null
+  counterparty_kind: disputed
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: new york
@@ -10219,6 +10657,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: MEB Engineering & Commercial Services Ltd
+  counterparty_country: united kingdom
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: united kingdom
@@ -10257,6 +10698,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: Party One
         fields:
           confidentiality_term_months: 36.0
@@ -10292,6 +10734,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: '[Party One]'
         fields:
           confidentiality_term_months: 36.0
@@ -10335,8 +10778,12 @@
     - terms.Bayview Health Partners:P-26
     - terms.LAW-CA-BPC-16600
     - terms.Northwind Cloud, Inc.:P-24
+    - counterparty_role
     needs_person: true
   company_party: disputed
+  counterparty_country: canada
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: canada
@@ -10373,14 +10820,22 @@
   verified: false
 225:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_role: customer
+      claude-sonnet:
+        counterparty_role: unknown
     audit: true
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
+    disagree:
+    - counterparty_role
     needs_person: true
   company_party: Mandarin Trading (Pty) Ltd.
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: south africa
@@ -10419,6 +10874,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_country: null
         disclosing_party: Jasmine Technologies Ltd
         fields:
           confidentiality_term_months: 9999.0
@@ -10454,6 +10910,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_country: united kingdom
         disclosing_party: Jasmine Technologies Ltd
         fields:
           confidentiality_term_months: 9999.0
@@ -10493,8 +10950,12 @@
     - claude-haiku
     disagree:
     - personal_data
+    - counterparty_country
     needs_person: true
   company_party: Jasmine Technologies Ltd
+  counterparty_country: disputed
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: united kingdom
@@ -10533,6 +10994,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: employee
         disclosing_party: HySafe participants
         fields:
           confidentiality_term_months: 120.0
@@ -10568,6 +11030,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Forschungszentrum Karlsruhe GmbH
         fields:
           confidentiality_term_months: null
@@ -10610,8 +11073,12 @@
     - fields.confidentiality_term_months
     - terms.Bayview Health Partners:P-18
     - terms.LAW-SEC-21F17
+    - counterparty_role
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: disputed
     dispute_forum: belgium
@@ -10726,6 +11193,9 @@
     - fields.confidentiality_term_months
     needs_person: true
   company_party: Accruence GmbH
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: germany
@@ -10769,6 +11239,9 @@
     disagree: []
     needs_person: false
   company_party: Inventor
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -10807,6 +11280,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: YOUR COMPANY
         fields:
           confidentiality_term_months: 60.0
@@ -10842,6 +11316,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Your Company
         fields:
           confidentiality_term_months: 60.0
@@ -10883,8 +11358,12 @@
     - governing_law
     - personal_data
     - fields.dispute_forum
+    - counterparty_role
     needs_person: true
   company_party: Your Company
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: disputed
@@ -10999,6 +11478,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Singapore Art Museum
+  counterparty_country: singapore
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: singapore
@@ -11037,6 +11519,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: PromonLogicalis
         fields:
           confidentiality_term_months: 36.0
@@ -11072,6 +11555,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: PromonLogicalis
         fields:
           confidentiality_term_months: 36.0
@@ -11111,8 +11595,12 @@
     - claude-haiku
     disagree:
     - fields.survival_months
+    - counterparty_role
     needs_person: true
   company_party: PromonLogicalis
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -11156,6 +11644,9 @@
     disagree: []
     needs_person: false
   company_party: The National Archives
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -11271,6 +11762,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -11386,6 +11880,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: employee
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: null
@@ -11500,6 +11997,9 @@
     - terms.Keystone Precision Manufacturing, Inc.:P-27
     needs_person: true
   company_party: McMaster University
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: canada
@@ -11614,6 +12114,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -11729,6 +12232,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -11844,6 +12350,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: MTH-Homes Nevada, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: blank
     dispute_forum: null
@@ -11887,6 +12396,9 @@
     disagree: []
     needs_person: false
   company_party: MPD Technologies, Inc.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -12001,6 +12513,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: New England Power Company
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: customer
   fields:
     confidentiality_term_months: 84.0
     dispute_forum: null
@@ -12115,6 +12630,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Ben & Jerry's Homemade, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: new york
@@ -12231,6 +12749,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: CompuCom Systems, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -12345,6 +12866,9 @@
     - company_party
     needs_person: true
   company_party: disputed
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -12389,6 +12913,9 @@
     disagree: []
     needs_person: true
   company_party: Talley Industries, Inc.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -12433,6 +12960,9 @@
     disagree: []
     needs_person: true
   company_party: CombiChem, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: california
@@ -12547,6 +13077,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Imo Industries Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: new york
@@ -12583,13 +13116,21 @@
   verified: false
 406:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_country: united states
+      claude-sonnet:
+        counterparty_country: null
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_country
+    needs_person: true
   company_party: National Medical Health Card Systems, Inc.
+  counterparty_country: disputed
+  counterparty_kind: individual
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -12705,6 +13246,9 @@
     - fields.survival_months
     needs_person: true
   company_party: disputed
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -12821,6 +13365,9 @@
     - fields.survival_months
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -12938,6 +13485,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Vertel Corporation
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: california
@@ -12981,6 +13531,9 @@
     disagree: []
     needs_person: false
   company_party: Intel Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -13097,6 +13650,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Intel Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -13135,6 +13691,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: employee
         disclosing_party: ClubHouse Hotels, Inc.
         fields:
           confidentiality_term_months: 9999.0
@@ -13170,6 +13727,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: partner
         disclosing_party: ClubHouse Hotels, Inc.
         fields:
           confidentiality_term_months: 9999.0
@@ -13209,8 +13767,12 @@
     - claude-haiku
     disagree:
     - fields.survival_months
+    - counterparty_role
     needs_person: true
   company_party: ClubHouse Hotels, Inc.
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -13326,6 +13888,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Oacis Healthcare Systems Corp.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -13362,13 +13927,21 @@
   verified: false
 435:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_role: partner
+      claude-sonnet:
+        counterparty_role: unknown
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_role
+    needs_person: true
   company_party: Yahoo! Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -13483,6 +14056,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Kaplan, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: new york
@@ -13598,6 +14174,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: CompuCom Systems, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -13712,6 +14291,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Navidec, Incorporated
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: colorado
@@ -13826,6 +14408,9 @@
     - fields.survival_months
     needs_person: true
   company_party: Novell, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: utah
@@ -13942,6 +14527,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: disputed
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: employee
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -13980,6 +14568,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: unknown
         disclosing_party: Consumers On-Line Development Group, Inc.
         fields:
           confidentiality_term_months: null
@@ -14015,6 +14604,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: partner
         disclosing_party: Consumers On-Line Development Group, Inc.
         fields:
           confidentiality_term_months: null
@@ -14055,8 +14645,12 @@
     disagree:
     - governing_law
     - personal_data
+    - counterparty_role
     needs_person: true
   company_party: Consumers On-Line Development Group, Inc.
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: null
     dispute_forum: california
@@ -14100,6 +14694,9 @@
     disagree: []
     needs_person: false
   company_party: Digital Equipment Corporation
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -14136,13 +14733,21 @@
   verified: false
 465:
   auto:
-    answers: {}
+    answers:
+      claude-haiku:
+        counterparty_role: customer
+      claude-sonnet:
+        counterparty_role: partner
     by:
     - claude-sonnet
     - claude-haiku
-    disagree: []
-    needs_person: false
+    disagree:
+    - counterparty_role
+    needs_person: true
   company_party: S-CAM Co., Ltd
+  counterparty_country: germany
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 9999.0
     dispute_forum: null
@@ -14257,6 +14862,9 @@
     - terms.Northwind Cloud, Inc.:P-25
     needs_person: true
   company_party: Nanolution, LLC
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -14300,6 +14908,9 @@
     disagree: []
     needs_person: false
   company_party: Twentieth Century Fox Home Entertainment, Inc.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -14338,6 +14949,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: vendor
         disclosing_party: Yale University School of Medicine
         fields:
           confidentiality_term_months: 36.0
@@ -14373,6 +14985,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: partner
         disclosing_party: Yale University School of Medicine
         fields:
           confidentiality_term_months: 36.0
@@ -14413,8 +15026,12 @@
     disagree:
     - terms.Bayview Health Partners:P-18
     - terms.LAW-SEC-21F17
+    - counterparty_role
     needs_person: true
   company_party: Yale University School of Medicine
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: connecticut
@@ -14459,6 +15076,9 @@
     disagree: []
     needs_person: true
   company_party: Smart Chip Technologies, LLC
+  counterparty_country: canada
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -14575,6 +15195,9 @@
     - terms.Keystone Precision Manufacturing, Inc.:P-18
     needs_person: true
   company_party: High Speed Net Solutions
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: disputed
@@ -14689,6 +15312,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Party A
+  counterparty_country: null
+  counterparty_kind: unknown
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -14804,6 +15430,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Symmetrex Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: null
@@ -14847,6 +15476,9 @@
     disagree: []
     needs_person: false
   company_party: Microsoft Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: unknown
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: washington
@@ -14961,6 +15593,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Cyberlux Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: null
@@ -15004,6 +15639,9 @@
     disagree: []
     needs_person: false
   company_party: DUNC, LLC
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: null
@@ -15119,6 +15757,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Big Sky Transportation Company
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -15162,6 +15803,9 @@
     disagree: []
     needs_person: false
   company_party: InSite Vision Incorporation
+  counterparty_country: india
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 36.0
     dispute_forum: delaware
@@ -15205,6 +15849,9 @@
     disagree: []
     needs_person: false
   company_party: Home Products International, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: illinois
@@ -15248,6 +15895,9 @@
     disagree: []
     needs_person: false
   company_party: SafeNet, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: maryland
@@ -15362,6 +16012,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: The Talbots, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 18.0
     dispute_forum: new york
@@ -15405,6 +16058,9 @@
     disagree: []
     needs_person: false
   company_party: The Talbots, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 18.0
     dispute_forum: new york
@@ -15520,6 +16176,9 @@
     - terms.Keystone Precision Manufacturing, Inc.:P-25
     needs_person: true
   company_party: Oracle Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: california
@@ -15563,6 +16222,9 @@
     disagree: []
     needs_person: false
   company_party: Polycom, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -15679,6 +16341,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Packeteer, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -15794,6 +16459,9 @@
     - terms.LAW-CCPA-SP
     needs_person: true
   company_party: XIUS, a Division of Megasoft Limited
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 72.0
     dispute_forum: india
@@ -15908,6 +16576,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Monster Worldwide, Inc.
+  counterparty_country: netherlands
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 18.0
     dispute_forum: new york
@@ -16023,6 +16694,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Universal Hospital Services, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: null
@@ -16139,6 +16813,9 @@
     - fields.survival_months
     needs_person: true
   company_party: First Financial Corporation
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: employee
   fields:
     confidentiality_term_months: disputed
     dispute_forum: indiana
@@ -16183,6 +16860,9 @@
     disagree: []
     needs_person: true
   company_party: Verenium Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 72.0
     dispute_forum: null
@@ -16297,6 +16977,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: Actuate Corporation
+  counterparty_country: canada
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 18.0
     dispute_forum: null
@@ -16411,6 +17094,9 @@
     - terms.Bayview Health Partners:P-15
     needs_person: true
   company_party: Oracle Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: delaware
@@ -16526,6 +17212,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Blackstreet Capital Holdings, LLC
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: null
@@ -16640,6 +17329,9 @@
     - fields.confidentiality_term_months
     needs_person: true
   company_party: Taylor Capital Group, Inc.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: illinois
@@ -16683,6 +17375,9 @@
     disagree: []
     needs_person: false
   company_party: EarthLink, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: georgia
@@ -16797,6 +17492,9 @@
     - is_template
     needs_person: true
   company_party: Vapotherm, Inc.
+  counterparty_country: null
+  counterparty_kind: individual
+  counterparty_role: employee
   fields:
     confidentiality_term_months: 60.0
     dispute_forum: delaware
@@ -16911,6 +17609,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Terremark Worldwide, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: new york
@@ -16954,6 +17655,9 @@
     disagree: []
     needs_person: false
   company_party: Fairfax Financial Holdings Limited
+  counterparty_country: switzerland
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: null
@@ -16998,6 +17702,9 @@
     disagree: []
     needs_person: true
   company_party: Calpine Corporation
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: new york
@@ -17113,6 +17820,9 @@
     - terms.Northwind Cloud, Inc.:P-09
     needs_person: true
   company_party: EarthLink, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: null
     dispute_forum: georgia
@@ -17229,6 +17939,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Cogent, Inc.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: california
@@ -17272,6 +17985,9 @@
     disagree: []
     needs_person: false
   company_party: Jamba, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: null
@@ -17386,6 +18102,9 @@
     - terms.Bayview Health Partners:P-18
     needs_person: true
   company_party: ICx Technologies, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 24.0
     dispute_forum: new york
@@ -17500,6 +18219,9 @@
     - personal_data
     needs_person: true
   company_party: Telecorp Products, Inc.
+  counterparty_country: canada
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: illinois
@@ -17615,6 +18337,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Dialogic Inc.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 12.0
     dispute_forum: canada
@@ -17658,6 +18383,9 @@
     disagree: []
     needs_person: false
   company_party: Raphael Industries Ltd.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: vendor
   fields:
     confidentiality_term_months: null
     dispute_forum: null
@@ -17696,6 +18424,7 @@
   auto:
     answers:
       claude-haiku:
+        counterparty_role: partner
         disclosing_party: Blueknight Energy Partners, L.P.
         fields:
           confidentiality_term_months: null
@@ -17731,6 +18460,7 @@
           Northwind Cloud, Inc.:P-25: false
           Northwind Cloud, Inc.:P-28: false
       claude-sonnet:
+        counterparty_role: unknown
         disclosing_party: Blueknight Energy Partners, L.P.
         fields:
           confidentiality_term_months: 0.67
@@ -17770,8 +18500,12 @@
     - claude-haiku
     disagree:
     - fields.confidentiality_term_months
+    - counterparty_role
     needs_person: true
   company_party: Blueknight Energy Partners, L.P.
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: disputed
   fields:
     confidentiality_term_months: disputed
     dispute_forum: null
@@ -17889,6 +18623,9 @@
     - terms.Northwind Cloud, Inc.:P-09
     needs_person: true
   company_party: SuccessFactors, Inc.
+  counterparty_country: germany
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: california
@@ -18004,6 +18741,9 @@
     - terms.LAW-SEC-21F17
     needs_person: true
   company_party: Nimble Storage, Inc.
+  counterparty_country: united states
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: 18.0
     dispute_forum: delaware
@@ -18119,6 +18859,9 @@
     - fields.survival_months
     needs_person: true
   company_party: Central European Distribution Corporation
+  counterparty_country: null
+  counterparty_kind: company
+  counterparty_role: partner
   fields:
     confidentiality_term_months: disputed
     dispute_forum: new york
