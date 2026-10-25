@@ -67,7 +67,8 @@ class DealContext(BaseModel):
         d = self.model_dump()
         d["counterparty"] = self.counterparty_type.value  # short alias for conditions
         d["counterparty_type"] = self.counterparty_type.value
-        d["foreign"] = self.counterparty_country.upper() not in ("US", "USA")
+        d["foreign"] = self.counterparty_country.strip().upper() not in ("US", "USA", "U.S.", "UNITED STATES",
+                                                                          "UNITED STATES OF AMERICA")
         d["us_law"] = is_us(self.governing_law)
         return d
 

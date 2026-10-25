@@ -15,13 +15,14 @@ such as the DTSA notice, and the packs' "other" rules), so those rules get natur
 from __future__ import annotations
 
 import random
+import re
 from pathlib import Path
 
 import yaml
 
 from ..data.contractnli import NDADocument
 from ..llm import LLMClient, system, user
-from ..policy.jurisdictions import normalise_jurisdiction
+from ..policy.jurisdictions import is_us, normalise_jurisdiction
 from ..review.fields import BLANK, FIELD_QUESTIONS, _normalise
 from .gold import DISPUTED, NO_LAW
 from .labels import load_labels
@@ -29,6 +30,11 @@ from .labels import load_labels
 LABEL_FIELDS = ["confidentiality_term_months", "survival_months", "return_deadline_days",
                 "non_solicit_months", "dispute_forum", "non_compete"]
 TOP_KEYS = ["is_template", "mutual", "governing_law", "personal_data", "disclosing_party"]
+# Who the other side is, read from the NDA (25 Oct 2026): benchmark/deals.py takes the deal form's
+# counterparty type and country from these instead of inventing them.
+COUNTERPARTY_KEYS = ["counterparty_kind", "counterparty_role", "counterparty_country"]
+COUNTERPARTY_KINDS = ["company", "individual", "unknown"]
+COUNTERPARTY_ROLES = ["vendor", "customer", "partner", "employee", "unknown"]
 
 SCHEMA = {
     "type": "object",
@@ -39,11 +45,25 @@ SCHEMA = {
         "disclosing_party": {"type": ["string", "null"]},
         "governing_law": {"type": ["string", "null"]},
         "personal_data": {"type": ["boolean", "null"]},
+        "counterparty_kind": {"type": "string", "enum": COUNTERPARTY_KINDS},
+        "counterparty_role": {"type": "string", "enum": COUNTERPARTY_ROLES},
+        "counterparty_country": {"type": ["string", "null"]},
         **{f: {"type": ["string", "number", "boolean", "null"]} for f in LABEL_FIELDS},
     },
     "required": ["is_template", "mutual", "parties", "disclosing_party", "governing_law", "personal_data",
-                 *LABEL_FIELDS],
+                 *COUNTERPARTY_KEYS, *LABEL_FIELDS],
 }
+
+COUNTERPARTY_QUESTIONS = """- counterparty: the party other than disclosing_party (for a mutual NDA, the second-named party).
+- counterparty_kind: "company" if it is a company or other organisation, "individual" if it is a person
+  (an employee, contractor, consultant or other natural person), "unknown" if a template leaves it blank.
+- counterparty_role: what the counterparty is to the disclosing party, only if the NDA says or clearly shows it:
+  "vendor" (it will provide goods or services to the disclosing party), "customer" (it is evaluating or buying
+  the disclosing party's products or services), "partner" (collaboration, joint venture, research, licensing,
+  investment, acquisition or other business discussions), "employee" (an employee, contractor or consultant of
+  the disclosing party), or "unknown" if the NDA does not say why the parties are dealing.
+- counterparty_country: where the counterparty is incorporated or based, as stated in the NDA (address,
+  "a Delaware corporation"): the country in lower case, "united states" for any US state; null if not stated."""
 
 
 def _prompt(doc: NDADocument, max_chars: int, terms: dict[str, str]) -> str:
@@ -60,6 +80,7 @@ def _prompt(doc: NDADocument, max_chars: int, terms: dict[str, str]) -> str:
 - governing_law: {FIELD_QUESTIONS['governing_law']}
 - personal_data: true if the NDA says personal data / personal information / customer or employee data may be
   shared, false if it clearly concerns only business or technical information, null if you cannot tell.
+{COUNTERPARTY_QUESTIONS}
 {q}
 {t}If a template leaves a value blank, answer "blank".
 
@@ -87,6 +108,7 @@ def normalise_answer(out: dict, terms: dict[str, str] | None = None) -> dict:
         "disclosing_party": (out.get("disclosing_party") or None),
         "governing_law": normalise_jurisdiction(str(out["governing_law"])) if out.get("governing_law") else NO_LAW,
         "personal_data": out.get("personal_data") if isinstance(out.get("personal_data"), bool) else None,
+        **normalise_counterparty(out),
         "fields": {},
     }
     for f in LABEL_FIELDS:
@@ -95,6 +117,22 @@ def normalise_answer(out: dict, terms: dict[str, str] | None = None) -> dict:
     got = out.get("terms") or {}
     lab["terms"] = {k: got.get(k) if isinstance(got.get(k), bool) else None for k in terms}
     return lab
+
+
+def normalise_country(raw) -> str | None:
+    """"Delaware" / "USA" / "a California corporation" -> "united states"; other countries lower case; None if not stated."""
+    if raw is None or not str(raw).strip() or str(raw).strip().lower() in ("null", "none", "unknown", BLANK):
+        return None
+    x = normalise_jurisdiction(re.sub(r"^an?\s+|\s+(corporation|company|llc|inc\.?|limited)$", "", str(raw).strip().lower()))
+    return "united states" if is_us(x) else x
+
+
+def normalise_counterparty(out: dict) -> dict:
+    kind = out.get("counterparty_kind")
+    role = out.get("counterparty_role")
+    return {"counterparty_kind": kind if kind in COUNTERPARTY_KINDS else "unknown",
+            "counterparty_role": role if role in COUNTERPARTY_ROLES else "unknown",
+            "counterparty_country": normalise_country(out.get("counterparty_country"))}
 
 
 def _same(a, b) -> bool:
@@ -109,7 +147,7 @@ def merge(a: dict, b: dict, names: tuple[str, str]) -> dict:
     """One label entry from two models' answers. Disagreeing keys are left for a person."""
     entry = {"verified": False, "fields": {}}
     disagree = []
-    for k in TOP_KEYS:
+    for k in TOP_KEYS + COUNTERPARTY_KEYS:
         if _same(a.get(k), b.get(k)):
             entry[k] = a.get(k)
         else:
@@ -190,13 +228,43 @@ def label_accuracy(labels: dict[int, dict]) -> dict:
 
     The checker sets `verified: true` and records any key they changed under `auto.corrected`."""
     audited = [e for e in labels.values() if e.get("auto", {}).get("audit") and e.get("verified")]
-    keys = TOP_KEYS[:-1] + ["company_party"] + [f"fields.{f}" for f in LABEL_FIELDS]
+    keys = TOP_KEYS[:-1] + ["company_party"] + COUNTERPARTY_KEYS + [f"fields.{f}" for f in LABEL_FIELDS]
     wrong = sum(len(e["auto"].get("corrected", [])) for e in audited)
     total = sum(len(keys) + len(e.get("terms", {})) for e in audited)
     return {"audited_entries": len(audited), "keys_checked": total,
             "key_accuracy": 1 - wrong / total if total else None,
             "entries_fully_correct": sum(not e["auto"].get("corrected") for e in audited)}
 
+
+
+def add_counterparty_labels(labels: dict[int, dict], ans_a: dict[int, dict], ans_b: dict[int, dict],
+                            names: tuple[str, str]) -> dict[str, int]:
+    """Add the counterparty keys to existing label entries from two labellers' answers (25 Oct 2026), without
+    touching the other keys. Disagreements become "disputed" and send the entry to a person; a key a person
+    already verified is kept."""
+    stats = {"updated": 0, "disputed_keys": 0, "missing": 0}
+    for i, e in labels.items():
+        if i not in ans_a or i not in ans_b:
+            stats["missing"] += 1
+            continue
+        a, b = normalise_counterparty(ans_a[i]), normalise_counterparty(ans_b[i])
+        auto = e.setdefault("auto", {})
+        disagree = [k for k in auto.get("disagree", []) if k not in COUNTERPARTY_KEYS]
+        for k in COUNTERPARTY_KEYS:
+            if e.get("verified") and k in e:
+                continue
+            if _same(a[k], b[k]):
+                e[k] = a[k]
+            else:
+                e[k] = DISPUTED
+                disagree.append(k)
+                stats["disputed_keys"] += 1
+                auto.setdefault("answers", {}).setdefault(names[0], {})[k] = a[k]
+                auto["answers"].setdefault(names[1], {})[k] = b[k]
+        auto["disagree"] = disagree
+        auto["needs_person"] = bool(disagree) or auto.get("audit", False)
+        stats["updated"] += 1
+    return stats
 
 
 def term_key(company: str | None, rule_id: str) -> str:

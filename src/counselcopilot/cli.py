@@ -131,6 +131,20 @@ def cmd_labels(args) -> None:
 
         print(json.dumps(label_accuracy(load_labels(args.out, allow_unverified=True)), indent=1))
         return
+    if args.action == "import-counterparty":  # add counterparty kind/role/country to an existing label file
+        from pathlib import Path
+
+        import yaml
+
+        from .benchmark.autolabel import add_counterparty_labels
+
+        ans = [{int(f.stem): json.loads(f.read_text()) for f in Path(d).glob("*.json") if f.stem.isdigit()}
+               for d in args.answers]
+        labels = load_labels(args.out, allow_unverified=True)
+        stats = add_counterparty_labels(labels, ans[0], ans[1], tuple(args.names))
+        Path(args.out).write_text(yaml.safe_dump(labels, sort_keys=True, allow_unicode=True))
+        print(json.dumps(stats, indent=1))
+        return
     docs = _load_data(args, (args.split,))[args.split][: args.limit]
     if args.action == "init":
         n = write_prefilled(docs, args.out)
@@ -344,7 +358,7 @@ def main(argv: list[str] | None = None) -> None:
     q.set_defaults(fn=cmd_rq1)
 
     lb = sub.add_parser("labels", help="hand-label file for annotators")
-    lb.add_argument("action", choices=["init", "auto", "accuracy", "import"],
+    lb.add_argument("action", choices=["init", "auto", "accuracy", "import", "import-counterparty"],
                     help="init: regex pre-fill; auto: two-model labels; accuracy: audited auto-label accuracy")
     lb.add_argument("--split", default="test")
     lb.add_argument("--limit", type=int, default=None)

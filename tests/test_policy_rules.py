@@ -72,8 +72,6 @@ def test_inferable_facts_left_blank_are_reported():
     assert deal().unknown_facts() == []
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: `foreign` only treats the codes 'US'/'USA' as domestic; a form "
-                                        "that says 'United States' marks a US counterparty as foreign")
 def test_us_counterparty_written_out_is_not_foreign():
     assert deal(counterparty_country="United States").variables()["foreign"] is False
 

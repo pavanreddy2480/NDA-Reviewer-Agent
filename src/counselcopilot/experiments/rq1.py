@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict
 
-from ..benchmark.deals import generate_deals
+from ..benchmark.deals import deal_sources, generate_deals
 from ..benchmark.gold import gold_for
 from ..benchmark.labels import load_labels
 from ..benchmark.planter import PlantedNDA
@@ -62,6 +62,7 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
                                  p.gold_entry() if p else None)
         rows.append({
             "doc_id": doc.id, "deal": result.deal.model_dump(mode="json"),
+            "deal_sources": deal_sources(labels.get(doc.id)),
             "inferred_facts": [vars(f) for f in result.inferred_facts],
             "applicable_rules": result.applicable_rules, "rules_in_scope": result.rules_in_scope,
             "n_checks": result.n_checks,

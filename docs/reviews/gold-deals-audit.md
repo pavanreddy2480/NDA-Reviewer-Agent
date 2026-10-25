@@ -15,6 +15,19 @@ missing value, how deals are drawn, what the planter doesn't track, and rules in
 point the wrong way or duplicate each other. Several of them inflate the gold omission count, so
 they also inflate the main H1 number (omission recall).
 
+## Status
+
+Points 4, 5, 6 and 8 are fixed (25 Oct, Pavan's go-ahead):
+- `deals.py` now reads the counterparty type and country from new label keys (`counterparty_kind`,
+  `counterparty_role`, `counterparty_country`), labelled by two agents, with disagreements disputed.
+- A country the NDA doesn't state is the US; no foreign counterparty is invented.
+- Unknown personal data stays blank on the form.
+- Company, value band and any role the NDA doesn't show are drawn from a seed per NDA id.
+- `deal_sources` records which facts were read and which were assigned. `rq1` writes it to every
+  review row.
+
+Point 7 (no receiving side) and the rest are still open.
+
 ## Severe: these change the headline numbers
 
 ### 1. Every missing field becomes an omission, even for "at most" rules *(test)*

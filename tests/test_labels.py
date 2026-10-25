@@ -190,16 +190,12 @@ def test_deals_round_trip(tmp_path):
 
 # ------------------------------------------------------------------ logic audit, 25 Oct (docs/reviews/gold-deals-audit.md)
 
-@pytest.mark.xfail(strict=True, reason="BUG: deals are assigned by position in the sorted id list, so the same NDA gets "
-                                        "a different company and counterparty when the run covers a different subset")
 def test_an_ndas_deal_does_not_depend_on_which_other_ndas_are_in_the_run():
     a = generate_deals([5, 10, 15], ["A", "B", "C"])
     b = generate_deals([10, 15], ["A", "B", "C"])
     assert (a[10].company, a[10].counterparty_type) == (b[10].company, b[10].counterparty_type)
 
 
-@pytest.mark.xfail(strict=True, reason="PROPOSAL MISMATCH: §7 promises 3 deal draws per NDA, but company and "
-                                        "counterparty type are fixed by position and never change with the seed")
 def test_deal_draws_vary_company_or_counterparty():
     draws = [generate_deals(list(range(30)), ["A", "B", "C"], seed=s) for s in range(3)]
     assert any((draws[0][i].company, draws[0][i].counterparty_type) != (d[i].company, d[i].counterparty_type)
@@ -211,3 +207,76 @@ def test_deal_draws_vary_company_or_counterparty():
 def test_deals_include_the_receiving_side():
     deals = generate_deals(list(range(200)), ["A"], labels={i: {"mutual": False} for i in range(200)})
     assert "receiving" in {d.company_side for d in deals.values()}
+
+
+# ------------------------------------------------------------------ counterparty facts read from the NDA (25 Oct)
+
+from counselcopilot.benchmark.autolabel import add_counterparty_labels, normalise_counterparty  # noqa: E402
+from counselcopilot.benchmark.deals import deal_for, deal_sources  # noqa: E402
+
+
+def test_counterparty_role_and_country_come_from_the_label():
+    d = deal_for(7, ["A", "B", "C"], {"counterparty_role": "customer", "counterparty_kind": "company",
+                                      "counterparty_country": "germany"})
+    assert d.counterparty_type == "customer" and d.counterparty_country == "germany" and d.variables()["foreign"]
+    assert deal_sources({"counterparty_role": "customer", "counterparty_country": "germany"})[
+        "counterparty_type"] == "label"
+
+
+def test_an_individual_counterparty_is_an_employee_type_deal():
+    assert deal_for(7, ["A"], {"counterparty_kind": "individual", "counterparty_role": "unknown"}
+                    ).counterparty_type == "employee"
+
+
+def test_a_company_with_unknown_role_is_never_an_employee():
+    types = {deal_for(i, ["A"], {"counterparty_kind": "company", "counterparty_role": "unknown"}).counterparty_type
+             for i in range(200)}
+    assert types == {"vendor", "customer", "partner"}
+
+
+def test_no_invented_foreign_counterparties():
+    """We are a US benchmark: a country the NDA doesn't state is the US, never a random foreign one."""
+    deals = generate_deals(list(range(200)), ["A"], labels={i: {"counterparty_country": None} for i in range(200)})
+    assert {d.counterparty_country for d in deals.values()} == {"US"}
+    us = deal_for(1, ["A"], {"counterparty_country": "united states"})
+    assert us.counterparty_country == "US" and not us.variables()["foreign"]
+
+
+def test_unknown_personal_data_is_left_blank_not_drawn():
+    assert deal_for(1, ["A"], {"personal_data": None}).personal_data is None
+    assert deal_for(1, ["A"], {"personal_data": "disputed"}).personal_data is None
+
+
+def test_assigned_facts_are_marked():
+    src = deal_sources({})
+    assert src["counterparty_type"] == "assigned" and src["counterparty_country"] == "assigned"
+    assert src["personal_data"] == "unknown"
+
+
+def test_counterparty_answers_are_normalised():
+    out = normalise_counterparty({"counterparty_kind": "Company", "counterparty_role": "supplier",
+                                  "counterparty_country": "a Delaware corporation"})
+    assert out == {"counterparty_kind": "unknown", "counterparty_role": "unknown",
+                   "counterparty_country": "united states"}
+
+
+def test_counterparty_labels_merge_into_existing_entries():
+    labels = {1: {"verified": False, "governing_law": "ohio", "auto": {"disagree": ["mutual"]}},
+              2: {"verified": False, "auto": {"disagree": []}},
+              3: {"verified": True, "counterparty_role": "vendor", "auto": {}}}
+    a = {1: {"counterparty_kind": "company", "counterparty_role": "vendor", "counterparty_country": "Texas"},
+         2: {"counterparty_kind": "company", "counterparty_role": "customer", "counterparty_country": None},
+         3: {"counterparty_kind": "company", "counterparty_role": "partner", "counterparty_country": None}}
+    b = {1: {"counterparty_kind": "company", "counterparty_role": "vendor", "counterparty_country": "USA"},
+         2: {"counterparty_kind": "company", "counterparty_role": "partner", "counterparty_country": None},
+         3: {"counterparty_kind": "company", "counterparty_role": "partner", "counterparty_country": None}}
+    stats = add_counterparty_labels(labels, a, b, ("sonnet", "haiku"))
+    assert labels[1]["counterparty_role"] == "vendor" and labels[1]["counterparty_country"] == "united states"
+    assert labels[1]["governing_law"] == "ohio" and labels[1]["auto"]["disagree"] == ["mutual"]
+    assert labels[2]["counterparty_role"] == DISPUTED and labels[2]["auto"]["needs_person"]
+    assert labels[3]["counterparty_role"] == "vendor"  # a person's verified value is kept
+    assert stats["disputed_keys"] == 1
+
+
+def test_disputed_role_is_assigned_not_read():
+    assert deal_sources({"counterparty_role": DISPUTED})["counterparty_type"] == "assigned"
