@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict
 
+from ..benchmark.align import align, remap_findings
 from ..benchmark.deals import deal_sources, generate_deals
 from ..benchmark.gold import gold_for
 from ..benchmark.labels import load_labels
@@ -26,16 +27,23 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             law_pack: LawPack | None = None, planted: dict[int, PlantedNDA] | None = None,
             checker_llm: LLMClient | None = None, temperature: float = 0.0,
             hide_facts: bool = False, allow_unverified_labels: bool = False,
-            allow_auto_labels: bool = False, deal_seed: int = 0) -> dict:
+            allow_auto_labels: bool = False, deal_seed: int = 0, gold_packs: list[PolicyPack] | None = None,
+            applicability: str = "model") -> dict:
+    """`packs` are what the reviewer checks: compiled requirement cards (policy/compiler.py) in the
+    main runs. `gold_packs` are the gold rule lists gold is scored on; cards are matched to them
+    by quote (benchmark/align.py). Without `gold_packs`, `packs` are gold too (oracle-rules run)."""
     docs = data[split][:limit] if limit else data[split]
     if planted is not None:
         docs = [d for d in docs if d.id in planted]
     by_company = {p.company: p for p in packs}
+    gold_by_company = {p.company: p for p in gold_packs} if gold_packs else by_company
+    alignments = {c: align(by_company[c], gold_by_company[c]) for c in by_company} if gold_packs else {}
     labels = load_labels(labels_path, allow_unverified_labels, allow_auto_labels)
     # deals depend on deal_seed only, so model seeds (`seed`) don't also redraw the benchmark
     deals = deals or generate_deals([d.id for d in docs], list(by_company), seed=deal_seed, labels=labels)
     cfg = ReviewConfig.preset(preset)
     cfg.max_workers, cfg.temperature, cfg.seed = max_workers, temperature, seed
+    cfg.applicability = applicability
     reviewers = {c: PolicyReviewer(llm, p, cfg, law_pack=law_pack, checker_llm=checker_llm)
                  for c, p in by_company.items()}
 
@@ -54,11 +62,12 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
         except PendingBatch:
             pending += 1
             continue
-        preds[doc.id] = result.findings
+        preds[doc.id] = (remap_findings(result.findings, alignments[deal.company]) if alignments
+                         else result.findings)
         inferred[doc.id] = result.inferred_facts
         fact_labels[doc.id] = lab
         errors += result.n_errors
-        golds[doc.id] = gold_for(doc, deal, by_company[deal.company], lab, law_pack,
+        golds[doc.id] = gold_for(doc, deal, gold_by_company[deal.company], lab, law_pack,
                                  p.gold_entry() if p else None)
         rows.append({
             "doc_id": doc.id, "deal": result.deal.model_dump(mode="json"),
@@ -68,6 +77,8 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             "rules_in_scope": result.rules_in_scope,
             "n_checks": result.n_checks,
             "findings": [f.model_dump(mode="json") for f in result.findings],
+            "scored_findings": [f.model_dump(mode="json") for f in preds[doc.id]],  # on gold rule ids
+            "applicability_notes": result.applicability_notes,
             "gold": [{"rule_id": d.rule_id, "type": d.type.value, "evidence": list(d.evidence), "origin": d.origin}
                      for d in golds[doc.id].defects],
             "unscored_rules": golds[doc.id].unscored_rules,
@@ -92,6 +103,9 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
         "applicable_rules_per_nda": round(sum(n_applicable) / max(len(rows), 1), 2),
         "fact_accuracy": fact_accuracy(inferred, fact_labels),
         "pending_batch_ndas": pending,
+        # oracle_rules: the reviewer was handed the gold rule list (an upper bound, not the system)
+        "rules": "compiled" if gold_packs else "oracle_rules",
+        "compiler": {c: a.report(gold_by_company[c]) for c, a in alignments.items()},
         "usage": usage_report(llm),
         "config": {"split": split, "preset": preset, **asdict(cfg), "n_docs": len(docs),
                    "packs": [p.company for p in packs], "law_pack": law_pack.version if law_pack else None,

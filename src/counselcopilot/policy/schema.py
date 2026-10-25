@@ -208,6 +208,10 @@ class Rule(BaseModel):
     # This is what the checker tests for presence. Falls back to `requirement`.
     term: str = ""
     applies_if: str = "True"
+    # When the rule applies, in the policy's own words ("vendor deals that share personal data").
+    # Compiled requirement cards carry it, and the reviewer's model judges it against the deal and
+    # the NDA (review/applicability.py). `applies_if` is the structured version, kept as an ablation.
+    applies_when: str = ""
     severity: Severity = Severity.MEDIUM
     anchor: Anchor | None = None
     constraint: FieldConstraint | None = None

@@ -34,8 +34,11 @@ Fixed on 25 Oct, with Pavan's go-ahead:
   - partner 62, vendor 24, customer 20, employee 17
   - 12 foreign counterparties (was 33), 25 with personal data unknown
 
-Still open: point 1 (the policy compiler; design choice put to Pavan), and points 5 to 8 and the
-runner items.
+- **Point 1.** Policy compiler built (requirement cards, model-judged applicability; design §20).
+  RQ1 now scores compiled cards against the gold lists; runs without `--gold-pack` are labelled
+  `oracle_rules`. No compiled packs exist yet (needs a model run: `scripts/claude_pilot.sh`).
+
+Still open: points 5 to 8 and the runner items.
 
 ## Severe
 

@@ -62,6 +62,7 @@ re-running a finished experiment costs nothing. `--no-cache` turns this off.
 | `cc nli --split dev` | Retrieves top-k spans per hypothesis and classifies them with the check primitive. Prompted-model baseline for the fine-tuning comparison, and the quickest way to test a backend |
 | `cc review --pack P --doc-id N` | Reviews one NDA (or `--text file.txt`) for one deal and prints cited findings |
 | `cc rq1 --pack P --split dev --preset full` | Reviews every NDA in a split and scores findings against natural gold defects (plus planted ones with `--planted`) |
+| `cc compile --policies DIR --company C --gold G --out F` | Policy compiler: prose policies to requirement cards (source quote checked); with `--gold`, reports precision/recall against the gold rule list |
 | `cc labels init --split test` | Writes the hand-label file pre-filled by regex (template? mutual? governing law?) for annotators to correct |
 | `cc labels auto --split test` | API fallback: two models (default Qwen-72B and Gemini Pro) label every NDA; a person checks only disagreements plus a 20% audit sample. `cc labels accuracy` reports audited accuracy; `rq1 --allow-auto` uses agreed labels |
 | `cc labels import --split test --answers DIR_A DIR_B --pack ... --law-pack ...` | Merge two labellers' per-NDA JSON answers (e.g. Claude agents) into the label file |

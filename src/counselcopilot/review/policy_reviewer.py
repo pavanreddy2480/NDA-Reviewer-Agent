@@ -30,6 +30,7 @@ from ..policy.schema import DealContext, LawPack, PolicyPack, Rule, applicabilit
 from ..retrieval.index import Encoder, HybridIndex, Passage, Reranker
 from .checker import CheckResult, finding_from_check, run_check
 from .fields import extract_field, judge_field_rule
+from .applicability import judge_applicability
 from .deal_facts import InferredFact, resolve_deal
 from .findings import FindingType, Finding, Ledger
 
@@ -48,6 +49,10 @@ class ReviewConfig:
     max_workers: int = 8
     temperature: float = 0.0  # >0 for seed runs, so seeds give real variance (review problem 10)
     seed: int = 0
+    # "model": cards with `applies_when` are judged by the backbone (review/applicability.py), the
+    # main system since 25 Oct; "structured": every rule's `applies_if` expression (ablation).
+    # Rules without `applies_when` (the law pack, hand-written packs) always use `applies_if`.
+    applicability: str = "model"
 
     @classmethod
     def preset(cls, name: str) -> "ReviewConfig":
@@ -79,6 +84,7 @@ class ReviewResult:
     deal: DealContext | None = None  # after inferring blank facts
     inferred_facts: list[InferredFact] = field(default_factory=list)
     rules_in_scope: list[str] = field(default_factory=list)  # what this preset checked
+    applicability_notes: dict[str, str] = field(default_factory=dict)  # model's rationale per card
 
     @property
     def n_errors(self) -> int:
@@ -106,12 +112,18 @@ class PolicyReviewer:
         self.reranker = reranker
 
     # ------------------------------------------------------------------ helpers
-    def _applicability(self, deal: DealContext) -> dict[str, bool | None]:
+    def _applicability(self, deal: DealContext, draft: Draft,
+                       seg_index: HybridIndex) -> tuple[dict[str, bool | None], dict[str, str]]:
         """True / False per rule, or None when a fact that decides it is still unknown (the reply
         was unreadable, or the NDA names no governing law). Unknown is never read as False."""
-        if deal.governing_law == "unknown":
-            deal = deal.model_copy(update={"governing_law": None})
-        return {r.id: applicability(r, deal) for r in list(self.pack.rules) + self.law_rules}
+        rules = list(self.pack.rules) + self.law_rules
+        structured = deal.model_copy(update={"governing_law": None}) if deal.governing_law == "unknown" else deal
+        app = {r.id: applicability(r, structured) for r in rules}
+        notes: dict[str, str] = {}
+        if self.cfg.applicability == "model":
+            judged, notes = judge_applicability(self.llm, rules, deal, draft, seg_index)
+            app.update(judged)
+        return app, notes
 
     def _rules_in_scope(self, app: dict[str, bool | None]) -> list[Rule]:
         rules = list(self.pack.rules) + self.law_rules
@@ -158,7 +170,7 @@ class PolicyReviewer:
         seg_index = self._segment_index(draft)
         form = deal
         deal, inferred = resolve_deal(self.llm, deal, draft, seg_index)
-        app = self._applicability(deal)
+        app, notes = self._applicability(deal, draft, seg_index)
         rules = self._rules_in_scope(app)
         ledger = Ledger()
         logs: list[CheckLog] = []
@@ -217,7 +229,8 @@ class PolicyReviewer:
 
         applicable = [rid for rid, a in app.items() if a is True]
         undecided = [rid for rid, a in app.items() if a is None]
-        return ReviewResult(draft.id, ledger.all(), logs, applicable, undecided, deal, inferred, [r.id for r in rules])
+        return ReviewResult(draft.id, ledger.all(), logs, applicable, undecided, deal, inferred,
+                            [r.id for r in rules], notes)
 
     # ------------------------------------------------------------------ forward path
     def _forward_candidates(self, draft: Draft, rules: list[Rule]) -> dict[str, list[int]]:

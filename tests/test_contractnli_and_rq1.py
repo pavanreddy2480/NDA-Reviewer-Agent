@@ -14,6 +14,7 @@ from counselcopilot.data.contractnli import (HELD_OUT_HYPOTHESES, LOOPHOLE_LABEL
                                              Hypothesis, load_contractnli)
 from counselcopilot.experiments.nli import resolve_hypotheses, run_nli
 from counselcopilot.experiments.rq1 import run_rq1
+from counselcopilot.policy.schema import PolicyPack
 
 
 RETURN_HYP = "Receiving Party shall destroy or return some Confidential Information upon the termination of Agreement."
@@ -153,3 +154,23 @@ def test_rq1_forward_only_reports_no_omissions(data, tmp_path):
                 labels_path=labels_file(tmp_path, [4, 5, 6, 7]), deals={i: deal() for i in (4, 5, 6, 7)},
                 out_root=str(tmp_path / "runs"), max_workers=1)
     assert m["strict"]["by_type"].get("omission", {}).get("tp", 0) == 0
+
+
+def test_rq1_scores_compiled_cards_on_gold_rule_ids(data, tmp_path):
+    """Design D17: the reviewer checks compiled cards; gold stays the gold rule list."""
+    gold = make_pack()
+    cards = PolicyPack.model_validate({"company": gold.company, "rules": [
+        {**gold.rule("P-02").model_dump(mode="json"), "id": "C-01",
+         "source": {"document": "Policy", "quote": "Oral disclosures must be covered by every NDA we sign."}},
+        {"id": "C-02", "title": "Extra", "kind": "require", "requirement": "x", "term": "Escrow is required.",
+         "source": {"document": "Policy", "quote": "A requirement that is in no gold rule at all, invented."}}]})
+    gold = PolicyPack.model_validate({"company": gold.company, "rules": [
+        {**gold.rule("P-02").model_dump(mode="json"),
+         "source": {"document": "Policy", "quote": "Oral disclosures must be covered by every NDA we sign."}}]})
+    m = run_rq1(KeywordLLM(fields=FIELDS, field_hints=HINTS), data, [cards], split="test",
+                labels_path=labels_file(tmp_path, [4, 5]), deals={i: deal() for i in (4, 5)}, limit=2,
+                out_root=str(tmp_path / "runs"), max_workers=1, gold_packs=[gold])
+    assert m["rules"] == "compiled"
+    assert m["compiler"][gold.company]["recall"] == 1.0 and m["compiler"][gold.company]["unmatched_cards"] == ["C-02"]
+    rows = [json.loads(line) for line in open(f"{m['out_dir']}/reviews.jsonl")]
+    assert {f["rule_id"] for r in rows for f in r["scored_findings"]} <= {"P-02", "C-02"}

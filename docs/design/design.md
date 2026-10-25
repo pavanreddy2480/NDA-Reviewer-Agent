@@ -800,3 +800,32 @@ uses, so it fits the rule in §19 #1.
   380 unscored. Output: `data/planted/test_seed0.json`.
 - **Cost:** packs and labels cost $0 in API; the total is about $60 (about $110 after 31 Dec 2026).
 
+
+## 20. Policy compiler and model-judged applicability (25 Oct 2026)
+
+The forward-pass audit (docs/reviews/forward-pass-audit.md, point 1) found that RQ1 handed the
+reviewer the gold rule list, and that no policy compiler existed. Pavan found the structured
+conditions too brittle, and chose **requirement cards with model-judged applicability**.
+
+- **Compiler** (`policy/compiler.py`, `cc compile`). An LLM reads each prose policy document and
+  writes one card per NDA requirement. A card has:
+  - the statement to check, and its kind (require, forbid or field);
+  - `applies_when`, the condition in the policy's own words;
+  - a structured `applies_if` where the deal variables can express it;
+  - the document, section and a verbatim quote.
+
+  A card whose quote is not in the document is dropped, so the compiler cannot invent policy.
+- **Applicability** (`review/applicability.py`). The backbone reads each card's `applies_when`
+  together with the deal form and the NDA segments about the parties, the purpose and personal
+  data. It answers yes, no or unknown, and "unknown" cards are checked (they are not dropped).
+  The law pack and hand-written rules keep their structured conditions.
+  `--applicability structured` runs the same cards on `applies_if`. That is the ablation
+  "structured vs model-judged applicability".
+- **Scoring** (`benchmark/align.py`). Cards are matched to the gold rules by quote overlap: same
+  document, word overlap of at least 0.5, and fields must match. Findings move to gold ids; a
+  rule split into several cards counts once, and an unmatched card's findings are false alarms.
+  RQ1 also reports the compiler's precision (cards that are real rules) and recall (gold rules
+  found).
+- **Runs.** `cc rq1 --pack packs/compiled/X.yaml --gold-pack packs/policynda/X/gold_rules.yaml`.
+  A run without `--gold-pack` is labelled `oracle_rules` in metrics.json, and is an upper bound
+  only. `scripts/claude_pilot.sh` compiles first (`ORACLE=1` skips the compiler).

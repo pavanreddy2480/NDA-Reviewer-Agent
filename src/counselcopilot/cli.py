@@ -114,13 +114,41 @@ def cmd_rq1(args) -> None:
                 deals, args.labels, args.seed, max_workers=args.workers, law_pack=_law_pack(args.law_pack),
                 planted=load_planted(args.planted) if args.planted else None, checker_llm=checker,
                 temperature=args.temperature, hide_facts=args.hide_facts,
-                allow_unverified_labels=args.allow_unverified, allow_auto_labels=args.allow_auto)
-    keys = ("strict", "checks_per_nda", "applicable_rules_per_nda", "fact_accuracy", "pending_batch_ndas",
+                allow_unverified_labels=args.allow_unverified, allow_auto_labels=args.allow_auto,
+                gold_packs=[PolicyPack.load(p) for p in args.gold_pack] if args.gold_pack else None,
+                applicability=args.applicability)
+    if not args.gold_pack:
+        print("NOTE: no --gold-pack, so --pack is both what the reviewer checks and gold: an oracle-rules run, "
+              "not the system. Compile the policies (cc compile) and pass the gold lists as --gold-pack.",
+              file=sys.stderr)
+    keys = ("strict", "rules", "compiler", "checks_per_nda", "applicable_rules_per_nda", "fact_accuracy", "pending_batch_ndas",
             "usage", "out_dir")
     print(json.dumps({k: m[k] for k in keys}, indent=1, default=str))
     if m["pending_batch_ndas"]:
         print(f"{m['pending_batch_ndas']} NDAs waiting on the batch queue {args.batch_queue}; "
               "submit it, collect the results, and run this command again.", file=sys.stderr)
+
+
+def cmd_compile(args) -> None:
+    from .llm import load_backend
+    from .policy.compiler import PolicyCompiler, save_compiled
+
+    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache, batch_queue=args.batch_queue)
+    pack, report = PolicyCompiler(llm).compile(args.company, args.policies, args.description)
+    if report.pending:
+        print(f"{len(report.pending)} documents waiting on the batch queue {args.batch_queue}; "
+              "answer it, load the answers, and run this command again.", file=sys.stderr)
+        return
+    save_compiled(pack, report, args.out, llm.name)
+    summary = {"cards": report.cards, "documents": report.documents, "dropped_quote": report.dropped_quote,
+               "dropped_invalid": report.dropped_invalid, "no_structured_condition": len(report.unstructured)}
+    if args.gold:
+        from .benchmark.align import align
+        from .policy.schema import PolicyPack
+
+        gold = PolicyPack.load(args.gold)
+        summary["vs_gold"] = align(pack, gold).report(gold)
+    print(json.dumps(summary, indent=1))
 
 
 def cmd_labels(args) -> None:
@@ -355,7 +383,21 @@ def main(argv: list[str] | None = None) -> None:
                    help="leave personal data and governing law blank; the reviewer reads them from the NDA")
     q.add_argument("--batch-queue", default=None, help="batch mode: queue uncached requests here")
     q.add_argument("--seed", type=int, default=0)
+    q.add_argument("--gold-pack", action="append", default=None,
+                   help="gold rule list per company (gold_rules.yaml) when --pack holds compiled cards")
+    q.add_argument("--applicability", default="model", choices=["model", "structured"],
+                   help="model: the backbone judges each card's 'applies when'; structured: applies_if (ablation)")
     q.set_defaults(fn=cmd_rq1)
+
+    cp = sub.add_parser("compile", help="compile prose policies into requirement cards (policy compiler)")
+    llm_args(cp)
+    cp.add_argument("--policies", required=True, help="folder of policy .md files")
+    cp.add_argument("--company", required=True)
+    cp.add_argument("--description", default="")
+    cp.add_argument("--out", required=True)
+    cp.add_argument("--gold", default=None, help="gold rule list to report compiler precision/recall against")
+    cp.add_argument("--batch-queue", default=None, help="batch mode: queue uncached requests here")
+    cp.set_defaults(fn=cmd_compile)
 
     lb = sub.add_parser("labels", help="hand-label file for annotators")
     lb.add_argument("action", choices=["init", "auto", "accuracy", "import", "import-counterparty"],
