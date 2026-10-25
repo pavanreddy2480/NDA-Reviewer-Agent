@@ -46,9 +46,6 @@ def test_personal_data_cannot_tell_stays_unknown():
     assert normalise_answer(raw(personal_data="maybe"))["personal_data"] is None
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: a duration the parser cannot read ('until the deal closes') becomes "
-                                        "None, the same value as 'the NDA does not say', so two labellers that "
-                                        "both saw a term agree it is absent and gold counts an omission")
 def test_unreadable_duration_is_not_recorded_as_absent():
     lab = normalise_answer(raw(confidentiality_term_months="until the deal closes"))
     assert lab["fields"]["confidentiality_term_months"] is not None

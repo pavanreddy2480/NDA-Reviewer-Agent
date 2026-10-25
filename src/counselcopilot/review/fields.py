@@ -45,6 +45,11 @@ FIELD_QUERIES = {
 BLANK = "blank"
 TEMPLATE_NOTE = (" If the NDA is a template and leaves this value blank (for example '____ years' or "
                  "'[number]'), answer \"blank\".")
+# The clause is there but gives no number ("promptly", "until the deal closes"): neither absent
+# nor a value, so field rules on it are unscored and give no finding (gold-deals audit, point 2).
+UNSPECIFIED = "unspecified"
+UNSPECIFIED_NOTE = (" If the NDA has this obligation but gives no number (for example 'promptly' or "
+                    "'until the transaction closes'), answer \"unspecified\".")
 
 FIELD_SCHEMA = {
     "type": "object",
@@ -84,12 +89,15 @@ def _normalise(field: str, v):
         return None
     if str(v).strip().lower() == BLANK:
         return BLANK
+    if str(v).strip().lower() == UNSPECIFIED:
+        return UNSPECIFIED
     if field == "non_compete":
         return v if isinstance(v, bool) else str(v).lower() in ("true", "yes")
     if field.endswith(("_months", "_days")):
         if isinstance(v, (int, float)):
             return float(v)
-        return _duration(str(v), "months" if field.endswith("_months") else "days")
+        d = _duration(str(v), "months" if field.endswith("_months") else "days")
+        return UNSPECIFIED if d is None else d
     if field in ("governing_law", "dispute_forum"):
         return normalise_jurisdiction(str(v))
     return str(v).strip().lower()
@@ -106,7 +114,9 @@ def extract_field(llm: LLMClient, field: str, draft: Draft, index: HybridIndex, 
     out = llm.complete_json(
         [system("You extract facts from NDAs. Use only the numbered segments. Reply with JSON "
                 '{"value": ..., "evidence": [segment numbers]}.'),
-         user(f"QUESTION: {FIELD_QUESTIONS[field]}{TEMPLATE_NOTE}\n\nSEGMENTS:\n{draft.numbered(ids)}")],
+         user(f"QUESTION: {FIELD_QUESTIONS[field]}{TEMPLATE_NOTE}"
+              f"{UNSPECIFIED_NOTE if field.endswith(('_months', '_days')) else ''}"
+              f"\n\nSEGMENTS:\n{draft.numbered(ids)}")],
         FIELD_SCHEMA, max_tokens=120, tag="field_extract")
     ev = [int(i) for i in out.get("evidence", []) if isinstance(i, (int, float)) and int(i) in ids]
     return _normalise(field, out.get("value")), ev
@@ -130,7 +140,11 @@ def judge_field_rule(rule: Rule, draft_id: str, value, ev: list[int]) -> tuple[F
         # Template with the value left blank: tell the consultant to fill it in, but it is
         # neither compliant nor an omission, so it is not a finding (review problem 2).
         return None, CheckResult("NotMentioned", ev, 0.0, f"{c.field} left blank in template")
+    if value == UNSPECIFIED:
+        return None, CheckResult("NotMentioned", ev, 0.0, f"{c.field} stated without a number")
     if value is None:
+        if c.check_absent():  # e.g. no non-solicit at all meets "non-solicit at most 12 months"
+            return None, CheckResult("NotMentioned", [], 0.6, f"{c.field} not found; the rule allows that")
         res = CheckResult("NotMentioned", [], 0.6, f"{c.field} not found")
         ftype = FindingType.OMISSION
     elif c.check(value):

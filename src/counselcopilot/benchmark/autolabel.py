@@ -82,7 +82,7 @@ def _prompt(doc: NDADocument, max_chars: int, terms: dict[str, str]) -> str:
   shared, false if it clearly concerns only business or technical information, null if you cannot tell.
 {COUNTERPARTY_QUESTIONS}
 {q}
-{t}If a template leaves a value blank, answer "blank".
+{t}If a template leaves a value blank, answer "blank". If the NDA has a duration or deadline obligation but gives no number (for example "promptly"), answer "unspecified".
 
 NDA:
 {doc.text[:max_chars]}"""

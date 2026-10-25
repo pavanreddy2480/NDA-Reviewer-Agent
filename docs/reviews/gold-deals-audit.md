@@ -26,7 +26,21 @@ Points 4, 5, 6 and 8 are fixed (25 Oct, Pavan's go-ahead):
 - `deal_sources` records which facts were read and which were assigned. `rq1` writes it to every
   review row.
 
-Point 7 (no receiving side) and the rest are still open. The merged counterparty labels (25 Oct, 184 NDAs, 55 disputed keys) are in `data/labels/ndas_auto.yaml`; planted manifests still hold the old deals and must be re-planted (forward-pass-audit.md).
+Points 1, 2 and 3 are fixed (25 Oct, Pavan's go-ahead), in both gold and the reviewer:
+- **Point 1.** An NDA without the clause is judged on what that absence means
+  (`FieldConstraint.check_absent`). No restriction lasts 0 months, so "at most" rules on the term,
+  survival and non-solicit are met. No deadline never ends, so "return within 30 days" is still
+  an omission, while "at least 10 days" is met. A missing law only meets "not in" rules.
+- **Point 2.** A value given without a number is now "unspecified" and unscored. The extractor and
+  the labellers are told to answer "unspecified". In the existing labels, null return deadlines
+  are taken as "unspecified" whenever ContractNLI's expert label for nda-16 says the NDA has a
+  return clause.
+- **Point 3.** The planter reads the clause topic of unanchored pack forbid rules from their
+  title and term: saas P-09 and P-24, hospital P-25 and P-26, manufacturer P-18. It no longer
+  plants a clause that would break one of them unrecorded, and it can plant violations of them.
+- **Effect on the test split** (123 NDAs, natural gold, hidden facts): field omissions went from
+  323 to 155, and all natural omissions from 887 to 719. `data/planted/test_seed0.json` was
+  re-planted (265 defects). The merged counterparty labels (25 Oct, 184 NDAs, 55 disputed keys) are in `data/labels/ndas_auto.yaml`; planted manifests still hold the old deals and must be re-planted (forward-pass-audit.md).
 
 ## Severe: these change the headline numbers
 

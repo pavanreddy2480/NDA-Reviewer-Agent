@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from ..data.contractnli import NDADocument, NLILabel
 from ..policy.jurisdictions import normalise_jurisdiction
 from ..policy.schema import INFERABLE_FACTS, DealContext, LawPack, PolicyPack, Rule, applicability
+from ..review.fields import UNSPECIFIED
 from ..review.findings import FindingType
 
 DISPUTED = "disputed"  # the two labelling models disagreed and no person has resolved it
@@ -117,7 +118,22 @@ def field_value(rule: Rule, labels: dict, planted: dict | None = None):
         return True, None
     if not known(v):
         return False, None
-    return True, _normalise(f, v)
+    v = _normalise(f, v)
+    return (False, None) if v == UNSPECIFIED else (True, v)
+
+
+RETURN_HYPOTHESIS = "nda-16"  # "Receiving Party shall destroy or return some Confidential Information ..."
+
+
+def _return_clause(doc: NDADocument, planted: dict) -> bool | None:
+    """Does the (planted) NDA have a return/destroy obligation, by ContractNLI's expert label?
+    None if the planter touched it without re-deriving it."""
+    h = RETURN_HYPOTHESIS
+    if h in planted.get("overrides", {}):
+        return planted["overrides"][h][0] != NLILabel.NOT_MENTIONED.value
+    if h in set(planted.get("touched_hypotheses", [])) or h not in doc.annotations:
+        return None
+    return doc.annotations[h].label != NLILabel.NOT_MENTIONED
 
 
 def gold_for(doc: NDADocument, deal: DealContext, pack: PolicyPack, labels: dict | None = None,
@@ -170,7 +186,14 @@ def gold_for(doc: NDADocument, deal: DealContext, pack: PolicyPack, labels: dict
                 g.unscored_rules.append(rule.id)
                 continue
             origin = "planted" if rule.constraint.field in planted.get("field_overrides", {}) else "natural"
-            if value is None:
+            if value is None and rule.constraint.field == "return_deadline_days" and _return_clause(doc, planted) is not False:
+                # labellers answer null both for "no return clause" and for "return promptly"; the
+                # expert label says which. A return clause without a number of days is unscored.
+                g.unscored_rules.append(rule.id)
+                continue
+            if value is None and rule.constraint.check_absent():
+                d = None  # no such clause meets an "at most" rule (gold-deals audit, point 1)
+            elif value is None:
                 d = GoldDefect(rule.id, finding_type(rule, False), (), origin)
             else:
                 try:

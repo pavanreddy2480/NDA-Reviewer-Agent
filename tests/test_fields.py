@@ -12,7 +12,7 @@ from counselcopilot.llm import FakeClient, PendingBatch
 from counselcopilot.policy.schema import DealContext
 from counselcopilot.retrieval.index import HybridIndex, Passage
 from counselcopilot.review.deal_facts import resolve_deal
-from counselcopilot.review.fields import BLANK, _duration, _normalise, check_field_rule, extract_field
+from counselcopilot.review.fields import BLANK, UNSPECIFIED, _duration, _normalise, check_field_rule, extract_field
 from counselcopilot.review.findings import FindingType
 
 DRAFT = Draft("d1", [
@@ -51,6 +51,7 @@ def test_duration_parsing(text, unit, value):
     ("non_compete", "yes", True), ("non_compete", False, False),
     ("survival_months", None, None), ("survival_months", "", None), ("survival_months", "null", None),
     ("confidentiality_term_months", "Blank", BLANK),
+    ("return_deadline_days", "promptly", UNSPECIFIED), ("return_deadline_days", "Unspecified", UNSPECIFIED),
 ])
 def test_normalise_field_values(field, raw, value):
     assert _normalise(field, raw) == value
@@ -101,6 +102,36 @@ def test_min_and_max_rules_interact():
 def test_template_blank_is_neither_compliant_nor_an_omission():
     f, r = check("P-04", {"confidentiality_term_months": "blank"})
     assert f is None and "blank" in r.rationale
+
+
+def test_no_clause_meets_a_maximum_only_rule():
+    """Gold-deals audit, point 1: no confidentiality term at all doesn't break 'at most 60 months'."""
+    f, r = check("P-06", {"confidentiality_term_months": None})
+    assert f is None and "allows" in r.rationale
+
+
+@pytest.mark.parametrize("field, op, value, ok", [
+    ("non_solicit_months", "<=", 12, True), ("survival_months", ">=", 24, False),
+    ("return_deadline_days", "<=", 30, False), ("return_deadline_days", ">=", 10, True),
+    ("non_compete", "==", False, True), ("governing_law", "in", ["delaware"], False),
+    ("governing_law", "not in", ["california"], True),
+])
+def test_what_an_absent_clause_meets(field, op, value, ok):
+    from counselcopilot.policy.schema import FieldConstraint
+
+    assert FieldConstraint(field=field, op=op, value=value).check_absent() is ok
+
+
+def test_value_stated_without_a_number_is_no_finding():
+    f, r = check("P-04", {"confidentiality_term_months": "until the transaction closes"})
+    assert f is None and "without a number" in r.rationale
+
+
+def test_extractor_is_told_about_unspecified_values():
+    llm = KeywordLLM(fields={"confidentiality_term_months": 48})
+    extract_field(llm, "confidentiality_term_months", DRAFT, idx())
+    extract_field(llm, "governing_law", DRAFT, idx())
+    assert ['"unspecified"' in r.messages[-1].content for r in llm.requests] == [True, False]
 
 
 def test_malformed_field_reply_is_a_check_error():

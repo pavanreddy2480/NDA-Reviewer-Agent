@@ -175,6 +175,13 @@ class Anchor(BaseModel):
     hypothesis: str  # e.g. "nda-16"
 
 
+# What a field is worth when the NDA has no such clause: no restriction lasts 0 months, no
+# deadline never ends, no non-compete is False (gold-deals audit, point 1). Laws and forums have
+# no such value: only a "not in" / "!=" rule is met by their absence.
+ABSENT_VALUE = {"confidentiality_term_months": 0.0, "survival_months": 0.0, "non_solicit_months": 0.0,
+                "return_deadline_days": float("inf"), "non_compete": False}
+
+
 class FieldConstraint(BaseModel):
     """For field rules. Field names match the obligation-frame / NDA-field extractor."""
 
@@ -184,6 +191,13 @@ class FieldConstraint(BaseModel):
     ]
     op: Literal[">=", "<=", "==", "!=", "in", "not in"]
     value: Any
+
+    def check_absent(self) -> bool:
+        """Is the rule met by an NDA without this clause? "Non-solicit at most 12 months" is; "term at
+        least 24 months" and "return within 30 days" are not (those are omissions)."""
+        if self.field in ABSENT_VALUE:
+            return self.check(ABSENT_VALUE[self.field])
+        return self.op in ("!=", "not in")
 
     def check(self, actual: Any) -> bool:
         if actual is None:

@@ -74,13 +74,39 @@ def test_field_absent_from_labels_is_unscored():
     assert "P-06" in gold({"fields": {}}).unscored_rules
 
 
-def test_field_labelled_absent_is_an_omission():
-    assert ("P-06", "omission") in keys(gold({"fields": {"confidentiality_term_months": None}}))
+def test_field_labelled_absent_is_an_omission_for_a_minimum_rule():
+    g = gold({"fields": {"confidentiality_term_months": None}}, d=deal(personal_data=True))
+    assert ("P-04", "omission") in keys(g)  # P-04: term >= 36 months
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: a labelled duration the parser can't read ('until the deal closes') "
-                                        "normalises to None, and field_value then reports the term as absent, so "
-                                        "gold counts an omission for a clause that is there")
+def return_rule(op, value):
+    return make_pack(rules=[{"id": "P-01", "title": "Return deadline", "kind": "field", "requirement": "x",
+                             "constraint": {"field": "return_deadline_days", "op": op, "value": value}}])
+
+
+def test_return_clause_without_a_deadline_is_unscored():
+    """Labellers answer null for 'return promptly'; ContractNLI's nda-16 label says a clause is there."""
+    doc = make_doc(labels={"nda-16": ("Entailment", (2,))})
+    g = gold_for(doc, deal(), return_rule("<=", 30), {"fields": {"return_deadline_days": None}})
+    assert g.unscored_rules == ["P-01"]
+
+
+def test_no_return_clause_at_all_misses_a_deadline_but_meets_a_floor():
+    doc = make_doc()  # nda-16 NotMentioned
+    labels = {"fields": {"return_deadline_days": None}}
+    assert {(d.rule_id, d.type.value) for d in gold_for(doc, deal(), return_rule("<=", 30), labels).defects} == \
+        {("P-01", "omission")}
+    g = gold_for(doc, deal(), return_rule(">=", 10), labels)  # "at least 10 days to comply"
+    assert g.defects == [] and g.scored_rules == ["P-01"]
+
+
+def test_planted_deletion_of_the_return_clause_counts():
+    doc = make_doc(labels={"nda-16": ("Entailment", (2,))})
+    planted = {"overrides": {"nda-16": ("NotMentioned", [])}}
+    g = gold_for(doc, deal(), return_rule("<=", 30), {"fields": {"return_deadline_days": None}}, planted=planted)
+    assert ("P-01", "omission") in {(d.rule_id, d.type.value) for d in g.defects}
+
+
 def test_text_value_for_numeric_field_is_unscored():
     g = gold({"fields": {"confidentiality_term_months": "until the deal closes"}})
     assert "P-06" in g.unscored_rules
@@ -200,9 +226,6 @@ def test_every_rule_is_scored_unscored_or_not_applicable_exactly_once():
 
 # ------------------------------------------------------------------ logic audit, 25 Oct (docs/reviews/gold-deals-audit.md)
 
-@pytest.mark.xfail(strict=True, reason="BUG: a field rule that only sets a maximum (survival <= 84 months, non-solicit "
-                                        "<= 12 months) is scored as an OMISSION when the NDA has no such clause; having "
-                                        "no non-solicit at all satisfies a 'non-solicit at most 12 months' rule")
 def test_absent_field_satisfies_a_maximum_only_rule():
     g = gold({"fields": {"confidentiality_term_months": None}})
     assert ("P-06", "omission") not in keys(g)  # P-06: term <= 60 months
@@ -221,11 +244,13 @@ def test_planted_clause_that_breaks_an_unanchored_pack_rule_is_recorded():
     d = deal(governing_law="delaware")
     w = _Work(make_doc(), d, random.Random(0))
     planter = Planter(pack, LAW)
-    planted = planter.plant_forbidden_clause(w, next(r for r in LAW.as_rules() if r.id == "LAW-PENALTY"), d)
-    out = w.finish()
-    g = gold_for(make_doc(), d, pack, {"terms": {"TestCo:P-01": False, "LAW-PENALTY": False}}, LAW, out.gold_entry())
-    if planted:
-        pytest.xfail("BUG: the planter only knows anchored rules and law topics, so the penalty clause it planted "
-                     "for LAW-PENALTY also breaks the pack's unanchored no-penalty rule, which gold still scores as "
-                     "compliant (a correct flag becomes a false alarm)")
-    assert "P-01" not in g.scored_rules or ("P-01", "violation") in keys(g)
+    law_penalty = next(r for r in LAW.as_rules() if r.id == "LAW-PENALTY")
+    assert planter.plant_forbidden_clause(w, law_penalty, d) is False  # it would break P-01 unrecorded
+    # the pack rule itself can now be planted, and gold records it
+    w = _Work(make_doc(), d, random.Random(0))
+    assert planter.plant_forbidden_clause(w, pack.rule("P-01"), d) is False  # still breaks LAW-PENALTY
+    no_law = Planter(pack)
+    w = _Work(make_doc(), d, random.Random(0))
+    assert no_law.plant_forbidden_clause(w, pack.rule("P-01"), d)
+    g = gold_for(make_doc(), d, pack, {"terms": {"TestCo:P-01": False}}, None, w.finish().gold_entry())
+    assert ("P-01", "violation") in keys(g)
