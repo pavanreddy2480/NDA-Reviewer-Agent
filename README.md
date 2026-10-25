@@ -30,7 +30,7 @@ docs/                 proposal, design, results, reviews, course material, archi
 python -m venv .venv && source .venv/bin/activate
 pip install -e '.[dev]'          # add ,gemini for stage 2 and ,dense for embeddings/reranker
 cc data download                 # ContractNLI (607 NDAs) into data/raw/
-pytest -q                        # 39 tests, no network or GPU needed
+pytest -q                        # ~390 tests on fakes: no ContractNLI, network or GPU needed
 ```
 
 ## Running with a real model
