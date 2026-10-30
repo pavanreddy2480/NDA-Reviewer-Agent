@@ -5,12 +5,17 @@
     cc nli --backend llama-ollama --split dev --limit 5
     cc review --backend llama-ollama --pack packs/toy/toy_pack.yaml --doc-id 1 --counterparty vendor
     cc rq1 --backend llama-ollama --pack packs/toy/toy_pack.yaml --split dev --preset full --limit 5
+    cc compare --backend llama-ollama --pack packs/toy/toy_pack.yaml --doc-id 1 --presets full agentic
     cc labels init --split test                      pre-fill hand labels for annotators
     cc labels auto --split test                      two-model labels; a person checks disagreements
     cc packs generate --company all                  LLM-written policy packs (rules first, then prose)
     cc packs check packs/policynda/*/gold_rules.yaml check a pack against docs/design/policy-pack-spec.md
+    cc db seed                                       copy the YAML packs into Postgres (DATABASE_URL)
+    cc db status                                     what Postgres holds; does it still match the YAML?
     cc plant --pack packs/toy/toy_pack.yaml --law-pack packs/law/us_law_pack.yaml --split test
     cc retrieval --split dev [--dense BAAI/bge-small-en-v1.5]
+    cc web-search "whistleblower confidentiality agreement"   official US legal sources, live
+    cc law-check --law-pack packs/law/us_law_pack.yaml        report for the two people checking the pack
     cc batch submit|collect ...                      Gemini Batch API rounds
     cc batch export|load ...                         rounds answered by Claude agents
 """
@@ -22,7 +27,7 @@ import json
 import sys
 
 DEFAULT_DATA = "data/raw"
-PRESETS = ["full", "no_reverse", "no_filter", "reverse_only", "exhaustive", "exhaustive_filtered"]
+PRESETS = ["full", "agentic", "no_reverse", "no_filter", "reverse_only", "exhaustive", "exhaustive_filtered"]
 
 
 def _load_data(args, splits=("train", "dev", "test")):
@@ -58,13 +63,11 @@ def cmd_nli(args) -> None:
     print(json.dumps({k: m[k] for k in ("all", "errors", "usage", "out_dir")}, indent=1))
 
 
-def cmd_review(args) -> None:
+def _one_review(args):
+    """The pack, draft and deal of a one-NDA command."""
     from .data.draft import Draft
-    from .llm import load_backend
     from .policy.schema import DealContext, PolicyPack
-    from .review.policy_reviewer import PolicyReviewer, ReviewConfig
 
-    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache)
     pack = PolicyPack.load(args.pack)
     if args.text:
         draft = Draft.from_text(open(args.text, encoding="utf-8").read(), args.text)
@@ -72,6 +75,15 @@ def cmd_review(args) -> None:
         draft = Draft.from_nda(_load_data(args).by_id(args.doc_id))
     deal = DealContext(company=pack.company, counterparty_type=args.counterparty,
                        personal_data=True if args.personal_data else None, counterparty_country=args.country)
+    return pack, draft, deal
+
+
+def cmd_review(args) -> None:
+    from .llm import load_backend
+    from .review.policy_reviewer import PolicyReviewer, ReviewConfig
+
+    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache)
+    pack, draft, deal = _one_review(args)
     cfg = ReviewConfig.preset(args.preset)
     cfg.max_workers = args.workers
     res = PolicyReviewer(llm, pack, cfg, law_pack=_law_pack(args.law_pack)).review(draft, deal)
@@ -84,6 +96,18 @@ def cmd_review(args) -> None:
     if not res.findings:
         print("No findings.")
     print(f"\nTokens: {llm.total_usage()}")
+
+
+def cmd_compare(args) -> None:
+    from .experiments.compare import compare_presets, format_comparison
+    from .llm import load_backend
+
+    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache)
+    checker = (load_backend(args.checker_backend, args.config, use_cache=not args.no_cache)
+               if args.checker_backend else None)
+    pack, draft, deal = _one_review(args)
+    print(format_comparison(compare_presets(llm, pack, draft, deal, args.presets, _law_pack(args.law_pack),
+                                            checker, args.workers)))
 
 
 def _law_pack(path):
@@ -267,6 +291,13 @@ def cmd_packs(args) -> None:
                      indent=1, default=str))
 
 
+def cmd_db(args) -> None:
+    from .policy import store
+
+    for line in (store.seed if args.action == "seed" else store.status)(args.packs):
+        print(line)
+
+
 def cmd_plant(args) -> None:
     from .benchmark.deals import generate_deals, load_deals, save_deals
     from .benchmark.labels import load_labels
@@ -300,6 +331,30 @@ def cmd_retrieval(args) -> None:
 
     print(json.dumps(retrieval_recall(_load_data(args, (args.split,)), args.split, dense=args.dense,
                                       rerank=args.rerank, neighbours=args.neighbours), indent=1))
+
+
+def cmd_web_search(args) -> None:
+    from .tools.web_search import web_search
+
+    sys.stdout.reconfigure(errors="replace")  # government titles can hold characters a Windows console lacks
+    out = web_search(args.query, args.source, args.limit)
+    for r in out["results"]:
+        print(f"[{r['source']}] {r['title']} ({r['date']})\n  {r['url']}")
+        if r["snippet"]:
+            print(f"  {r['snippet']}")
+    if not out["results"]:
+        print("No results.")
+    for source, why in out["errors"].items():
+        print(f"{source} failed: {why}", file=sys.stderr)
+    print("\nLeads for a person to read, not checked law. California law is not covered.")
+
+
+def cmd_law_check(args) -> None:
+    from .experiments.law_check import check_law_pack
+
+    sys.stdout.reconfigure(errors="replace")
+    report, path = check_law_pack(_law_pack(args.law_pack), args.out)
+    print(f"{report}\nSaved to {path}")
 
 
 def cmd_batch(args) -> None:
@@ -350,18 +405,28 @@ def main(argv: list[str] | None = None) -> None:
     n.add_argument("--whole-doc", action="store_true", help="show the whole NDA instead of top-k")
     n.set_defaults(fn=cmd_nli)
 
+    def one_review_args(sp):
+        sp.add_argument("--pack", required=True)
+        g = sp.add_mutually_exclusive_group(required=True)
+        g.add_argument("--doc-id", type=int)
+        g.add_argument("--text", help="plain-text NDA file")
+        sp.add_argument("--counterparty", default="vendor", choices=["vendor", "customer", "employee", "partner"])
+        sp.add_argument("--personal-data", action="store_true")
+        sp.add_argument("--country", default="US")
+        sp.add_argument("--law-pack", default=None)
+
     r = sub.add_parser("review", help="review one NDA against one policy pack")
     llm_args(r)
-    r.add_argument("--pack", required=True)
-    g = r.add_mutually_exclusive_group(required=True)
-    g.add_argument("--doc-id", type=int)
-    g.add_argument("--text", help="plain-text NDA file")
-    r.add_argument("--counterparty", default="vendor", choices=["vendor", "customer", "employee", "partner"])
-    r.add_argument("--personal-data", action="store_true")
-    r.add_argument("--country", default="US")
-    r.add_argument("--law-pack", default=None)
+    one_review_args(r)
     r.add_argument("--preset", default="full", choices=PRESETS)
     r.set_defaults(fn=cmd_review)
+
+    cp = sub.add_parser("compare", help="one NDA under several presets, side by side")
+    llm_args(cp)
+    one_review_args(cp)
+    cp.add_argument("--presets", nargs="+", default=["full", "agentic"], choices=PRESETS)
+    cp.add_argument("--checker-backend", default=None, help="model for every rule check, same for all presets")
+    cp.set_defaults(fn=cmd_compare)
 
     q = sub.add_parser("rq1", help="score a system configuration on benchmark NDAs")
     llm_args(q)
@@ -438,6 +503,11 @@ def main(argv: list[str] | None = None) -> None:
     pk.add_argument("--workers", type=int, default=4)
     pk.set_defaults(fn=cmd_packs)
 
+    db = sub.add_parser("db", help="policy and law packs in Postgres; then use --pack pg:saas --law-pack pg:us-law")
+    db.add_argument("action", choices=["seed", "status"], help="seed replaces the database's packs with the YAML")
+    db.add_argument("--packs", default="packs", help="folder holding policynda/ and law/")
+    db.set_defaults(fn=cmd_db)
+
     pl = sub.add_parser("plant", help="plant defects, distractors, loopholes and state-law cases")
     pl.add_argument("--pack", action="append", required=True)
     pl.add_argument("--law-pack", default=None)
@@ -458,6 +528,18 @@ def main(argv: list[str] | None = None) -> None:
     rt.add_argument("--rerank", default=None, help="cross-encoder, e.g. BAAI/bge-reranker-base")
     rt.add_argument("--neighbours", type=int, default=0)
     rt.set_defaults(fn=cmd_retrieval)
+
+    ws = sub.add_parser("web-search", help="live search of official US legal sources; never paste NDA text")
+    ws.add_argument("query")
+    ws.add_argument("--source", action="append", choices=["us_code", "cfr", "federal_register"],
+                    help="repeat to pick several; default all")
+    ws.add_argument("--limit", type=int, default=3, help="results per source")
+    ws.set_defaults(fn=cmd_web_search)
+
+    lc = sub.add_parser("law-check", help="read the law pack's official sources; a report for the people checking it")
+    lc.add_argument("--law-pack", default="packs/law/us_law_pack.yaml", help="a YAML file or pg:us-law")
+    lc.add_argument("--out", default="runs")
+    lc.set_defaults(fn=cmd_law_check)
 
     bt = sub.add_parser("batch", help="batch rounds for --batch-queue runs: Gemini Batch API or Claude agents")
     bt.add_argument("action", choices=["submit", "collect", "export", "load"],

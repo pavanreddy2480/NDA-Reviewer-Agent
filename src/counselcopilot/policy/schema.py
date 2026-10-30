@@ -293,6 +293,11 @@ class PolicyPack(BaseModel):
 
     @classmethod
     def load(cls, path: str | Path) -> "PolicyPack":
+        """From a YAML file, or from Postgres with `pg:<slug>` (policy/store.py)."""
+        if str(path).startswith("pg:"):
+            from .store import load_pack
+
+            return cls.model_validate(load_pack(str(path)[3:], "policy"))
         return cls.model_validate(yaml.safe_load(Path(path).read_text(encoding="utf-8")))
 
 
@@ -358,4 +363,9 @@ class LawPack(BaseModel):
 
     @classmethod
     def load(cls, path: str | Path) -> "LawPack":
+        """From a YAML file, or from Postgres with `pg:<slug>` (policy/store.py)."""
+        if str(path).startswith("pg:"):
+            from .store import load_pack
+
+            return cls.model_validate(load_pack(str(path)[3:], "law"))
         return cls.model_validate(yaml.safe_load(Path(path).read_text(encoding="utf-8")))

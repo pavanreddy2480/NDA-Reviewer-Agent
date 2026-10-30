@@ -75,7 +75,7 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             "inferred_facts": [vars(f) for f in result.inferred_facts],
             "applicable_rules": result.applicable_rules, "undecided_rules": result.undecided_rules,
             "rules_in_scope": result.rules_in_scope,
-            "n_checks": result.n_checks,
+            "n_checks": result.n_checks, "n_agent_searches": result.n_agent_searches,
             "findings": [f.model_dump(mode="json") for f in result.findings],
             "scored_findings": [f.model_dump(mode="json") for f in preds[doc.id]],  # on gold rule ids
             "applicability_notes": result.applicability_notes,
@@ -84,7 +84,8 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             "unscored_rules": golds[doc.id].unscored_rules,
             "checks": [{"rule_id": c.rule_id, "direction": c.direction, "label": c.result.label,
                         "evidence": c.result.evidence, "shown": c.result.shown,
-                        "confidence": c.result.confidence, "error": c.result.error}
+                        "confidence": c.result.confidence, "error": c.result.error,
+                        "agent": vars(c.agent) if c.agent else None}
                        for c in result.checks],
         })
 
@@ -99,6 +100,7 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
         "rule_only": score_detection(preds, golds, strict_citations=False, lenient_type=True),
         "check_errors": errors,
         "checks_per_nda": round(sum(r["n_checks"] for r in rows) / max(len(rows), 1), 2),
+        "agent_searches_per_nda": round(sum(r["n_agent_searches"] for r in rows) / max(len(rows), 1), 2),
         # H1's check saving is reported against applicable rules, not the whole pack (review problem 3)
         "applicable_rules_per_nda": round(sum(n_applicable) / max(len(rows), 1), 2),
         "fact_accuracy": fact_accuracy(inferred, fact_labels),

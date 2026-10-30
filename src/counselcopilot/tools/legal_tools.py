@@ -3,12 +3,16 @@
 
 from __future__ import annotations
 
+from typing import Callable
+
 from ..policy.schema import LawPack, PolicyPack
 from .registry import Tool, ToolRegistry
+from .web_search import web_search
 
 
 def build_registry(pack: PolicyPack, law_pack: LawPack | None = None,
-                   precedents: list[dict] | None = None, error_rate: float = 0.0, seed: int = 0) -> ToolRegistry:
+                   precedents: list[dict] | None = None, error_rate: float = 0.0, seed: int = 0,
+                   search: Callable[..., dict] = web_search) -> ToolRegistry:
     reg = ToolRegistry(error_rate=error_rate, seed=seed)
     precedents = precedents or []
     pending: list[dict] = []
@@ -44,6 +48,10 @@ def build_registry(pack: PolicyPack, law_pack: LawPack | None = None,
     reg.register(Tool("rule_lookup", "Full text of a company policy rule by id.", s(rule_id={"type": "string"}), rule_lookup))
     reg.register(Tool("statute_lookup", "Summary of a US law provision by id.",
                       s(provision_id={"type": "string"}), statute_lookup))
+    reg.register(Tool("web_search", "Live search of the US Code, current federal regulations and the Federal "
+                      "Register. Search for a legal topic, never for NDA text. Results are unreviewed leads, not "
+                      "the law pack; California law is not covered.",
+                      s(query={"type": "string"}), lambda query: search(query, limit=2)))
     reg.register(Tool("approval_matrix_query", "Who may approve a deviation from a rule.",
                       s(rule_id={"type": "string"}), approval_matrix_query))
     reg.register(Tool("precedent_search", "Deviations senior counsel already approved for this counterparty.",
