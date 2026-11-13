@@ -71,6 +71,7 @@ re-running a finished experiment costs nothing. `--no-cache` turns this off.
 | `cc packs check FILE...` | Checks a pack against the spec |
 | `cc plant --pack P --law-pack L --split test` | Plants omissions, violations, distractors, loopholes and 30 California-law cases, re-deriving every touched label; writes a manifest with gold repairs |
 | `cc retrieval --split dev [--dense M] [--rerank M]` | Gold-evidence recall@k of segment retrieval, no LLM needed |
+| `cc tools --pack P --law-pack L --limit N` | Runs the JSON tool-calling agent on review episodes (approval-gated deviations, statutory risks, some with planted injection text) and prints tool precision/recall, argument validity, recovery under `--error-rate`, and the attempted unsafe-action rate. Start with a small `--limit`: every agent step is an API call |
 | `cc batch submit/collect` | Gemini Batch API rounds for `rq1 --batch-queue` runs |
 | `cc batch export/load` | Rounds answered by Claude agents instead of an API (`--backend claude-sonnet-agent`, also haiku and opus): export writes the queued requests as shards, agents write `{"key","text"}` answers, load puts them in the cache. `scripts/claude_pilot.sh` runs the RQ1 pilot this way; results in [docs/results](docs/results/2026-10-23-claude-pilot.md) |
 
@@ -106,6 +107,7 @@ src/counselcopilot/
   benchmark/planter.py    defect planter with label re-derivation and gold repairs
   tools/                  tool registry (gating, arg checks, error injection), JSON agent loop,
                           legal tools, tool-calling metrics
+  experiments/tool_eval.py  episodes with gold tool sets; runs the agent and scores it (cc tools)
   eval/evaluator.py       independent RQ2 evaluator + human-validation (kappa)
   llm/batch.py            Gemini Batch API submit/collect for batch mode
   experiments/            nli, rq1 and retrieval-recall runners

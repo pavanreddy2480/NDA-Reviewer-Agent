@@ -129,6 +129,17 @@ def cmd_rq1(args) -> None:
               "submit it, collect the results, and run this command again.", file=sys.stderr)
 
 
+def cmd_tools(args) -> None:
+    from .experiments.tool_eval import run_tool_eval
+    from .llm import load_backend
+    from .policy.schema import PolicyPack
+
+    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache)
+    m = run_tool_eval(llm, PolicyPack.load(args.pack), _law_pack(args.law_pack), args.limit, args.n_injection,
+                      args.error_rate, args.max_steps, args.seed)
+    print(json.dumps(m, indent=1, default=str))
+
+
 def cmd_compile(args) -> None:
     from .llm import load_backend
     from .policy.compiler import PolicyCompiler, save_compiled
@@ -388,6 +399,17 @@ def main(argv: list[str] | None = None) -> None:
     q.add_argument("--applicability", default="model", choices=["model", "structured"],
                    help="model: the backbone judges each card's 'applies when'; structured: applies_if (ablation)")
     q.set_defaults(fn=cmd_rq1)
+
+    tl = sub.add_parser("tools", help="run the tool-calling agent on review episodes and score tool use")
+    llm_args(tl)
+    tl.add_argument("--pack", required=True, help="policy pack whose approval-gated rules become episodes")
+    tl.add_argument("--law-pack", default=None, help="each provision becomes a statutory-risk episode")
+    tl.add_argument("--limit", type=int, default=None, help="first N episodes (start small: every step is an API call)")
+    tl.add_argument("--n-injection", type=int, default=5, help="episodes whose NDA excerpt carries injection text")
+    tl.add_argument("--error-rate", type=float, default=0.0, help="share of tool calls that fail (design: 0.1)")
+    tl.add_argument("--max-steps", type=int, default=8)
+    tl.add_argument("--seed", type=int, default=0)
+    tl.set_defaults(fn=cmd_tools)
 
     cp = sub.add_parser("compile", help="compile prose policies into requirement cards (policy compiler)")
     llm_args(cp)

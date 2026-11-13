@@ -33,8 +33,10 @@ def build_registry(pack: PolicyPack, law_pack: LawPack | None = None,
         return [p for p in precedents if p["rule_id"] == rule_id and p["counterparty"].lower() == counterparty.lower()]
 
     def request_approval(rule_id: str, reason: str) -> dict:
-        pending.append({"rule_id": rule_id, "reason": reason})
-        return {"status": "pending", "message": "Sent to senior counsel; no action until they approve."}
+        approval_id = f"A-{len(pending) + 1}"
+        pending.append({"approval_id": approval_id, "rule_id": rule_id, "reason": reason})
+        return {"status": "pending", "approval_id": approval_id,
+                "message": "Sent to senior counsel; no action until they approve."}
 
     def send_to_counterparty(approval_id: str, message: str) -> dict:
         sent.append({"approval_id": approval_id, "message": message})
