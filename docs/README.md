@@ -8,5 +8,5 @@
 | [reviews/](reviews/) | Reviews of the design: against the course brief, the TA's PolicyGuard feedback, the NOMOS and novelty checks, the design audit, the test-suite audit (test-suite-audit.md), the gold/deals logic audit (gold-deals-audit.md) and the review forward-pass audit (forward-pass-audit.md) |
 | [course/](course/) | The course [project brief](course/project-brief.pdf) and the [change note for the TA](course/ta-change-note.md) |
 | [background/](background/) | Plain-language explainer of the NDA review problem |
-| [guides/](guides/) | How-tos: [running Llama with vLLM on Kaggle](guides/kaggle-vllm.md), [QLoRA fine-tuning on Kaggle](guides/qlora-kaggle.md) |
+| [guides/](guides/) | How-tos: [running Llama with vLLM on Kaggle](guides/kaggle-vllm.md), [QLoRA fine-tuning on Kaggle](guides/qlora-kaggle.md), [running the ablations with Ollama](guides/run-ablations-ollama.md) |
 | [archive/](archive/) | Earlier project ideas and superseded design versions, kept for the record |

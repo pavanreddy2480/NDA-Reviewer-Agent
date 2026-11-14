@@ -43,11 +43,15 @@ LAW=packs/law/us_law_pack.yaml
 LABELS=data/labels/ndas_auto.yaml
 
 # ---------------------------------------------------------------- preflight
-needs_gemini=0
-for b in "$COMPILER" "$JUDGE" "$REMOTE"; do [[ $b == gemini* ]] && needs_gemini=1; done
-if [ $needs_gemini = 1 ] && [ -z "${GEMINI_API_KEY:-}" ] && { has compile || has remote || has rq2; }; then
-  echo "GEMINI_API_KEY is not set (needed for $COMPILER / $JUDGE / $REMOTE)"; exit 1
-fi
+need=()
+has compile && [ -z "${ORACLE:-}" ] && need+=("$COMPILER")
+has remote && need+=("$REMOTE")
+has rq2 && need+=("$JUDGE")
+for b in "${need[@]}"; do
+  if [[ $b == gemini* ]] && [ -z "${GEMINI_API_KEY:-}" ]; then
+    echo "GEMINI_API_KEY is not set (needed for $b); export it, or see docs/guides/run-ablations-ollama.md for the Ollama-only setup"; exit 1
+  fi
+done
 if [[ "$LOCAL $OTHER" == *ollama* ]] && { has rq1 || has rq2; }; then
   curl -sf localhost:11434/api/tags > /dev/null || { echo "Ollama is not answering on localhost:11434: run 'OLLAMA_CONTEXT_LENGTH=16384 ollama serve'"; exit 1; }
 fi
@@ -136,7 +140,11 @@ if has rq2; then
     python -c "import json,sys;print(json.load(open(sys.argv[1]))['out_dir'])" "$OUT/rq2_$name.json"
   }
   rq2 main --systems loop r1 r1_attacker r2 loop_no_attacker loop_no_regression loop_1_round >> "$OUT/runs_rq2.txt"
-  rq2 other_attacker --systems loop --attacker-backend "$OTHER" >> "$OUT/runs_rq2.txt"
+  if [ "$OTHER" = "$JUDGE" ]; then  # the judge must stay independent of every repair system
+    echo "== skip rq2 other_attacker: OTHER=$OTHER is also the judge" >&2
+  else
+    rq2 other_attacker --systems loop --attacker-backend "$OTHER" >> "$OUT/runs_rq2.txt"
+  fi
 fi
 
 # ---------------------------------------------------------------- 4. local-first cascade (offline, from runs)

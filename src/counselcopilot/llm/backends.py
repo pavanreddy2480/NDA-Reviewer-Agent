@@ -14,11 +14,21 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from typing import Callable
 
 import httpx
 
 from .base import LLMClient, LLMRequest, LLMResponse, RetryableError
+
+
+_THINK = re.compile(r"<think>.*?(</think>|$)", re.S)
+
+
+def strip_thinking(text: str) -> str:
+    """Thinking models served by Ollama or vLLM (e.g. Qwen3) may put <think>...</think> before
+    the answer; only the answer is parsed."""
+    return _THINK.sub("", text).strip() if "<think>" in text else text
 
 
 class OpenAICompatClient(LLMClient):
@@ -59,7 +69,7 @@ class OpenAICompatClient(LLMClient):
         data = r.json()
         usage = data.get("usage") or {}
         return LLMResponse(
-            text=data["choices"][0]["message"]["content"] or "",
+            text=strip_thinking(data["choices"][0]["message"]["content"] or ""),
             model=req.model,
             input_tokens=usage.get("prompt_tokens", 0),
             output_tokens=usage.get("completion_tokens", 0),

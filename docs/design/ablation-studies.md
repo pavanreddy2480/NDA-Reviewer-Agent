@@ -1,7 +1,7 @@
 # Ablation studies (design, 14 Nov 2026)
 
 What each ablation removes, what it tests, what we expect, and how it is scored. The proposal's
-ablations row (§7) is the source. Run everything with `scripts/run_ablations.sh`; the results
+ablations row (§7) is the source. Run everything with `scripts/run_ablations.sh` (step by step: [the Ollama guide](../guides/run-ablations-ollama.md)); the results
 land in `runs/ablations/ABLATIONS.md`.
 
 ## 1. Setup
