@@ -101,7 +101,7 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             "checks": [{"rule_id": c.rule_id, "direction": c.direction, "label": c.result.label,
                         "evidence": c.result.evidence, "shown": c.result.shown,
                         "confidence": c.result.confidence, "error": c.result.error,
-                        "agent": vars(c.agent) if c.agent else None}
+                        "agent": vars(c.agent) if c.agent else None, "accepted": c.accepted}
                        for c in result.checks],
         })
 

@@ -36,6 +36,41 @@ facts read from the NDA: governing law 5/5, personal data 2/3.
 4. **llama3.1:8b sits well below the Claude Sonnet pilot.** The pilot reached strict F1 0.76 on 20 NDAs with `full`.
    Read these numbers as a plumbing and relative check, not as the project's results.
 
+### Follow-up: what the agent's searches actually changed, and a gate on the re-check
+
+In the run above the agent searched 36 times. 12 searches found no new segments, so no re-check ran. 15 re-checks
+returned the same label. 9 changed the first check's NotMentioned:
+
+| Change | Gold | Count | Effect |
+|---|---|---|---|
+| NotMentioned → Entailment | no defect | 5 | fixed a false omission alarm |
+| NotMentioned → Contradiction | no defect | 2 | added a false violation |
+| NotMentioned → Entailment | omission | 2 | lost a true omission |
+
+**None of the 9 changes came from what the search found.** Every segment the re-checks cited (10 in total) had
+already been shown to the first check. The agent's new segments were never cited. The model changed its mind about the
+same text because the prompt was longer, and 5 of 9 times that happened to be right. The first check already sees
+22–37 of an NDA's ~71 segments (12 hits plus ±1 neighbours), so there is little left for a search to find.
+
+**Fix** (`ReviewConfig.agentic_switch_confidence`, `PolicyReviewer._accept_second`). The re-check may replace the first
+check's label only if it cites a segment the search added, with confidence at least 0.8 and at least the first check's.
+A first check that saw no segments counts as a non-judgement, so its 1.0 confidence is not used as a floor. A re-check
+that keeps the label is always accepted. Each re-check's decision is logged as `accepted` in `reviews.jsonl`.
+
+| Preset | Precision | Recall | F1 | Label changes accepted | Model calls |
+|---|---|---|---|---|---|
+| `full` | 0.46 | 0.45 | 0.46 | – | 111 |
+| `agentic`, re-check always trusted (before) | 0.43 | 0.42 | 0.42 | 9 / 9 | 279 |
+| `agentic` with the gate (after) | 0.46 | 0.45 | 0.46 | 0 / 9 | 279 (all cached) |
+
+The gate removes the harm: `agentic` no longer loses true omissions or adds false violations. It cannot create a gain,
+because with this model and this data the search never surfaced evidence that mattered. Agentic RAG now costs 2.5 times
+the calls for the same result. It can only pay off where the first retrieval misses real evidence: a stronger checker,
+longer documents, or the policy corpus (~40k tokens per company, more than the 16k context), which the preset does not
+search yet. The rerun is in `rq1_agentic_gated.json` and `run_logs/20261115-052219-rq1-agentic-test-llama-ollama/`.
+The gate keys on where the evidence comes from, not on a threshold fitted to these 5 NDAs. Still, it was checked
+on the same NDAs that showed the problem, so confirm it on more data.
+
 ## Tool calling (`cc tools`)
 
 | Error rate | Tool precision | Tool recall | Argument validity | Recovery rate | Unsafe attempts | Unsafe executed | Finished / hit max steps | Model calls | Wall time |
@@ -63,7 +98,7 @@ Injected episodes (5 of the 10): tool precision 0.29, recall 1.0, and no unsafe 
 
 - `rq1_full.json`, `rq1_agentic.json`, `tools_err0.0.json`, `tools_err0.1.json`: the summaries each command printed,
   with stderr next to them.
-- `runs/`: copies of the run folders. These hold the per-NDA reviews with every check and agent search
+- `run_logs/`: copies of the run folders. These hold the per-NDA reviews with every check and agent search
   (`reviews.jsonl`), the tool-call transcripts per episode (`episodes.jsonl`), and the full metrics.
 
 ## Reproduce

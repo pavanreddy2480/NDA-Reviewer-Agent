@@ -56,6 +56,11 @@ class ReviewConfig:
     agentic_min_confidence: float = 0.7  # below this a check is unsettled whatever its label; NotMentioned always is
     agentic_max_steps: int = 4  # model calls per search
     agentic_max_segments: int = 8  # new segments per search, before ±neighbours
+    # The second check may change the first one's label only when it cites a segment the search added and
+    # is at least this confident (and no less confident than the first check). Otherwise the first result
+    # stands: in the 5-NDA llama3.1:8b run (docs/results/2026-11-15-ollama-llama3.1-8b) an always-trusted
+    # second check lost 2 true omissions and added 2 false violations for 5 fixed false alarms.
+    agentic_switch_confidence: float = 0.8
     max_workers: int = 8
     temperature: float = 0.0  # >0 for seed runs, so seeds give real variance (review problem 10)
     seed: int = 0
@@ -90,6 +95,7 @@ class CheckLog:
     direction: str
     result: CheckResult
     agent: EvidenceSearch | None = None  # the search this check set off, if any
+    accepted: bool | None = None  # agentic re-checks only: whether it replaced the first check's result
 
 
 @dataclass
@@ -200,6 +206,20 @@ class PolicyReviewer:
             return False
         return res.label == "NotMentioned" or res.confidence < self.cfg.agentic_min_confidence
 
+    def _accept_second(self, first: CheckResult, second: CheckResult, added: set[int]) -> bool:
+        """Whether the agentic re-check replaces the first check. A failed re-check never does. One that
+        keeps the label does (it saw more of the NDA). One that changes the label must earn it: cite a
+        segment the search added, with confidence at least `agentic_switch_confidence` and at least the
+        first check's, so wider but loosely related context cannot talk the checker out of its answer."""
+        if second.error:
+            return False
+        if second.label == first.label:
+            return True
+        floor = self.cfg.agentic_switch_confidence
+        if first.shown:  # a check that saw no segments was never put to the model; its 1.0 is not a judgement
+            floor = max(floor, first.confidence)
+        return bool(set(second.evidence) & added) and second.confidence >= floor
+
     # ------------------------------------------------------------------ main entry
     def review(self, draft: Draft, deal: DealContext) -> ReviewResult:
         seg_index = self._segment_index(draft)
@@ -250,11 +270,13 @@ class PolicyReviewer:
                                         self.cfg.temperature, self.cfg.seed)
                 checks[0].agent = found
                 if found.segments:
-                    wider = sorted(set(ids) | set(self._expand(found.segments, len(draft.segments))))
+                    added = set(self._expand(found.segments, len(draft.segments))) - set(ids)
+                    wider = sorted(set(ids) | added)
                     second = run_check(self.checker, rule.check_term, draft, wider, tag="agentic_check",
                                        temperature=self.cfg.temperature, seed=self.cfg.seed)
-                    checks.append(CheckLog(rule.id, "agentic", second))
-                    if not second.error:  # a failed second check must not erase what the first found
+                    accepted = self._accept_second(res, second, added)
+                    checks.append(CheckLog(rule.id, "agentic", second, accepted=accepted))
+                    if accepted:
                         res, direction = second, "agentic"
             return checks, finding_from_check(rule, res, draft.id, direction=direction)
 

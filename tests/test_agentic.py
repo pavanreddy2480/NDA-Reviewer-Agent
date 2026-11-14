@@ -136,6 +136,49 @@ def test_failed_second_check_keeps_the_first_result():
     assert res.findings[0].type == FindingType.OMISSION and res.n_errors == 1
 
 
+def _second(label, evidence, confidence):
+    """A checker whose first check says NotMentioned (0.8) and whose re-check (it sees the hidden
+    clause) answers `label` citing `evidence`."""
+    def check(req):
+        if "hand back" in req.messages[-1].content:
+            return json.dumps({"rationale": "", "label": label, "evidence": evidence, "confidence": confidence})
+        return json.dumps({"rationale": "absent", "label": "NotMentioned", "evidence": [], "confidence": 0.8})
+    return check
+
+
+def test_label_change_without_citing_the_new_segment_keeps_the_first_result():
+    res = review(FakeClient(reply(smart_agent, _second("Entailment", [3], 0.95))))
+    assert res.findings[0].type == FindingType.OMISSION and res.findings[0].direction == "reverse"
+    assert [c.direction for c in res.checks] == ["reverse", "agentic"] and res.checks[1].accepted is False
+
+
+def test_unconfident_label_change_keeps_the_first_result():
+    res = review(FakeClient(reply(smart_agent, _second("Entailment", [HIDDEN], 0.6))))
+    assert res.findings[0].type == FindingType.OMISSION and res.checks[1].accepted is False
+
+
+def test_a_change_must_be_at_least_as_confident_as_the_first_check():
+    segs = list(SEGMENTS)
+    segs[5] = "Confidential Information is defined in the schedule."  # retrieved, so the first check is a judgement
+    cfg = ReviewConfig.preset("agentic")
+    cfg.agentic_switch_confidence = 0.5
+
+    def run(conf):
+        llm = FakeClient(reply(smart_agent, _second("Entailment", [HIDDEN], conf)))
+        res = PolicyReviewer(llm, pack(), cfg).review(Draft("d", segs), DEAL)
+        assert res.checks[0].result.shown and res.checks[0].result.confidence == 0.8
+        return res
+
+    assert run(0.9).findings == []  # 0.9 >= the first check's 0.8
+    res = run(0.7)
+    assert res.findings[0].type == FindingType.OMISSION and res.checks[1].accepted is False  # 0.7 < 0.8
+
+
+def test_cited_confident_change_replaces_the_first_result():
+    res = review(FakeClient(reply(smart_agent, _second("Entailment", [HIDDEN + 1], 0.8))))
+    assert res.findings == [] and res.checks[1].accepted is True  # a neighbour the search added counts
+
+
 def test_failed_agent_keeps_the_first_result():
     def broken(req):
         raise RuntimeError("schema rejected")
