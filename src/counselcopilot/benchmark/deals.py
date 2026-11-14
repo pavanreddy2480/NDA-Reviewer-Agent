@@ -75,8 +75,23 @@ def deal_for(doc_id: int, companies: list[str], label: dict | None = None, seed:
         personal_data=pd if isinstance(pd, bool) else None,
         counterparty_country=_country(lab.get("counterparty_country")),
         value_band=rng.choice(["low", "medium", "high"]),
-        company_side="mutual" if lab.get("mutual") is True else "disclosing",
+        company_side=_side(doc_id, seed, lab, ctype),
     )
+
+
+RECEIVING_SHARE = 0.25  # one-way NDAs where our company is the one receiving information
+
+
+def _side(doc_id: int, seed: int, lab: dict, ctype: str) -> str:
+    """Mutual NDAs are mutual. In a one-way NDA the company usually discloses, but a quarter of the
+    time (never with an employee) it receives: a vendor's pricing, a partner's roadmap. Without this,
+    rules conditioned on company_side == 'receiving' (hospital P-13, P-27) could never apply. Drawn
+    from its own seeded stream so the other deal facts are unchanged."""
+    if lab.get("mutual") is True:
+        return "mutual"
+    if ctype == "employee":
+        return "disclosing"
+    return "receiving" if random.Random(f"side-{seed}-{doc_id}").random() < RECEIVING_SHARE else "disclosing"
 
 
 def generate_deals(doc_ids: list[int], companies: list[str], seed: int = 0,

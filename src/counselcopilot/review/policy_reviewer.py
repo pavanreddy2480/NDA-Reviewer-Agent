@@ -32,7 +32,10 @@ from .checker import CheckResult, finding_from_check, run_check
 from .fields import extract_field, judge_field_rule
 from .applicability import judge_applicability
 from .deal_facts import InferredFact, resolve_deal
+from .fields import FIELD_QUERIES
 from .findings import FindingType, Finding, Ledger
+from .frames import extract_frames, fields_from_frames
+from .xref import CrossRefGraph
 
 
 @dataclass
@@ -53,6 +56,12 @@ class ReviewConfig:
     # main system since 25 Oct; "structured": every rule's `applies_if` expression (ablation).
     # Rules without `applies_when` (the law pack, hand-written packs) always use `applies_if`.
     applicability: str = "model"
+    # Obligation frames (review/frames.py) answer field rules; fields no frame states fall back to the
+    # per-field question. Off = per-field questions only (the "no frames" ablation).
+    frames: bool = False
+    # One-hop cross-reference graph (review/xref.py): forward hits bring linked rules, and a violation
+    # takes the approval route of a linked rule. Off = the "no cross-reference graph" ablation.
+    xref: bool = False
 
     @classmethod
     def preset(cls, name: str) -> "ReviewConfig":
@@ -102,7 +111,8 @@ def rule_query(rule: Rule) -> str:
 class PolicyReviewer:
     def __init__(self, llm: LLMClient, pack: PolicyPack, config: ReviewConfig | None = None,
                  encoder: Encoder | None = None, reranker: Reranker | None = None,
-                 law_pack: LawPack | None = None, checker_llm: LLMClient | None = None):
+                 law_pack: LawPack | None = None, checker_llm: LLMClient | None = None,
+                 name: str = "policy_reviewer"):
         self.llm = llm  # deal-fact inference and field extraction
         self.checker = checker_llm or llm  # every rule check, in every preset
         self.pack = pack
@@ -110,6 +120,8 @@ class PolicyReviewer:
         self.cfg = config or ReviewConfig()
         self.encoder = encoder
         self.reranker = reranker
+        self.name = name
+        self.graph = CrossRefGraph(list(pack.rules) + self.law_rules)
 
     # ------------------------------------------------------------------ helpers
     def _applicability(self, deal: DealContext, draft: Draft,
@@ -142,6 +154,11 @@ class PolicyReviewer:
             if f is not None:
                 values["governing_law"] = (f.value, f.evidence)
         ids = list(range(len(draft.segments))) if self.cfg.exhaustive else None
+        need = sorted(fields - set(values))
+        if self.cfg.frames and need:
+            seg_ids = ids or sorted({int(h.passage.id) for f in need for h in seg_index.search(FIELD_QUERIES[f], k=6)})
+            got = fields_from_frames(extract_frames(self.checker, draft, seg_ids, tag="frames"))
+            values.update({f: got[f] for f in need if f in got})
 
         def read(name: str):
             try:
@@ -224,6 +241,7 @@ class PolicyReviewer:
 
         for rule, direction, res, f in self.llm.map(lambda j: j[0](j[1]), jobs, self.cfg.max_workers):
             logs.append(CheckLog(rule.id, direction, res))
+            f = self._finish(f)
             if f is not None:
                 ledger.add(f)
 
@@ -246,4 +264,25 @@ class PolicyReviewer:
         for rid, lst in hits.items():
             top = [i for _, i in sorted(lst, reverse=True)[: self.cfg.k_segments]]
             out[rid] = self._expand(top, len(draft.segments))
+        if self.cfg.xref:  # a clause that hits a rule is also checked against the rules it links to
+            in_scope = {r.id for r in rules}
+            for rid, segs in list(out.items()):
+                for n in self.graph.neighbours(rid):
+                    if n in in_scope:
+                        out[n] = sorted(set(out.get(n, [])) | set(segs))
         return out
+
+    def _finish(self, f: Finding | None) -> Finding | None:
+        if f is None:
+            return None
+        upd: dict = {"reviewer": self.name}
+        # the graph names who may approve a deviation (for the hand-off), but the finding type stays
+        # the rule's own: gold types come from the rule itself (benchmark/gold.py finding_type)
+        appr = self.graph.approver(f.rule_id) if self.cfg.xref else None
+        if appr and f.type == FindingType.VIOLATION and not self.pack_rule_approval(f.rule_id):
+            upd["explanation"] = (f.explanation + f" A linked rule routes deviations to {appr}.").strip()
+        return f.model_copy(update=upd)
+
+    def pack_rule_approval(self, rule_id: str) -> str | None:
+        r = self.graph.rules.get(rule_id)
+        return r.approval if r else None

@@ -13,6 +13,8 @@
     cc retrieval --split dev [--dense BAAI/bge-small-en-v1.5]
     cc batch submit|collect ...                      Gemini Batch API rounds
     cc batch export|load ...                         rounds answered by Claude agents
+    cc rq1 --system pipeline|b1|b2|b2_checklist|b3   the full system and the baselines
+    cc pipeline / rq2 / cascade / sweep / frames / finetune / compare / report / smoke   (commands.py)
 """
 
 from __future__ import annotations
@@ -23,6 +25,12 @@ import sys
 
 DEFAULT_DATA = "data/raw"
 PRESETS = ["full", "no_reverse", "no_filter", "reverse_only", "exhaustive", "exhaustive_filtered"]
+
+
+def PipelineAblations():
+    from .agents.pipeline import PipelineConfig
+
+    return PipelineConfig.ABLATIONS
 
 
 def _load_data(args, splits=("train", "dev", "test")):
@@ -99,6 +107,7 @@ def _law_pack(path):
 
 
 def cmd_rq1(args) -> None:
+    from .commands import _policy_dirs, _precedents
     from .benchmark.deals import load_deals
     from .benchmark.planter import load_planted
     from .experiments.rq1 import run_rq1
@@ -116,7 +125,8 @@ def cmd_rq1(args) -> None:
                 temperature=args.temperature, hide_facts=args.hide_facts,
                 allow_unverified_labels=args.allow_unverified, allow_auto_labels=args.allow_auto,
                 gold_packs=[PolicyPack.load(p) for p in args.gold_pack] if args.gold_pack else None,
-                applicability=args.applicability)
+                applicability=args.applicability, system=args.system, ablation=args.ablation,
+                policy_dirs=_policy_dirs(packs, args.gold_pack or args.pack), precedents=_precedents(args, packs))
     if not args.gold_pack:
         print("NOTE: no --gold-pack, so --pack is both what the reviewer checks and gold: an oracle-rules run, "
               "not the system. Compile the policies (cc compile) and pass the gold lists as --gold-pack.",
@@ -387,6 +397,14 @@ def main(argv: list[str] | None = None) -> None:
                    help="gold rule list per company (gold_rules.yaml) when --pack holds compiled cards")
     q.add_argument("--applicability", default="model", choices=["model", "structured"],
                    help="model: the backbone judges each card's 'applies when'; structured: applies_if (ablation)")
+    q.add_argument("--system", default="reviewer", choices=["reviewer", "pipeline", "b1", "b2", "b2_checklist", "b3"],
+                   help="reviewer: the policy reviewer with --preset; pipeline: the full system with --ablation; "
+                        "b1/b2/b2_checklist/b3: baselines (B1/B2 read the policy prose next to each pack)")
+    q.add_argument("--ablation", default="full", choices=list(PipelineAblations()),
+                   help="pipeline only: one change from the full system")
+    q.add_argument("--precedents", default=None, help="pipeline: precedent memory JSON")
+    q.add_argument("--scripted-precedents", type=int, default=0,
+                   help="pipeline: pre-fill memory with N scripted senior-counsel approvals (proposal: 30)")
     q.set_defaults(fn=cmd_rq1)
 
     cp = sub.add_parser("compile", help="compile prose policies into requirement cards (policy compiler)")
@@ -406,7 +424,7 @@ def main(argv: list[str] | None = None) -> None:
     lb.add_argument("--limit", type=int, default=None)
     lb.add_argument("--out", default="data/labels/ndas.yaml")
     lb.add_argument("--backend-a", default="qwen-hosted")
-    lb.add_argument("--backend-b", default="gemini-pro", help="must be a different model family from --backend-a")
+    lb.add_argument("--backend-b", default="mistral-hosted", help="must be a different model family from --backend-a")
     lb.add_argument("--pack", nargs="*", default=[], help="auto: label presence of these packs' unanchored rule terms")
     lb.add_argument("--law-pack", default=None, help="auto: also label presence of law-pack terms")
     lb.add_argument("--answers", nargs=2, default=None, metavar=("DIR_A", "DIR_B"),
@@ -425,7 +443,7 @@ def main(argv: list[str] | None = None) -> None:
     pk.add_argument("--company", default="all", choices=["all", "saas", "hospital", "manufacturer"])
     pk.add_argument("--backend", default="qwen-hosted",
                     help="generator; must be a model family no backbone, compiler or evaluator uses ([roles])")
-    pk.add_argument("--checker-backend", default="gemini-pro", help="cross-checks prose against rules")
+    pk.add_argument("--checker-backend", default="mistral-hosted", help="cross-checks prose against rules")
     pk.add_argument("--generator-name", default="claude-sonnet (agent)", help="import: who wrote the pack")
     pk.add_argument("--flagged", default=None, help="import: JSON rule id -> problem from a cross-check")
     pk.add_argument("--allow-same-family", action="store_true", help="skip the family check (pilots only)")
@@ -470,6 +488,9 @@ def main(argv: list[str] | None = None) -> None:
     bt.add_argument("--answers", default=None, help="load: folder of agents' answer .jsonl files")
     bt.set_defaults(fn=cmd_batch)
 
+    from .commands import register
+
+    register(sub, llm_args)
     args = p.parse_args(argv)
     args.fn(args)
 

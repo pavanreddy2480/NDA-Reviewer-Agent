@@ -64,7 +64,7 @@ re-running a finished experiment costs nothing. `--no-cache` turns this off.
 | `cc rq1 --pack P --split dev --preset full` | Reviews every NDA in a split and scores findings against natural gold defects (plus planted ones with `--planted`) |
 | `cc compile --policies DIR --company C --gold G --out F` | Policy compiler: prose policies to requirement cards (source quote checked); with `--gold`, reports precision/recall against the gold rule list |
 | `cc labels init --split test` | Writes the hand-label file pre-filled by regex (template? mutual? governing law?) for annotators to correct |
-| `cc labels auto --split test` | API fallback: two models (default Qwen-72B and Gemini Pro) label every NDA; a person checks only disagreements plus a 20% audit sample. `cc labels accuracy` reports audited accuracy; `rq1 --allow-auto` uses agreed labels |
+| `cc labels auto --split test` | API fallback: two models (default Qwen-72B and Mixtral-8x22B) label every NDA; a person checks only disagreements plus a 20% audit sample. `cc labels accuracy` reports audited accuracy; `rq1 --allow-auto` uses agreed labels |
 | `cc labels import --split test --answers DIR_A DIR_B --pack ... --law-pack ...` | Merge two labellers' per-NDA JSON answers (e.g. Claude agents) into the label file |
 | `cc packs import --company saas` | Re-check a pack written outside packgen (spec, verbatim quotes) and write REVIEW.md |
 | `cc packs generate --company all` | LLM-written company policy packs: rule list first (checked against [the pack spec](docs/design/policy-pack-spec.md)), then policy prose that quotes each rule verbatim, then a second model cross-checks prose against rules. Writes `packs/policynda/<company>/` with `gold_rules.yaml`, `policies/*.md` and a `REVIEW.md` checklist |
@@ -73,6 +73,15 @@ re-running a finished experiment costs nothing. `--no-cache` turns this off.
 | `cc retrieval --split dev [--dense M] [--rerank M]` | Gold-evidence recall@k of segment retrieval, no LLM needed |
 | `cc batch submit/collect` | Gemini Batch API rounds for `rq1 --batch-queue` runs |
 | `cc batch export/load` | Rounds answered by Claude agents instead of an API (`--backend claude-sonnet-agent`, also haiku and opus): export writes the queued requests as shards, agents write `{"key","text"}` answers, load puts them in the cache. `scripts/claude_pilot.sh` runs the RQ1 pilot this way; results in [docs/results](docs/results/2026-10-23-claude-pilot.md) |
+| `cc rq1 --system pipeline --ablation A` | The full CounselCopilot pipeline (planner, policy/law/consistency reviewers, frames, cross-refs, verifier, approval hand-off) or one of its ablations; `--system b1/b2/b2_checklist/b3` runs the baselines |
+| `cc pipeline --pack P --doc-id N` | Full pipeline on one NDA: findings, verifier verdicts, escalations and approval requests |
+| `cc rq2 --pack P --planted F --limit 40` | RQ2: red-team and repair loop against R1, R1+A, R2 and the loop ablations, scored by an independent evaluator of another model family; `--acceptance-sheet` writes the blind review sheet |
+| `cc rq2-kappa A.csv B.csv KEY` | Acceptance rate per system and kappa between the two blind raters |
+| `cc cascade LOCAL_RUN REMOTE_RUN --pack P` | Local-first cost cascade simulated from two RQ1 runs: calibration, threshold chosen on dev, cost and F1 |
+| `cc sweep --padding DIRS` | Padded policy corpora (40k, 150k tokens) for the policy-size sweep |
+| `cc frames silver` / `cc finetune data` | Silver obligation frames and the QLoRA training mix ([guide](docs/guides/qlora-kaggle.md)) |
+| `cc compare RUN_A RUN_B` / `cc report RUN...` | Paired bootstrap between two RQ1 runs; one Markdown table of many runs |
+| `cc smoke --out runs/smoke` | Every experiment on a synthetic mini-benchmark with the offline `heuristic` backend, in about 15 s. A plumbing check, not results |
 
 Useful `rq1` flags: `--law-pack`, `--planted`, `--labels`, `--hide-facts` (reviewer must read
 personal data and governing law from the NDA), `--checker-backend` (same checker model for every
@@ -108,7 +117,17 @@ src/counselcopilot/
                           legal tools, tool-calling metrics
   eval/evaluator.py       independent RQ2 evaluator + human-validation (kappa)
   llm/batch.py            Gemini Batch API submit/collect for batch mode
-  experiments/            nli, rq1 and retrieval-recall runners
+  review/frames.py        obligation frames (prompted, regex fallback) and frame matching
+  review/xref.py          cross-reference graph between clauses
+  review/law_reviewer.py, consistency.py, verifier.py   law, consistency and verifier agents
+  agents/                 planner, approval desk (hand-off), precedent memory, full pipeline
+  baselines/              B1 long context, B2 naive RAG (+checklist), B3 single agent
+  repair/                 opposing counsel, repairer, red-team and repair loop, R1/R1+A/R2
+  finetune/               QLoRA training data (NLI, CUAD, frames) and trainer
+  llm/heuristic.py        offline backend for the smoke run
+  benchmark/synthetic.py  synthetic mini-ContractNLI for the smoke run
+  experiments/            nli, rq1, rq2, cascade, sweep and retrieval-recall runners
+  commands.py             CLI commands added for the pipeline, RQ2 and the rest
 packs/toy/toy_pack.yaml   TOY rules to test the code; not part of PolicyNDA
 packs/law/us_law_pack.yaml      DRAFT US law pack, unchecked (needs two teammates per provision);
                                 archive/ holds the old India pack
@@ -132,14 +151,15 @@ configs/backends.toml     backends, model ids, prices
   A clause that isn't retrieved looks absent, so this caps omission precision.
 - Design fixes from the [proposal-vs-brief review](docs/reviews/proposal-vs-brief.md) are listed in the [design](docs/design/design.md) §16.
 
-## Not built yet (next steps, in design order)
+## Status (14 Nov 2026)
 
-1. Human review: each pack's `packs/policynda/<company>/REVIEW.md`, the disputed keys and audit sample in
-   `data/labels/ndas_auto.yaml` (packs and labels were written by Claude agents, 23 Oct 2026); law-pack check (team).
-2. Consistency reviewer tools; planner; verifier; approval agent on the tool registry; precedent memory.
-3. Baselines B1 (long context, Gemini only), B2 (naive RAG over policy prose), B3 (single agent).
-4. Policy compiler (prose -> rule base, Gemini Pro once).
-5. RQ2: opposing-counsel agent, repairer, regression checker, R1, R1+A and R2 baselines (the independent evaluator is built).
-6. Obligation-frame matching, the cross-reference graph, the CUAD clause library and the local-first cascade.
-7. Wire the JSON tool-calling agent (`tools/agent.py`) into the reviewers, so tool-use metrics come from real runs.
-8. QLoRA multi-task fine-tune (CUAD tags, ContractNLI on 12 hypotheses, obligation frames).
+Every component in the proposal is built and tested (517 tests pass). See
+[the final report](docs/results/final-report.md) for what maps where and what is left. Still to
+do, all by people or with real models:
+
+1. Human review: each pack's `packs/policynda/<company>/REVIEW.md`, the 55 disputed keys in
+   `data/labels/ndas_auto.yaml`, and two teammates per provision of the law pack.
+2. Real runs: RQ1 (Llama, then Gemini Flash), the policy-size sweep, RQ2 on 40 NDAs, the cascade,
+   two QLoRA seeds, and the blind acceptance review.
+3. Decide the H1 wording ("fewer tokens" instead of "fewer checks", see the
+   [pilot](docs/results/2026-10-23-claude-pilot.md)) and send the TA the change note.

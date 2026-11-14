@@ -51,7 +51,9 @@ class IndependentEvaluator:
         if rule.kind == "field":
             index = HybridIndex([Passage(str(i), t) for i, t in enumerate(draft.segments)])
             f, res = check_field_rule(self.llm, rule, draft, index)
-            return RuleStatus(rule.id, f is None and not res.error, res)
+            # a blanked or number-less value is not compliance: a repairer must not "fix" a short
+            # term by blanking it
+            return RuleStatus(rule.id, f is None and not res.error and not res.undetermined, res)
         out = self.llm.complete_json(
             [system(EVAL_SYSTEM), user(f"CONTRACT TERM: {rule.check_term}\n\nNDA:\n{draft.numbered()}")],
             CHECK_SCHEMA, max_tokens=300, tag="independent_eval", seed=seed, temperature=0.0 if seed == 0 else 0.7)

@@ -139,9 +139,10 @@ def judge_field_rule(rule: Rule, draft_id: str, value, ev: list[int]) -> tuple[F
     if value == BLANK:
         # Template with the value left blank: tell the consultant to fill it in, but it is
         # neither compliant nor an omission, so it is not a finding (review problem 2).
-        return None, CheckResult("NotMentioned", ev, 0.0, f"{c.field} left blank in template")
+        return None, CheckResult("NotMentioned", ev, 0.0, f"{c.field} left blank in template", undetermined=BLANK)
     if value == UNSPECIFIED:
-        return None, CheckResult("NotMentioned", ev, 0.0, f"{c.field} stated without a number")
+        return None, CheckResult("NotMentioned", ev, 0.0, f"{c.field} stated without a number",
+                                 undetermined=UNSPECIFIED)
     if value is None:
         if c.check_absent():  # e.g. no non-solicit at all meets "non-solicit at most 12 months"
             return None, CheckResult("NotMentioned", [], 0.6, f"{c.field} not found; the rule allows that")

@@ -176,7 +176,7 @@ def test_deal_form_agrees_with_the_nda_labels():
     deals = generate_deals([1, 2], ["A"], labels={1: {"personal_data": True, "mutual": True},
                                                   2: {"personal_data": False}})
     assert deals[1].personal_data is True and deals[1].company_side == "mutual"
-    assert deals[2].personal_data is False and deals[2].company_side == "disclosing"
+    assert deals[2].personal_data is False and deals[2].company_side in ("disclosing", "receiving")  # one-way
 
 
 def test_deals_round_trip(tmp_path):
@@ -199,8 +199,6 @@ def test_deal_draws_vary_company_or_counterparty():
                for d in draws[1:] for i in range(30))
 
 
-@pytest.mark.xfail(strict=True, reason="GAP: the company is never on the receiving side, so rules conditioned on "
-                                        "company_side == 'receiving' (hospital P-13, P-27) can never apply")
 def test_deals_include_the_receiving_side():
     deals = generate_deals(list(range(200)), ["A"], labels={i: {"mutual": False} for i in range(200)})
     assert "receiving" in {d.company_side for d in deals.values()}

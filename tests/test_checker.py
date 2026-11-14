@@ -171,8 +171,6 @@ def test_ledger_merges_cited_evidence_when_a_more_confident_finding_arrives():
     assert led.all()[0].evidence == [1, 3]
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: Ledger.add drops the evidence of a less confident duplicate, so the "
-                                        "union of citations depends on the order findings arrive in")
 def test_ledger_evidence_union_does_not_depend_on_order():
     led = Ledger()
     led.extend([fnd(conf=0.8, ev=(3,)), fnd(conf=0.4, ev=(1,))])

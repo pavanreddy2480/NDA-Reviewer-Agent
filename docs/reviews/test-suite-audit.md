@@ -112,3 +112,16 @@ pilot already saw the same number of checks per NDA. H1 should say "fewer tokens
 - Field rules in the "exhaustive" presets still use retrieval (k=6) to find the value, so B4 is not
   whole-NDA for field rules. This is fair, because every preset does the same, but it's worth one line
   in the method section.
+
+## Update (14 Nov 2026): everything above is fixed or built
+
+- All seven bugs in §5 are fixed and their tests are ordinary passing tests now.
+- §1: the missing parts of the proposed system are built (see
+  [the final report](../results/final-report.md) §3) and tested in `test_pipeline.py`,
+  `test_baselines.py`, `test_repair_loop.py` and `test_experiments_extra.py`.
+- §2: the H1 test now checks that the full system makes the *same* checks as
+  exhaustive-with-filter with *fewer tokens*
+  (`test_full_system_makes_the_same_checks_as_exhaustive_filtered_with_fewer_tokens`). The proposal
+  text still says "fewer checks" and needs the team's decision.
+- `pytest -q`: 517 passed, 4 xfailed. The four left are human tasks: the three packs' REVIEW.md
+  checklists and the two-teammate check of the law pack.

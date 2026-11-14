@@ -191,13 +191,16 @@ def test_retrieval_shows_fewer_segments_than_exhaustive():
     assert shown(full) < shown(exh)
 
 
-@pytest.mark.xfail(strict=True, reason="PROPOSAL MISMATCH: H1 says the full system matches B4+filter 'while making "
-                                        "fewer checks', but both make exactly one check per applicable rule by "
-                                        "construction; the saving can only be in tokens per check")
-def test_full_system_makes_fewer_checks_than_exhaustive_filtered():
-    full, _ = review(d=form(counterparty_type="customer"), law=True)
-    exh, _ = review(d=form(counterparty_type="customer"), preset="exhaustive_filtered", law=True)
-    assert full.n_checks < exh.n_checks
+def test_full_system_makes_the_same_checks_as_exhaustive_filtered_with_fewer_tokens():
+    """H1's saving against B4+filter. Both make one check per applicable rule by construction, so
+    "fewer checks" (proposal §3) cannot hold; the saving is in the text shown per check, which is
+    what the final report measures (docs/results/final-report.md, H1 wording)."""
+    long = Draft("long", DEFECTIVE.segments + [f"Boilerplate clause number {i} about notices." for i in range(40)])
+    full, fl = review(long, form(counterparty_type="customer"), law=True, k_segments=3, neighbours=0)
+    exh, el = review(long, form(counterparty_type="customer"), preset="exhaustive_filtered", law=True)
+    assert full.n_checks == exh.n_checks
+    prompt_chars = lambda llm: sum(len(r.messages[-1].content) for r in llm.check_requests())
+    assert prompt_chars(fl) < prompt_chars(el)
 
 
 # ------------------------------------------------------------------ fairness and robustness

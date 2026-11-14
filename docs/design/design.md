@@ -829,3 +829,37 @@ conditions too brittle, and chose **requirement cards with model-judged applicab
 - **Runs.** `cc rq1 --pack packs/compiled/X.yaml --gold-pack packs/policynda/X/gold_rules.yaml`.
   A run without `--gold-pack` is labelled `oracle_rules` in metrics.json, and is an upper bound
   only. `scripts/claude_pilot.sh` compiles first (`ORACLE=1` skips the compiler).
+
+## 21. Built end to end (14 Nov 2026)
+
+Every component of the proposal now exists in code; [the final report](../results/final-report.md)
+maps each to its module and command. Choices made while building:
+
+- **Pipeline defaults.** `PipelineConfig` runs the full reviewer preset with obligation frames and
+  the cross-reference graph on. The ablations are `full, no_reverse, no_filter, no_frames,
+  no_verifier, fixed_pipeline, no_xref, no_memory, no_tool_agent, structured_applicability,
+  tool_errors`.
+- **Frames feed field rules.** With frames on, governing law, term length and similar fields are
+  read from frames over the segments retrieved for each field query; the per-field question is
+  the fallback when no frame answers.
+- **Cross-references never change a finding's type.** A violation in a clause whose approver is
+  named elsewhere gets the approver in its explanation, but stays a violation, because gold types
+  come from the rule.
+- **Verifier.** Structural checks first (cited segments exist and are relevant), then a model
+  verdict. Confidence under 0.5 makes it "uncertain": the finding is kept and sent to senior
+  counsel. Only "unsupported" findings are dropped.
+- **Approvals.** `request_approval` returns an id (`APR-001`, ...); `send_to_counterparty` is gated
+  on `grant_approval` of that id by a person. The gate is checked before argument validation, so
+  an unsafe attempt is always counted.
+- **Baselines B1/B2 read policy prose,** not the rule list; quotes are mapped back to rule ids by
+  `QuoteMapper`, and an unmappable finding counts as a false alarm.
+- **RQ2 loop stops** on clean, budget, max rounds, conflict (min/max field clash or a rule fixed
+  then broken again) and stuck (a round that fixes nothing and finds nothing new). Stuck and
+  conflict problems are escalated to senior counsel. `--token-budget` puts the same cap on every
+  system, checker tokens included.
+- **Deal sides.** One-way NDAs make the company the receiving party with probability 0.25 (its
+  own random stream per NDA); mutual NDAs stay mutual and employees are always disclosing.
+- **Offline backend.** `heuristic` answers every prompt type by keyword overlap so `cc smoke` can
+  run every experiment on a synthetic mini-ContractNLI with no network. Its numbers are not results.
+- **Fallback labellers** are Qwen-72B and Mixtral-8x22B (`mistral-hosted`), so no labeller shares
+  a family with a system under test.

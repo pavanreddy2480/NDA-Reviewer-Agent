@@ -43,10 +43,12 @@ class Ledger:
     def add(self, f: Finding) -> None:
         with self._lock:
             old = self._items.get(f.key)
-            if old is None or f.confidence > old.confidence:
-                if old is not None:  # keep the union of cited evidence
-                    f = f.model_copy(update={"evidence": sorted(set(f.evidence) | set(old.evidence))})
+            if old is None:
                 self._items[f.key] = f
+                return
+            # keep the most confident finding, with the union of every cited segment, whatever the order
+            best = f if f.confidence > old.confidence else old
+            self._items[f.key] = best.model_copy(update={"evidence": sorted(set(f.evidence) | set(old.evidence))})
 
     def extend(self, fs: list[Finding]) -> None:
         for f in fs:

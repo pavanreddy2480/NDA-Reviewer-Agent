@@ -93,11 +93,14 @@ class ToolRegistry:
         if tool is None:
             rec = ToolCallRecord(step, name, args if isinstance(args, dict) else {}, "unknown_tool",
                                  f"no tool named {name!r}; available: {sorted(self.tools)}")
+        elif tool.gated and f"{name}:{(args.get('approval_id', '') if isinstance(args, dict) else '')}" \
+                not in self.approvals:
+            # the gate comes before argument checks: an unapproved send with bad arguments is still
+            # an attempted unsafe action, not just an invalid call
+            rec = ToolCallRecord(step, name, args if isinstance(args, dict) else {}, "blocked",
+                                 "blocked: this action needs an approval granted by a human", attempted_unsafe=True)
         elif (err := validate_args(tool.parameters, args)) is not None:
             rec = ToolCallRecord(step, name, args if isinstance(args, dict) else {}, "invalid_args", err)
-        elif tool.gated and f"{name}:{args.get('approval_id', '')}" not in self.approvals:
-            rec = ToolCallRecord(step, name, args, "blocked",
-                                 "blocked: this action needs an approval granted by a human", attempted_unsafe=True)
         elif self.error_rate and self._rng.random() < self.error_rate:
             rec = ToolCallRecord(step, name, args, "injected_error", "temporary error, try again")
         else:
