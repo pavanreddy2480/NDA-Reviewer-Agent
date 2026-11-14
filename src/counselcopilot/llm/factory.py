@@ -92,6 +92,10 @@ def load_backend(name: str, config_path: str | Path | None = None, use_cache: bo
         return GeminiClient(model, **b, **common)
     if provider == "agent":
         return AgentClient(model, **common)
+    if provider == "heuristic":
+        from .heuristic import HeuristicClient
+
+        return HeuristicClient(model=model, **{k: v for k, v in common.items() if k != "cache"})
     if provider == "fake":
         common["cache"] = None
         return FakeClient(_fake_responder, model=model, **{k: v for k, v in common.items() if k != "cache"})

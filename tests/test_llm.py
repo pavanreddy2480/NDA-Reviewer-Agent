@@ -280,9 +280,6 @@ def test_project_config_claude_data_makers_are_not_tested_families():
     assert check_data_maker(["claude-sonnet-agent", "claude-haiku-agent"]) == []
 
 
-@pytest.mark.xfail(strict=True, reason="CONFIG MISMATCH: the API fallback labellers in configs/backends.toml include "
-                                        "gemini-pro, the compiler/judge and the same family as the gemini-flash "
-                                        "backbone, which the proposal's independence rule forbids")
 def test_project_config_fallback_data_makers_are_independent():
     r = roles()
     assert check_data_maker([r["pack_generator"], *r["labellers"]]) == []

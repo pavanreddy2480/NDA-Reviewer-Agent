@@ -102,8 +102,6 @@ def test_field_rules_are_scored_deterministically():
     assert not short.check(PACK.rule("P-06"), BEFORE).ok
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: a field the evaluator finds left blank ('____ years') counts as "
-                                        "satisfied, so a repairer could 'fix' a short term by blanking it")
 def test_blanked_field_does_not_count_as_fixed():
     blank = IndependentEvaluator(KeywordLLM(fields={"confidentiality_term_months": "blank"}))
     assert not blank.check(PACK.rule("P-06"), BEFORE).ok

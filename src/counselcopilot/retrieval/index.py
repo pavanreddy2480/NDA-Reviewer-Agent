@@ -125,14 +125,16 @@ class HybridIndex:
         if not self.passages:
             return []
         bm = self.bm25.scores(query)
-        rankings = [list(np.argsort(-bm)[:candidates])]
+        # passages that share no word with the query get no BM25 rank: otherwise they enter rank
+        # fusion in index order and the first segments of an NDA get credit for matching nothing
+        rankings = [[int(i) for i in np.argsort(-bm)[:candidates] if bm[i] > 0]]
         if self.emb is not None:
             qv = self.encoder.encode([query], normalize_embeddings=True)[0]
             dense = self.emb @ qv
-            rankings.append(list(np.argsort(-dense)[:candidates]))
+            rankings.append([int(i) for i in np.argsort(-dense)[:candidates]])
             fused = rrf(rankings)
         else:  # BM25 only: keep BM25 scores, drop zero-score passages
-            fused = {int(i): float(bm[i]) for i in rankings[0] if bm[i] > 0}
+            fused = {i: float(bm[i]) for i in rankings[0]}
         order = sorted(fused, key=fused.get, reverse=True)[:candidates]
         if self.reranker is not None and order:
             rs = self.reranker.predict([(query, self.passages[i].text) for i in order])

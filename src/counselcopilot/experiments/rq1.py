@@ -28,10 +28,17 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             checker_llm: LLMClient | None = None, temperature: float = 0.0,
             hide_facts: bool = False, allow_unverified_labels: bool = False,
             allow_auto_labels: bool = False, deal_seed: int = 0, gold_packs: list[PolicyPack] | None = None,
-            applicability: str = "model") -> dict:
+            applicability: str = "model", system: str = "reviewer", ablation: str = "full",
+            policy_dirs: dict[str, str] | None = None, precedents: list | None = None,
+            encoder=None, reranker=None) -> dict:
     """`packs` are what the reviewer checks: compiled requirement cards (policy/compiler.py) in the
     main runs. `gold_packs` are the gold rule lists gold is scored on; cards are matched to them
-    by quote (benchmark/align.py). Without `gold_packs`, `packs` are gold too (oracle-rules run)."""
+    by quote (benchmark/align.py). Without `gold_packs`, `packs` are gold too (oracle-rules run).
+
+    `system` picks what is scored: "reviewer" (the policy reviewer with `preset`: the RQ1 component
+    runs), "pipeline" (the full CounselCopilot pipeline with one `ablation`, agents/pipeline.py), or a
+    baseline "b1" / "b2" / "b2_checklist" / "b3" (baselines/systems.py; `policy_dirs` maps each
+    company to its policy prose for B1 and B2)."""
     docs = data[split][:limit] if limit else data[split]
     if planted is not None:
         docs = [d for d in docs if d.id in planted]
@@ -44,8 +51,12 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
     cfg = ReviewConfig.preset(preset)
     cfg.max_workers, cfg.temperature, cfg.seed = max_workers, temperature, seed
     cfg.applicability = applicability
-    reviewers = {c: PolicyReviewer(llm, p, cfg, law_pack=law_pack, checker_llm=checker_llm)
+    reviewers = {c: build_system(system, llm, p, cfg, law_pack, checker_llm, ablation,
+                                 (policy_dirs or {}).get(c), precedents, encoder, reranker, applicability,
+                                 temperature, seed, max_workers)
                  for c, p in by_company.items()}
+    extra = {"verdicts": [], "handoff_esc": {}, "handoff_res": {}, "tool_logs": [], "gold_sets": [],
+             "plans": [], "unscored": 0}
 
     preds, golds, inferred, fact_labels, rows, pending, errors = {}, {}, {}, {}, [], 0, 0
     for doc in docs:
@@ -64,6 +75,7 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             continue
         preds[doc.id] = (remap_findings(result.findings, alignments[deal.company]) if alignments
                          else result.findings)
+        _collect(extra, doc.id, result, reviewers[deal.company])
         inferred[doc.id] = result.inferred_facts
         fact_labels[doc.id] = lab
         errors += result.n_errors
@@ -79,6 +91,10 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             "findings": [f.model_dump(mode="json") for f in result.findings],
             "scored_findings": [f.model_dump(mode="json") for f in preds[doc.id]],  # on gold rule ids
             "applicability_notes": result.applicability_notes,
+            "plan": getattr(getattr(result, "plan", None), "reviewers", None),
+            "unscored_findings": [f.model_dump(mode="json") for f in getattr(result, "unscored_findings", [])],
+            "verdicts": [{"rule_id": v.finding.rule_id, "type": v.finding.type.value, "verdict": v.verdict,
+                          "reason": v.reason} for v in getattr(result, "verdicts", [])],
             "gold": [{"rule_id": d.rule_id, "type": d.type.value, "evidence": list(d.evidence), "origin": d.origin}
                      for d in golds[doc.id].defects],
             "unscored_rules": golds[doc.id].unscored_rules,
@@ -124,8 +140,96 @@ def run_rq1(llm: LLMClient, data: ContractNLI, packs: list[PolicyPack], split: s
             metrics["injection"] = {"injected": subset(inj), "clean": subset(set(preds) - inj)}
     if checker_llm is not None:
         metrics["checker_usage"] = usage_report(checker_llm)
-    out = run_dir(f"rq1-{preset}-{split}-{llm.name}", out_root)
+    metrics["system"] = {"name": system, "preset": preset if system == "reviewer" else None,
+                         "ablation": ablation if system == "pipeline" else None}
+    metrics.update(_agent_metrics(extra, golds))
+    label = preset if system == "reviewer" else (f"pipeline-{ablation}" if system == "pipeline" else system)
+    out = run_dir(f"rq1-{label}-{split}-{llm.name}", out_root)
     write_jsonl(out / "reviews.jsonl", rows)
     (out / "metrics.json").write_text(json.dumps(metrics, indent=1, default=str))
     metrics["out_dir"] = str(out)
     return metrics
+
+
+def build_system(system: str, llm: LLMClient, pack: PolicyPack, cfg: ReviewConfig, law_pack: LawPack | None,
+                 checker_llm: LLMClient | None, ablation: str = "full", policy_dir: str | None = None,
+                 precedents: list | None = None, encoder=None, reranker=None, applicability: str = "model",
+                 temperature: float = 0.0, seed: int = 0, max_workers: int = 8):
+    """A system with .review(draft, deal) -> ReviewResult, for one company."""
+    from dataclasses import replace
+
+    if system == "reviewer":
+        return PolicyReviewer(llm, pack, cfg, encoder, reranker, law_pack=law_pack, checker_llm=checker_llm)
+    if system == "pipeline":
+        from ..agents.memory import PrecedentMemory
+        from ..agents.pipeline import CounselCopilot, PipelineConfig
+
+        pc = PipelineConfig.ablation(ablation)
+        pc.review = replace(pc.review, max_workers=max_workers, temperature=temperature, seed=seed,
+                            applicability=applicability if ablation != "structured_applicability" else "structured")
+        mem = PrecedentMemory([p for p in (precedents or []) if not p.company or p.company == pack.company])
+        return CounselCopilot(llm, pack, law_pack, pc, checker_llm, mem, encoder, reranker)
+    from ..baselines.common import load_policy_docs
+    from ..baselines.systems import LongContext, NaiveRAG, NaiveRAGChecklist, SingleAgent
+
+    docs = load_policy_docs(policy_dir)
+    if system == "b1":
+        return LongContext(llm, pack, law_pack, docs)
+    if system == "b2":
+        return NaiveRAG(llm, pack, law_pack, docs, encoder=encoder, max_workers=max_workers)
+    if system == "b2_checklist":
+        return NaiveRAGChecklist(llm, pack, law_pack, docs, checker_llm, encoder, max_workers)
+    if system == "b3":
+        return SingleAgent(llm, pack, law_pack)
+    raise KeyError(f"unknown system {system!r}")
+
+
+def _collect(extra: dict, doc_id: int, result, system_obj) -> None:
+    extra["verdicts"] += [(doc_id, v) for v in getattr(result, "verdicts", [])]
+    h = getattr(result, "handoff", None)
+    if h is not None:
+        extra["handoff_esc"][doc_id] = h.escalations
+        extra["handoff_res"][doc_id] = h.resolved
+        extra["tool_logs"] += h.tool_logs
+        extra["gold_sets"] += h.gold_sets
+    plan = getattr(result, "plan", None)
+    if plan is not None:
+        extra["plans"].append(plan.reviewers)
+    calls = getattr(system_obj, "last_calls", None)
+    if calls:  # B3's own tool calls: safety metrics, no gold tool set
+        extra.setdefault("b3_logs", []).append(list(calls))
+    extra["unscored"] += len(getattr(result, "unscored_findings", []))
+
+
+def _agent_metrics(extra: dict, golds: dict) -> dict:
+    """Verifier, hand-off, tool-calling, planner and safety metrics (proposal §5, §7) when the
+    system produced them."""
+    from collections import Counter
+
+    from ..agents.handoff import handoff_metrics
+    from ..tools.registry import tool_metrics
+
+    out: dict = {}
+    if extra["verdicts"]:
+        gold_keys = {i: {d.key for d in g.defects} for i, g in golds.items()}
+        rej = [(i, v) for i, v in extra["verdicts"] if v.verdict == "unsupported"]
+        right = sum(v.finding.key not in gold_keys.get(i, set()) for i, v in rej)
+        out["verifier"] = {"n_findings": len(extra["verdicts"]), "rejected": len(rej),
+                           "rejection_precision": round(right / len(rej), 4) if rej else None,
+                           "gold_defects_rejected": len(rej) - right,
+                           "uncertain": sum(v.verdict == "uncertain" for _, v in extra["verdicts"])}
+    if extra["handoff_esc"] or extra["handoff_res"]:
+        gk = {i: {d.key for d in g.defects} for i, g in golds.items()}
+        out["handoff"] = handoff_metrics(extra["handoff_esc"], extra["handoff_res"], gk)
+    if extra["tool_logs"]:
+        out["tool_calling"] = tool_metrics(extra["tool_logs"], extra["gold_sets"])
+    if extra.get("b3_logs"):
+        logs = extra["b3_logs"]
+        out["b3_tools"] = {"calls_per_nda": round(sum(map(len, logs)) / len(logs), 2),
+                           "attempted_unsafe": sum(r.attempted_unsafe for l in logs for r in l),
+                           "invalid_calls": sum(r.status in ("invalid_args", "unknown_tool") for l in logs for r in l)}
+    if extra["plans"]:
+        c = Counter(r for p in extra["plans"] for r in p)
+        out["planner"] = {"runs": dict(c), "n": len(extra["plans"])}
+    out["unscored_findings"] = extra["unscored"]
+    return out

@@ -68,9 +68,6 @@ class FakeEncoder:
         return out / np.linalg.norm(out, axis=1, keepdims=True)
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: in hybrid mode, passages with BM25 score 0 still enter reciprocal "
-                                        "rank fusion in index order, so the first segments of an NDA get rank "
-                                        "credit for matching nothing and can outrank the true dense hit")
 def test_dense_search_finds_paraphrases_bm25_misses():
     assert index().search("give back", k=4) == []  # no shared word for BM25
     hits = index(encoder=FakeEncoder()).search("give back", k=1)

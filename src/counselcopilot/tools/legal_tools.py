@@ -33,8 +33,10 @@ def build_registry(pack: PolicyPack, law_pack: LawPack | None = None,
         return [p for p in precedents if p["rule_id"] == rule_id and p["counterparty"].lower() == counterparty.lower()]
 
     def request_approval(rule_id: str, reason: str) -> dict:
-        pending.append({"rule_id": rule_id, "reason": reason})
-        return {"status": "pending", "message": "Sent to senior counsel; no action until they approve."}
+        approval_id = f"APR-{len(pending) + 1:03d}"
+        pending.append({"approval_id": approval_id, "rule_id": rule_id, "reason": reason, "status": "pending"})
+        return {"status": "pending", "approval_id": approval_id,
+                "message": "Sent to senior counsel; no action until they approve."}
 
     def send_to_counterparty(approval_id: str, message: str) -> dict:
         sent.append({"approval_id": approval_id, "message": message})
@@ -55,6 +57,15 @@ def build_registry(pack: PolicyPack, law_pack: LawPack | None = None,
                       gated=True, read_only=False))
     reg.pending, reg.sent = pending, sent  # type: ignore[attr-defined]
     return reg
+
+
+def grant_approval(reg: ToolRegistry, approval_id: str, approver: str = "senior counsel") -> dict:
+    """A human (never the model) grants a pending request. Only then may send_to_counterparty run
+    with that approval id. Returns the request, or raises KeyError for an unknown id."""
+    req = next(p for p in reg.pending if p.get("approval_id") == approval_id)  # type: ignore[attr-defined]
+    req.update(status="granted", approver=approver)
+    reg.grant(f"send_to_counterparty:{approval_id}")
+    return req
 
 
 # Gold minimal tool sets per finding type (design §8.3)

@@ -14,7 +14,7 @@ evaluator = "gemini-pro"  # RQ2 judge; validated on ContractNLI labels and 100 h
 # through an API: Claude is a family no backbone, compiler or judge uses. Imported with `cc packs import`.
 # The API settings below stay as the fallback (`cc packs generate`, `cc labels auto`).
 pack_generator = "qwen-hosted"  # API fallback; must be a family no other role uses
-labellers = ["qwen-hosted", "gemini-pro"]  # API fallback; two different families; disagreements go to a person
+labellers = ["qwen-hosted", "mistral-hosted"]  # API fallback; two families no system under test, compiler or judge uses
 
 [cache]
 path = "data/cache/llm.sqlite"
@@ -64,6 +64,16 @@ family = "qwen"
 price_in = 1.20
 price_out = 1.20
 
+# Second API-fallback labeller and pack cross-checker: a third family (neither Llama, Gemini nor Qwen),
+# so the two labellers differ from each other and from every graded system. Same Together account.
+[backends.mistral-hosted]
+provider = "openai_compat"
+base_url = "https://api.together.xyz/v1"
+model = "mistralai/Mixtral-8x22B-Instruct-v0.1"
+family = "mistral"
+price_in = 1.20
+price_out = 1.20
+
 # Stage 2. Set GEMINI_API_KEY. Use the Batch API for full runs (half price).
 [backends.gemini-flash]
 provider = "gemini"
@@ -108,3 +118,25 @@ family = "claude"
 provider = "fake"
 model = "fake"
 family = "fake"
+
+# No network, no model: keyword and pattern rules answer every prompt (llm/heuristic.py), so the
+# whole pipeline runs end to end. A plumbing check and a no-model reference, never a result.
+[backends.heuristic]
+provider = "heuristic"
+model = "heuristic"
+family = "heuristic"
+
+# A second offline backend for the RQ2 evaluator role in smoke runs (must differ from the system).
+[backends.heuristic-judge]
+provider = "heuristic"
+model = "heuristic-judge"
+family = "heuristic"
+
+# The QLoRA adapter served by vLLM with --enable-lora (docs/guides/qlora-kaggle.md):
+# vllm serve meta-llama/Meta-Llama-3.1-8B-Instruct --enable-lora --lora-modules counselcopilot=runs/qlora-llama8b
+[backends.llama-tuned]
+provider = "openai_compat"
+base_url = "http://localhost:8000/v1"
+model = "counselcopilot"
+family = "llama"
+structured = "json_schema"

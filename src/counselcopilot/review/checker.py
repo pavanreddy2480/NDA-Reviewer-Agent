@@ -62,6 +62,9 @@ class CheckResult:
     rationale: str = ""
     shown: list[int] = field(default_factory=list)  # segments the model saw
     error: str = ""
+    # field rules only: "blank" (template left the value blank) or "unspecified" (no number given).
+    # Neither is a finding, and neither counts as meeting the rule when a repair is scored.
+    undetermined: str = ""
 
 
 def run_check(llm: LLMClient, term: str, draft: Draft, segment_ids: list[int],
