@@ -24,7 +24,7 @@ class Finding(BaseModel):
     explanation: str = ""
     confidence: float = 0.5
     reviewer: str = ""  # which agent produced it
-    direction: str = ""  # "forward" | "reverse" | "exhaustive" | "long_context"
+    direction: str = ""  # "forward" | "reverse" | "exhaustive" | "long_context" | "agentic"
     verified: bool | None = None  # set by the verifier
     severity: str = "medium"
 

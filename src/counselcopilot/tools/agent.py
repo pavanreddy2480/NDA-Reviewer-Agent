@@ -29,7 +29,7 @@ class AgentResult:
 
 
 def run_agent(llm: LLMClient, registry: ToolRegistry, instructions: str, task: str,
-              max_steps: int = 8, tag: str = "agent") -> AgentResult:
+              max_steps: int = 8, tag: str = "agent", temperature: float = 0.0, seed: int = 0) -> AgentResult:
     tools = json.dumps(registry.specs(), indent=1)
     msgs: list[Message] = [
         system(f"{instructions}\n\nTOOLS:\n{tools}\n\nReply each turn with one JSON object "
@@ -41,7 +41,7 @@ def run_agent(llm: LLMClient, registry: ToolRegistry, instructions: str, task: s
     start = len(registry.log)
     for step in range(1, max_steps + 1):
         try:
-            out = llm.complete_json(msgs, STEP_SCHEMA, max_tokens=400, tag=tag)
+            out = llm.complete_json(msgs, STEP_SCHEMA, max_tokens=400, tag=tag, temperature=temperature, seed=seed)
         except ValueError:
             return AgentResult({}, registry.log[start:], step, "bad_output")
         if isinstance(out, list):  # some models wrap the object in an array
