@@ -1,0 +1,2 @@
+WARNING: law pack provisions not yet checked by two teammates: LAW-DTSA-1833B, LAW-SEC-21F17, LAW-SPEAK-OUT, LAW-CA-BPC-16600, LAW-CA-BPC-16600-NONSOLICIT, LAW-PENALTY, LAW-CCPA-SP
+NOTE: no --gold-pack, so --pack is both what the reviewer checks and gold: an oracle-rules run, not the system. Compile the policies (cc compile) and pass the gold lists as --gold-pack.

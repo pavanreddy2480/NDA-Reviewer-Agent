@@ -1,0 +1,161 @@
+{
+ "strict": {
+  "overall": {
+   "tp": 22,
+   "fp": 29,
+   "fn": 31,
+   "precision": 0.4314,
+   "recall": 0.4151,
+   "f1": 0.4231
+  },
+  "by_type": {
+   "approval_needed": {
+    "tp": 5,
+    "fp": 1,
+    "fn": 1,
+    "precision": 0.8333,
+    "recall": 0.8333,
+    "f1": 0.8333
+   },
+   "omission": {
+    "tp": 12,
+    "fp": 5,
+    "fn": 23,
+    "precision": 0.7059,
+    "recall": 0.3429,
+    "f1": 0.4615
+   },
+   "statutory_risk": {
+    "tp": 2,
+    "fp": 1,
+    "fn": 1,
+    "precision": 0.6667,
+    "recall": 0.6667,
+    "f1": 0.6667
+   },
+   "violation": {
+    "tp": 3,
+    "fp": 22,
+    "fn": 6,
+    "precision": 0.12,
+    "recall": 0.3333,
+    "f1": 0.1765
+   }
+  },
+  "false_alarms_per_nda": 5.8,
+  "n_ndas": 5,
+  "n_gold_defects": 53,
+  "n_gold_with_evidence": 6,
+  "per_doc": [
+   [
+    3,
+    7,
+    7
+   ],
+   [
+    3,
+    6,
+    5
+   ],
+   [
+    7,
+    6,
+    4
+   ],
+   [
+    5,
+    7,
+    9
+   ],
+   [
+    4,
+    3,
+    6
+   ]
+  ],
+  "ci95": {
+   "precision": [
+    0.34,
+    0.5192
+   ],
+   "recall": [
+    0.3333,
+    0.5283
+   ],
+   "f1": [
+    0.34,
+    0.5138
+   ]
+  }
+ },
+ "rules": "oracle_rules",
+ "compiler": {},
+ "checks_per_nda": 29.2,
+ "applicable_rules_per_nda": 24.4,
+ "fact_accuracy": {
+  "personal_data": {
+   "accuracy": 0.6667,
+   "n": 3
+  },
+  "governing_law": {
+   "accuracy": 1.0,
+   "n": 5
+  }
+ },
+ "pending_batch_ndas": 0,
+ "usage": {
+  "backend": "llama-ollama",
+  "model": "llama3.1:8b",
+  "calls": 279,
+  "cached_calls": 111,
+  "input_tokens_uncached": 143889,
+  "output_tokens_uncached": 10477,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 116878,
+  "cached_output_tokens": 8118,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "deal_facts": {
+    "calls": 5,
+    "cached_calls": 5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 2259,
+    "cached_output_tokens": 382
+   },
+   "field_extract": {
+    "calls": 19,
+    "cached_calls": 19,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 5680,
+    "cached_output_tokens": 289
+   },
+   "reverse_check": {
+    "calls": 87,
+    "cached_calls": 87,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 108939,
+    "cached_output_tokens": 7447
+   },
+   "agentic_search": {
+    "calls": 144,
+    "cached_calls": 0,
+    "input_tokens": 103114,
+    "output_tokens": 8158,
+    "cached_input_tokens": 0,
+    "cached_output_tokens": 0
+   },
+   "agentic_check": {
+    "calls": 24,
+    "cached_calls": 0,
+    "input_tokens": 40775,
+    "output_tokens": 2319,
+    "cached_input_tokens": 0,
+    "cached_output_tokens": 0
+   }
+  }
+ },
+ "out_dir": "runs\\20261115-005750-rq1-agentic-test-llama-ollama"
+}
