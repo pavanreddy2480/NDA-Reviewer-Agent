@@ -219,6 +219,25 @@ def report_table(runs: list[str]) -> str:
     return "\n".join(out)
 
 
+def cmd_ablations(args) -> None:
+    from .experiments.ablations import ablation_report, report_markdown, rq2_markdown
+
+    parts = ["# Ablation results", ""]
+    rep = None
+    if args.runs:
+        rep = ablation_report(args.runs, base=args.base)
+        parts += ["## RQ1 ablations", "", report_markdown(rep), ""]
+    for r in args.rq2 or []:
+        parts += ["## RQ2 loop ablations", "", rq2_markdown(r), ""]
+    text = "\n".join(parts)
+    if args.out:
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(text + "\n")
+        if rep is not None:
+            Path(args.out).with_suffix(".json").write_text(json.dumps(rep, indent=1, default=str))
+    print(text)
+
+
 def cmd_report(args) -> None:
     text = report_table(args.runs)
     if args.out:
@@ -383,6 +402,13 @@ def register(sub, llm_args) -> None:
     cm.add_argument("--score", default="strict", choices=["strict", "lenient", "rule_only"])
     cm.add_argument("--margin", type=float, default=None, help="TOST margin, e.g. 0.03 for H1")
     cm.set_defaults(fn=cmd_compare)
+
+    ab = sub.add_parser("ablations", help="every ablation run vs the full system: paired bootstrap, Holm-corrected")
+    ab.add_argument("runs", nargs="*", help="RQ1 run folders, optionally NAME=PATH")
+    ab.add_argument("--base", default="full")
+    ab.add_argument("--rq2", nargs="*", default=[], help="RQ2 run folders")
+    ab.add_argument("--out", default=None, help="markdown file (a .json with the numbers is written beside it)")
+    ab.set_defaults(fn=cmd_ablations)
 
     rp = sub.add_parser("report", help="markdown table over RQ1 and RQ2 run folders")
     rp.add_argument("runs", nargs="+")
