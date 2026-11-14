@@ -1,12 +1,12 @@
 {
  "strict": {
   "overall": {
-   "tp": 22,
-   "fp": 29,
-   "fn": 31,
-   "precision": 0.4314,
-   "recall": 0.4151,
-   "f1": 0.4231
+   "tp": 24,
+   "fp": 28,
+   "fn": 29,
+   "precision": 0.4615,
+   "recall": 0.4528,
+   "f1": 0.4571
   },
   "by_type": {
    "approval_needed": {
@@ -18,12 +18,12 @@
     "f1": 0.8333
    },
    "omission": {
-    "tp": 12,
-    "fp": 5,
-    "fn": 23,
-    "precision": 0.7059,
-    "recall": 0.3429,
-    "f1": 0.4615
+    "tp": 14,
+    "fp": 8,
+    "fn": 21,
+    "precision": 0.6364,
+    "recall": 0.4,
+    "f1": 0.4912
    },
    "statutory_risk": {
     "tp": 2,
@@ -35,14 +35,14 @@
    },
    "violation": {
     "tp": 3,
-    "fp": 22,
+    "fp": 18,
     "fn": 6,
-    "precision": 0.12,
+    "precision": 0.1429,
     "recall": 0.3333,
-    "f1": 0.1765
+    "f1": 0.2
    }
   },
-  "false_alarms_per_nda": 5.8,
+  "false_alarms_per_nda": 5.6,
   "n_ndas": 5,
   "n_gold_defects": 53,
   "n_gold_with_evidence": 6,
@@ -53,9 +53,9 @@
     7
    ],
    [
-    3,
-    6,
-    5
+    5,
+    4,
+    3
    ],
    [
     7,
@@ -69,22 +69,22 @@
    ],
    [
     4,
-    3,
+    4,
     6
    ]
   ],
   "ci95": {
    "precision": [
-    0.34,
-    0.5192
+    0.3696,
+    0.5357
    ],
    "recall": [
-    0.3333,
-    0.5283
+    0.34,
+    0.5778
    ],
    "f1": [
-    0.34,
-    0.5138
+    0.3542,
+    0.5591
    ]
   }
  },
@@ -107,12 +107,12 @@
   "backend": "llama-ollama",
   "model": "llama3.1:8b",
   "calls": 279,
-  "cached_calls": 111,
-  "input_tokens_uncached": 143889,
-  "output_tokens_uncached": 10477,
+  "cached_calls": 279,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
   "cost_usd_uncached": 0.0,
-  "cached_input_tokens": 116878,
-  "cached_output_tokens": 8118,
+  "cached_input_tokens": 260767,
+  "cached_output_tokens": 18595,
   "cost_usd_full": 0.0,
   "by_agent": {
    "deal_facts": {
@@ -141,21 +141,21 @@
    },
    "agentic_search": {
     "calls": 144,
-    "cached_calls": 0,
-    "input_tokens": 103114,
-    "output_tokens": 8158,
-    "cached_input_tokens": 0,
-    "cached_output_tokens": 0
+    "cached_calls": 144,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 103114,
+    "cached_output_tokens": 8158
    },
    "agentic_check": {
     "calls": 24,
-    "cached_calls": 0,
-    "input_tokens": 40775,
-    "output_tokens": 2319,
-    "cached_input_tokens": 0,
-    "cached_output_tokens": 0
+    "cached_calls": 24,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 40775,
+    "cached_output_tokens": 2319
    }
   }
  },
- "out_dir": "runs\\20261115-005750-rq1-agentic-test-llama-ollama"
+ "out_dir": "runs\\20261115-052219-rq1-agentic-test-llama-ollama"
 }

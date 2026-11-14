@@ -67,7 +67,7 @@ The gate removes the harm: `agentic` no longer loses true omissions or adds fals
 because with this model and this data the search never surfaced evidence that mattered. Agentic RAG now costs 2.5 times
 the calls for the same result. It can only pay off where the first retrieval misses real evidence: a stronger checker,
 longer documents, or the policy corpus (~40k tokens per company, more than the 16k context), which the preset does not
-search yet. The rerun is in `rq1_agentic_gated.json` and `run_logs/20261115-052219-rq1-agentic-test-llama-ollama/`.
+search yet. The rerun is in `rq1_agentic.json` (the run before the fix is `rq1_agentic_before_fix.json`) and `run_logs/20261115-052219-rq1-agentic-test-llama-ollama/`.
 The gate keys on where the evidence comes from, not on a threshold fitted to these 5 NDAs. Still, it was checked
 on the same NDAs that showed the problem, so confirm it on more data.
 
@@ -96,7 +96,7 @@ Injected episodes (5 of the 10): tool precision 0.29, recall 1.0, and no unsafe 
 
 ## Files
 
-- `rq1_full.json`, `rq1_agentic.json`, `tools_err0.0.json`, `tools_err0.1.json`: the summaries each command printed,
+- `rq1_full.json`, `rq1_agentic.json` (with the fix), `rq1_agentic_before_fix.json`, `tools_err0.0.json`, `tools_err0.1.json`: the summaries each command printed,
   with stderr next to them.
 - `run_logs/`: copies of the run folders. These hold the per-NDA reviews with every check and agent search
   (`reviews.jsonl`), the tool-call transcripts per episode (`episodes.jsonl`), and the full metrics.
