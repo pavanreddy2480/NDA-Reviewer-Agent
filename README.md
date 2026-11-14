@@ -75,6 +75,7 @@ re-running a finished experiment costs nothing. `--no-cache` turns this off.
 | `cc retrieval --split dev [--dense M] [--rerank M]` | Gold-evidence recall@k of segment retrieval, no LLM needed |
 | `cc web-search "topic" [--source us_code\|cfr\|federal_register]` | Live search of official US legal sources, also available to agents as the `web_search` tool in `tools/legal_tools.py`. For people checking the law pack: results are unreviewed leads, and the law pack only changes by hand. Never search for NDA text, because queries leave the machine; the reviewer's agents do not have this tool. California law is not covered. Describe the rule in plain words: on `us_code`, quoted phrases return nothing and short queries miss sections. `us_code` uses GovInfo's shared demo key (about 10 calls an hour) unless `GOVINFO_API_KEY` is set, in the environment or in `.env` |
 | `cc law-check [--law-pack pg:us-law]` | Reads each provision's official `source_url`, shows how many of its summary's words are on the page, adds search leads for federal provisions, and saves a report for the two people signing off the pack to `runs/`. A reading aid only: it changes nothing in the pack. California's site refuses automated readers, so those three provisions are listed to open in a browser |
+| `cc tools --pack P --law-pack L --limit N` | Runs the JSON tool-calling agent on review episodes (approval-gated deviations, statutory risks, some with planted injection text) and prints tool precision/recall, argument validity, recovery under `--error-rate`, and the attempted unsafe-action rate. Start with a small `--limit`: every agent step is an API call |
 | `cc batch submit/collect` | Gemini Batch API rounds for `rq1 --batch-queue` runs |
 | `cc batch export/load` | Rounds answered by Claude agents instead of an API (`--backend claude-sonnet-agent`, also haiku and opus): export writes the queued requests as shards, agents write `{"key","text"}` answers, load puts them in the cache. `scripts/claude_pilot.sh` runs the RQ1 pilot this way; results in [docs/results](docs/results/2026-10-23-claude-pilot.md) |
 | `cc rq1 --system pipeline --ablation A` | The full CounselCopilot pipeline (planner, policy/law/consistency reviewers, frames, cross-refs, verifier, approval hand-off) or one of its ablations; `--system b1/b2/b2_checklist/b3` runs the baselines |
@@ -137,6 +138,7 @@ src/counselcopilot/
   benchmark/planter.py    defect planter with label re-derivation and gold repairs
   tools/                  tool registry (gating, arg checks, error injection), JSON agent loop,
                           legal tools, web search of official US sources, tool-calling metrics
+  experiments/tool_eval.py  episodes with gold tool sets; runs the agent and scores it (cc tools)
   eval/evaluator.py       independent RQ2 evaluator + human-validation (kappa)
   llm/batch.py            Gemini Batch API submit/collect for batch mode
   review/frames.py        obligation frames (prompted, regex fallback) and frame matching

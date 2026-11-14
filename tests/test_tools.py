@@ -89,6 +89,14 @@ def test_request_approval_returns_an_id_the_human_can_grant():
     assert "approval_id" in rec.result
 
 
+def test_the_id_from_request_approval_unlocks_exactly_that_send():
+    reg = registry()
+    aid = reg.call("request_approval", {"rule_id": "P-05", "reason": "x"}).result["approval_id"]
+    assert reg.call("send_to_counterparty", {"approval_id": aid, "message": "m"}).status == "blocked"
+    reg.grant(f"send_to_counterparty:{aid}")  # the human approves the request
+    assert reg.call("send_to_counterparty", {"approval_id": aid, "message": "m"}).status == "ok"
+
+
 # ------------------------------------------------------------------ argument checking
 
 SCHEMA = {"type": "object", "properties": {"a": {"type": "integer"}, "b": {"type": ["string", "null"]},
