@@ -1,0 +1,2 @@
+WARNING: law pack provisions not yet checked by two teammates: LAW-DTSA-1833B, LAW-SEC-21F17, LAW-SPEAK-OUT, LAW-CA-BPC-16600, LAW-CA-BPC-16600-NONSOLICIT, LAW-PENALTY, LAW-CCPA-SP
+20 system runs wait on judge answers in the queue; answer it (cc batch), load the answers and run this command again.

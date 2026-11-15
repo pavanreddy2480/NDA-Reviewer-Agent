@@ -88,6 +88,61 @@ Injected episodes (5 of the 10): tool precision 0.29, recall 1.0, and no unsafe 
 3. **Recovery from failed tool calls is weak.** Only 38% of injected tool errors were retried successfully. The 0.1 run
    is faster only because many responses were already cached from the 0.0 run.
 
+## RQ2: repairs done, scoring waits on the judge
+
+**Status:** llama3.1:8b has red-teamed and repaired the first 5 planted test NDAs with all four systems (`loop`,
+`r1`, `r1_attacker`, `r2`): 20 repaired NDAs, 603 model calls, about 72 minutes. **No RQ2 scores yet.** The
+independent judge (`gemini-flash`, Gemini 3.8 Flash) has not answered. Its 398 first-stage questions are stored in
+`data/rq2_queue/judge.gemini-flash.jsonl` (4 MB).
+
+**Why it stopped there.** The Gemini key we had is on the free tier: 20 requests per model per day. RQ2 needs about
+1,000–1,200 judge requests for these 5 NDAs. `gemini-3.8-flash` also timed out (504) when called directly. And no
+Gemini Pro model, the judge the proposal names, is available to the key. So the repairs were run with the judge's
+requests queued (`cc rq2 --evaluator-batch-queue`) to be answered later.
+
+**How the judge scores a repair.** For every rule that applies to the deal, the judge reads the whole NDA plus that one
+rule and answers Entailment, Contradiction or NotMentioned. For a field rule it reads the value, and code compares it
+with the limit. A rule's status is compared before and after the repair:
+
+- broken → ok is a **fix**;
+- ok → broken is a **regression**;
+- broken after the repair is **remaining**.
+
+A fix or regression counts only if a second judge call with another seed agrees. Each confirmed regression is then
+traced to the redline that caused it. Those follow-up questions depend on the first answers, so they are queued in
+later rounds.
+
+**What each system did** (`run_logs/rq2/repaired_drafts.jsonl` holds every repaired NDA: redlines, original and
+repaired segments, full text):
+
+| NDA | Company | loop | r1 | r1_attacker | r2 |
+|---|---|---|---|---|---|
+| 1 | Keystone | 3 rounds, 30 redlines | 1 round, 6 | 1 round, 8 | 3 rounds, 18 |
+| 2 | Northwind | 3 rounds, 20 | none needed | stuck, 0 | clean, 0 |
+| 4 | Northwind | 3 rounds, 26 | 1 round, 6 | 1 round, 6 | 3 rounds, 18 |
+| 5 | Keystone | 3 rounds, 29 | 1 round, 2 | 1 round, 8 | 3 rounds, 9 |
+| 6 | Bayview | 3 rounds, 27 | stuck, 0 | 1 round, 5 | 3 rounds, 6 |
+
+The loop always used all 3 rounds (`max_rounds`), because the attacker kept finding new scenarios, and it writes 3–5
+times as many redlines as `r1`. Whether those redlines fix more or break more is exactly what the judge has to decide.
+
+**To finish RQ2** (needs a key with real quota, e.g. a paid Gemini key):
+
+```bash
+export GEMINI_API_KEY=...            # paid tier
+cc batch submit  --backend gemini-flash --queue data/rq2_queue/judge.gemini-flash.jsonl   # one Batch API job, half price
+cc batch collect --backend gemini-flash --job <job id>                                    # answers into the cache
+# rerun the same rq2 command: repairs come from the cache, the next stage is queued; repeat until 0 pending
+cc rq2 --backend llama-ollama --evaluator-backend gemini-flash --evaluator-batch-queue data/rq2_queue/judge.jsonl \
+  --workers 2 --pack packs/policynda/saas/gold_rules.yaml --pack packs/policynda/hospital/gold_rules.yaml \
+  --pack packs/policynda/manufacturer/gold_rules.yaml --labels data/labels/ndas_auto.yaml --allow-auto --limit 5
+```
+
+The rerun only replays llama from the cache. Without this machine's `data/cache/llm.sqlite`, a teammate's rerun
+would redo the 72 minutes of repairs. With a different llama build, the repairs and their judge questions would also
+change. The judge must be the backend the queue is named for (`gemini-flash`). Answering with another model means
+adding a backend for it and queueing again, which takes minutes because the repairs are cached.
+
 ## Caveats
 
 - 5 NDAs and 10 tool episodes, one seed, an 8B quantised model. Too small to decide between presets. A real comparison

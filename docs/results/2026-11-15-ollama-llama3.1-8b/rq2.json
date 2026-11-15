@@ -1,0 +1,12 @@
+{
+ "systems": {},
+ "comparisons": [],
+ "h2": {
+  "remaining_at_most_half_of_r1": null,
+  "remaining_at_most_half_of_r1_attacker": null,
+  "regression_rate_below_5pct": null,
+  "blind_acceptance": "needs two teammates: cc rq2 --acceptance-sheet, then cc rq2-kappa"
+ },
+ "pending_batch_items": 20,
+ "out_dir": "runs\\20261115-074127-rq2-llama-ollama"
+}
