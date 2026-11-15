@@ -154,3 +154,32 @@ def test_smoke_run_executes_every_experiment_offline(tmp_path, monkeypatch):
     for name in ("reviewer:full", "pipeline:full", "b1", "b3", "loop", "r2"):
         assert name in table
     assert len(s["runs"]) == 13 and "accuracy" in s["nli"]
+
+
+def test_rq2_saves_every_repaired_nda_while_the_judge_is_pending(tmp_path):
+    """With the judge queued (no answers yet), nothing is scored, but each system's repaired NDA is
+    already written to repaired_drafts.jsonl."""
+    from counselcopilot.benchmark.planter import load_planted
+    from counselcopilot.experiments.rq2 import run_rq2
+    from counselcopilot.llm import load_backend
+    from counselcopilot.policy.schema import LawPack, PolicyPack
+
+    root = Path(__file__).resolve().parents[1]
+    cfg = tmp_path / "b.toml"
+    text = (root / "configs" / "backends.toml").read_text(encoding="utf-8")
+    cfg.write_text(text.replace('path = "data/cache/llm.sqlite"', f'path = "{(tmp_path / "c.sqlite").as_posix()}"'),
+                   encoding="utf-8")
+    llm = load_backend("heuristic", cfg)
+    judge = load_backend("claude-haiku-agent", cfg, batch_queue=tmp_path / "q.jsonl")
+    packs = [PolicyPack.load(root / "packs" / "policynda" / c / "gold_rules.yaml")
+             for c in ("saas", "hospital", "manufacturer")]
+    m = run_rq2(llm, packs, load_planted(root / "data" / "planted" / "test_seed0.json"), judge,
+                LawPack.load(root / "packs" / "law" / "us_law_pack.yaml"),
+                labels_path=str(root / "data" / "labels" / "ndas_auto.yaml"), allow_auto_labels=True,
+                limit=1, out_root=str(tmp_path / "runs"))
+    assert m["pending_batch_items"] == 4 and m["systems"] == {}
+    rows = [json.loads(l) for l in (Path(m["out_dir"]) / "repaired_drafts.jsonl").read_text().splitlines()]
+    assert sorted(r["system"] for r in rows) == ["loop", "r1", "r1_attacker", "r2"]
+    for r in rows:
+        assert r["repaired_text"] == "\n".join(r["repaired"]) and r["original"]
+        assert all(e["op"] in ("insert_after", "replace", "delete") for e in r["edits"])
