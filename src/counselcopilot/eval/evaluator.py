@@ -99,6 +99,9 @@ class IndependentEvaluator:
         """Which redline causes which regression: apply each edit alone and re-check only the
         regressed rules. H2's regression rate = share of redlines with at least one."""
         by_id = {r.id: r for r in rules}
+        # a rule already broken on this round's draft (an earlier round broke it) is not this round's doing
+        base = self._check_all([(by_id[rid], before, 0) for rid in regressed])
+        regressed = [rid for rid, s in zip(regressed, base) if s.ok]
         jobs = [(k, rid, before.apply([e])) for k, e in enumerate(edits) for rid in regressed]
         res = self._check_all([(by_id[rid], one, 0) for _, rid, one in jobs])
         out: dict[int, list[str]] = {k: [] for k in range(len(edits))}

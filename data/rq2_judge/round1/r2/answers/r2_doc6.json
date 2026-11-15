@@ -1,0 +1,19 @@
+{
+"Q1": {"rationale": "No duty to notify the Disclosing Party of legally required disclosure appears; segment 33 only subjects information to provincial freedom of information law.", "label": "NotMentioned", "evidence": [33], "confidence": 0.85},
+"Q2": {"rationale": "Segment 13 defines Confidential Information as any information in whatever form, which covers verbally conveyed information.", "label": "Entailment", "evidence": [13], "confidence": 0.85},
+"Q3": {"rationale": "Segment 19 states that Confidential Information shall be used only for the purposes of facilitating the business relationship.", "label": "Entailment", "evidence": [19], "confidence": 0.97},
+"Q4": {"value": "unspecified", "evidence": [32]},
+"Q5": {"rationale": "The NDA contains no duty to notify the other party of unauthorized use or disclosure.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q6": {"rationale": "Segment 32 refers to return of Confidential Information but no obligation to destroy or return it on termination is stated.", "label": "NotMentioned", "evidence": [32], "confidence": 0.6},
+"Q7": {"rationale": "Segment 21 requires at least the Receiving Party's own level of care and no less than a reasonable degree of care.", "label": "Entailment", "evidence": [21], "confidence": 0.8},
+"Q8": {"rationale": "Segment 23 makes the Receiving Party responsible for breaches by its employees, which presupposes sharing with employees; segment 20 limits disclosure to third parties.", "label": "Entailment", "evidence": [20, 23], "confidence": 0.7},
+"Q9": {"rationale": "Segment 23 refers to consultants and representatives acting within their engagement, and segment 20 permits third-party disclosure with prior written approval, a qualified permission.", "label": "Entailment", "evidence": [20, 23], "confidence": 0.6},
+"Q10": {"rationale": "Segment 32 states that the Receiving Party's obligations survive termination of the Agreement or return of the Confidential Information.", "label": "Entailment", "evidence": [32], "confidence": 0.97},
+"Q11": {"value": "unspecified", "evidence": [32]},
+"Q12": {"value": "canada", "evidence": [38, 39]},
+"Q13": {"rationale": "Segment 30 imposes a US$500,000 penalty on breach irrespective of actual loss suffered.", "label": "Entailment", "evidence": [30], "confidence": 0.97},
+"Q14": {"rationale": "Segment 28 permits the Receiving Party to develop products or services similar to the Disclosing Party's, whether or not ideas learned from the Disclosing Party are used.", "label": "Entailment", "evidence": [28], "confidence": 0.97},
+"Q15": {"rationale": "Segment 36 states that the Agreement does not create any implied or express licence between the Parties.", "label": "Entailment", "evidence": [36], "confidence": 0.9},
+"Q16": {"rationale": "The NDA does not address disclosure of the fact that the agreement was agreed or negotiated.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q17": {"rationale": "Segment 20 bars disclosure to any third party, which would include government agencies, without prior written approval, and no exception for reports of violations appears.", "label": "Entailment", "evidence": [20], "confidence": 0.5}
+}

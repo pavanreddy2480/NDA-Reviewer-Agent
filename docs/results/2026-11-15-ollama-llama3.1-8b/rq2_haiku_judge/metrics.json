@@ -1,0 +1,179 @@
+{
+ "systems": {
+  "loop": {
+   "n_ndas": 5,
+   "remaining_per_nda": 5.4,
+   "remaining_ci95": [
+    3.8,
+    7.0
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.0152,
+   "redlines": 132,
+   "repair_success": 0.5,
+   "restores_original": 0.3333,
+   "edit_words_per_nda": 437.0,
+   "rounds_mean": 3.0,
+   "tokens_per_nda": 0.0,
+   "stopped": {
+    "max_rounds": 5
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  },
+  "r1": {
+   "n_ndas": 5,
+   "remaining_per_nda": 9.2,
+   "remaining_ci95": [
+    7.4,
+    10.8
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.3571,
+   "redlines": 14,
+   "repair_success": 0.0833,
+   "restores_original": 0.0833,
+   "edit_words_per_nda": 62.0,
+   "rounds_mean": 0.8,
+   "tokens_per_nda": 0.0,
+   "stopped": {
+    "clean": 3,
+    "no_problems": 1,
+    "stuck": 1
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  },
+  "r1_attacker": {
+   "n_ndas": 5,
+   "remaining_per_nda": 10.0,
+   "remaining_ci95": [
+    7.6,
+    12.0
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.3333,
+   "redlines": 27,
+   "repair_success": 0.25,
+   "restores_original": 0.25,
+   "edit_words_per_nda": 99.4,
+   "rounds_mean": 1.0,
+   "tokens_per_nda": 0.0,
+   "stopped": {
+    "clean": 4,
+    "stuck": 1
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  },
+  "r2": {
+   "n_ndas": 5,
+   "remaining_per_nda": 9.0,
+   "remaining_ci95": [
+    7.0,
+    11.0
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.3333,
+   "redlines": 51,
+   "repair_success": 0.0833,
+   "restores_original": 0.0833,
+   "edit_words_per_nda": 212.0,
+   "rounds_mean": 2.4,
+   "tokens_per_nda": 0.0,
+   "stopped": {
+    "clean": 1,
+    "max_rounds": 4
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  }
+ },
+ "comparisons": [
+  {
+   "a": "loop",
+   "b": "r1",
+   "n": 5,
+   "ratio": 0.587,
+   "ratio_ci95": [
+    0.4,
+    0.8444
+   ],
+   "h2_half": false
+  },
+  {
+   "a": "loop",
+   "b": "r1_attacker",
+   "n": 5,
+   "ratio": 0.54,
+   "ratio_ci95": [
+    0.3571,
+    0.7917
+   ],
+   "h2_half": false
+  },
+  {
+   "a": "loop",
+   "b": "r2",
+   "n": 5,
+   "ratio": 0.6,
+   "ratio_ci95": [
+    0.4255,
+    0.8293
+   ],
+   "h2_half": false
+  }
+ ],
+ "h2": {
+  "remaining_at_most_half_of_r1": false,
+  "remaining_at_most_half_of_r1_attacker": false,
+  "regression_rate_below_5pct": true
+ },
+ "pending_batch_items": 0,
+ "evaluator_usage": {
+  "backend": "claude-haiku-agent",
+  "model": "claude-haiku (agent)",
+  "calls": 1133,
+  "cached_calls": 1133,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 2388278,
+  "cached_output_tokens": 47295,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "independent_eval": {
+    "calls": 801,
+    "cached_calls": 801,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 2286958,
+    "cached_output_tokens": 44545
+   },
+   "field_extract": {
+    "calls": 332,
+    "cached_calls": 332,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 101320,
+    "cached_output_tokens": 2750
+   }
+  }
+ },
+ "config": {
+  "repaired": "docs/results/2026-11-15-ollama-llama3.1-8b/run_logs/rq2/repaired_drafts.jsonl",
+  "systems": [
+   "loop",
+   "r1",
+   "r1_attacker",
+   "r2"
+  ],
+  "evaluator": "claude-haiku-agent",
+  "n_ndas": 5,
+  "not_reported": "attacker scenarios and repair tokens (not in repaired_drafts.jsonl)"
+ }
+}

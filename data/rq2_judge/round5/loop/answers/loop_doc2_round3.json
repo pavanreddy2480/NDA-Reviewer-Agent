@@ -1,0 +1,12 @@
+{
+  "Q1": {"value": 24, "evidence": [25, 69]},
+  "Q2": {"rationale": "Section 8 treats transfers of Confidential Information by oral transfer as an export, which implies verbally conveyed Confidential Information, though no definition states it expressly; V1 changes only segment 53 and does not affect this.", "label": "Entailment", "evidence": [52], "confidence": 0.55},
+  "Q3": {"rationale": "Section 8 treats transfers of Confidential Information by oral transfer as an export, which implies verbally conveyed Confidential Information, though no definition states it expressly; V2 adds only a use restriction sentence that does not address this.", "label": "Entailment", "evidence": [52], "confidence": 0.55},
+  "Q4": {"rationale": "Section 8 treats transfers of Confidential Information by oral transfer as an export, which implies verbally conveyed Confidential Information, though no definition states it expressly; V3 adds only a governing-law sentence that does not address this.", "label": "Entailment", "evidence": [52], "confidence": 0.55},
+  "Q5": {"rationale": "Section 8 treats transfers of Confidential Information by oral transfer as an export, which implies verbally conveyed Confidential Information, though no definition states it expressly; V4 adds only a copying sentence that does not address this.", "label": "Entailment", "evidence": [52], "confidence": 0.55},
+  "Q6": {"rationale": "Section 8 treats transfers of Confidential Information by oral transfer as an export, which implies verbally conveyed Confidential Information, though no definition states it expressly.", "label": "Entailment", "evidence": [52], "confidence": 0.55},
+  "Q7": {"value": 24, "evidence": [25, 70]},
+  "Q8": {"rationale": "Section 8 treats transfers of Confidential Information by oral transfer as an export, which implies verbally conveyed Confidential Information, though no definition states it expressly; V5 only replaces a heading with a notice sentence that does not address this.", "label": "Entailment", "evidence": [52], "confidence": 0.55},
+  "Q9": {"rationale": "Section 8 treats transfers of Confidential Information by oral transfer as an export, which implies verbally conveyed Confidential Information, though no definition states it expressly; V6 only deletes a heading and does not address this.", "label": "Entailment", "evidence": [52], "confidence": 0.55},
+  "Q10": {"value": 24, "evidence": [25, 68]}
+}

@@ -183,3 +183,39 @@ def test_rq2_saves_every_repaired_nda_while_the_judge_is_pending(tmp_path):
     for r in rows:
         assert r["repaired_text"] == "\n".join(r["repaired"]) and r["original"]
         assert all(e["op"] in ("insert_after", "replace", "delete") for e in r["edits"])
+
+
+def test_rq2_score_rejudges_saved_repairs_like_rq2(tmp_path):
+    """cc rq2-score rebuilds each repair from repaired_drafts.jsonl and gets the same scores run_rq2 gave,
+    without the repair model; a row whose redlines do not replay to its saved draft is refused."""
+    import pytest
+
+    from counselcopilot.benchmark.planter import load_planted
+    from counselcopilot.experiments.rq2 import run_rq2
+    from counselcopilot.experiments.rq2_rescore import load_repaired, rebuild, rescore_rq2
+    from counselcopilot.llm import load_backend
+    from counselcopilot.policy.schema import LawPack, PolicyPack
+
+    root = Path(__file__).resolve().parents[1]
+    cfg = tmp_path / "b.toml"
+    text = (root / "configs" / "backends.toml").read_text(encoding="utf-8")
+    cfg.write_text(text.replace('path = "data/cache/llm.sqlite"', f'path = "{(tmp_path / "c.sqlite").as_posix()}"'),
+                   encoding="utf-8")
+    packs = [PolicyPack.load(root / "packs" / "policynda" / c / "gold_rules.yaml")
+             for c in ("saas", "hospital", "manufacturer")]
+    planted = load_planted(root / "data" / "planted" / "test_seed0.json")
+    law = LawPack.load(root / "packs" / "law" / "us_law_pack.yaml")
+    labels = str(root / "data" / "labels" / "ndas_auto.yaml")
+    m = run_rq2(load_backend("heuristic", cfg), packs, planted, load_backend("heuristic-judge", cfg), law,
+                labels_path=labels, allow_auto_labels=True, limit=2, out_root=str(tmp_path / "runs"))
+    drafts = Path(m["out_dir"]) / "repaired_drafts.jsonl"
+    r = rescore_rq2(drafts, planted, packs, load_backend("heuristic-judge", cfg), law, labels, True,
+                    out_root=str(tmp_path / "runs"))
+    assert r["pending_batch_items"] == 0
+    for name, s in m["systems"].items():
+        for k in ("remaining_per_nda", "regression_rate", "redlines", "repair_success", "loopholes_left_per_nda"):
+            assert r["systems"][name][k] == s[k], (name, k)
+    row = load_repaired(drafts)[0]
+    row["repaired"] = row["repaired"] + ["tampered"]
+    with pytest.raises(ValueError):
+        rebuild(row, planted[row["doc_id"]].draft)

@@ -1,0 +1,10 @@
+{
+  "Q1": {"rationale": "The definition covers any and all information 'in whatever form', which literally includes verbally conveyed information.", "label": "Entailment", "evidence": [12], "confidence": 0.75},
+  "Q2": {"rationale": "V1 only changes the non-solicitation clause at segment 33, and the 'in whatever form' definition at segment 12 is untouched.", "label": "Entailment", "evidence": [12], "confidence": 0.75},
+  "Q3": {"rationale": "V2 deletes the definition at segment 12, and no remaining segment states that Confidential Information may take any form, so verbal conveyance is no longer addressed.", "label": "NotMentioned", "evidence": [13], "confidence": 0.6},
+  "Q4": {"rationale": "V3 deletes only the no-copies restriction at segment 21, leaving the 'in whatever form' definition at segment 12 in place.", "label": "Entailment", "evidence": [12], "confidence": 0.75},
+  "Q5": {"rationale": "V4 deletes only exclusion (c) at segment 16, leaving the 'in whatever form' definition at segment 12 in place.", "label": "Entailment", "evidence": [12], "confidence": 0.75},
+  "Q6": {"rationale": "V5 adds a sentence about rights in Confidential Information and does not change the 'in whatever form' definition at segment 12.", "label": "Entailment", "evidence": [12], "confidence": 0.75},
+  "Q7": {"rationale": "V6 adds a governing-law sentence and leaves the 'in whatever form' definition at segment 12 in place.", "label": "Entailment", "evidence": [12], "confidence": 0.75},
+  "Q8": {"rationale": "V7 adds a survival sentence and leaves the 'in whatever form' definition at segment 12 in place.", "label": "Entailment", "evidence": [12], "confidence": 0.75}
+}

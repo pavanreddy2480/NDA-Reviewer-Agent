@@ -1,0 +1,11 @@
+{
+  "Q1": {"rationale": "Base NDA segment 22 lets the Disclosee disclose to a regulatory authority when legally compelled, so the NDA has an exception for such disclosures and the 'no exception' wording is contradicted.", "label": "Contradiction", "evidence": [22], "confidence": 0.6},
+  "Q2": {"value": 36, "evidence": [17]},
+  "Q3": {"rationale": "V2 changes only the governing law clause (segment 27); segment 22 still gives an exception for legally compelled disclosure to regulators, which contradicts the 'no exception' wording.", "label": "Contradiction", "evidence": [22], "confidence": 0.6},
+  "Q4": {"rationale": "V3 adds a prior written consent requirement to disclosures (segment 3), but segment 22 still provides the legally compelled disclosure exception for regulators, so the 'no exception' wording is contradicted.", "label": "Contradiction", "evidence": [3, 22], "confidence": 0.55},
+  "Q5": {"rationale": "V4 deletes the express confidentiality undertaking in segment 2, but segment 22 still provides an exception for legally compelled disclosure to regulators, which contradicts the 'no exception' wording.", "label": "Contradiction", "evidence": [22], "confidence": 0.5},
+  "Q6": {"rationale": "V5 only conditions the price-sensitivity clause (segment 4); segment 22 still gives the legally compelled disclosure exception for regulators, which contradicts the 'no exception' wording.", "label": "Contradiction", "evidence": [22], "confidence": 0.6},
+  "Q7": {"rationale": "V6 keeps the legally compelled disclosure exception for regulators in segment 22 (adding a notice step), so the 'no exception' wording is contradicted.", "label": "Contradiction", "evidence": [22], "confidence": 0.6},
+  "Q8": {"rationale": "V7 changes only the breach penalty (segment 21); segment 22 still gives the legally compelled disclosure exception for regulators, which contradicts the 'no exception' wording.", "label": "Contradiction", "evidence": [22], "confidence": 0.6},
+  "Q9": {"rationale": "V8 deletes the injunctive relief segment 25; segment 22 still gives the legally compelled disclosure exception for regulators, which contradicts the 'no exception' wording.", "label": "Contradiction", "evidence": [22], "confidence": 0.6}
+}

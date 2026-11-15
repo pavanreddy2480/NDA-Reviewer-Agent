@@ -1,0 +1,22 @@
+{
+"Q1": {"rationale": "Confidential Information covers information in oral, written or electronic form.", "label": "Entailment", "evidence": [6], "confidence": 0.97},
+"Q2": {"rationale": "The Disclosee undertakes only to keep information confidential; no express limitation of use to stated purposes appears.", "label": "NotMentioned", "evidence": [2], "confidence": 0.6},
+"Q3": {"rationale": "The NDA does not mention reverse engineering.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q4": {"value": 36, "evidence": [17, 18, 19]},
+"Q5": {"rationale": "The NDA has no termination clause; obligations instead expire on a fixed schedule (earlier of three years or completion of the Sale).", "label": "NotMentioned", "evidence": [17, 18, 19], "confidence": 0.6},
+"Q6": {"rationale": "The NDA contains no express statement that no right to Confidential Information is granted; it only disclaims commitments to supply information.", "label": "NotMentioned", "evidence": [16], "confidence": 0.7},
+"Q7": {"value": 36, "evidence": [18]},
+"Q8": {"value": null, "evidence": []},
+"Q9": {"rationale": "The Disclosee may disclose to professional advisors, including financial, legal and tax advisors, provided they are made aware of the Agreement.", "label": "Entailment", "evidence": [3, 6], "confidence": 0.9},
+"Q10": {"rationale": "If legally compelled to disclose, the Disclosee must immediately notify the Sellers before disclosing.", "label": "Entailment", "evidence": [22], "confidence": 0.95},
+"Q11": {"rationale": "The fact of negotiations and any fact concerning the Sale is itself defined as Confidential Information.", "label": "Entailment", "evidence": [9], "confidence": 0.9},
+"Q12": {"rationale": "Clause 28 states that Confidential Information is limited to technical information, although clause 6 defines it more broadly.", "label": "Entailment", "evidence": [28], "confidence": 0.75},
+"Q13": {"rationale": "The NDA's exclusions cover public information and prior lawful possession only, and do not address acquiring similar information from third parties.", "label": "NotMentioned", "evidence": [11, 12], "confidence": 0.6},
+"Q14": {"rationale": "A US$500,000 penalty is payable on any breach irrespective of actual loss.", "label": "Entailment", "evidence": [21], "confidence": 0.97},
+"Q15": {"rationale": "The NDA does not address making copies of Confidential Information.", "label": "NotMentioned", "evidence": [], "confidence": 0.8},
+"Q16": {"value": "belgium", "evidence": [27]},
+"Q17": {"rationale": "Confidential Information is defined broadly as any information provided, with no requirement that it be expressly identified.", "label": "Contradiction", "evidence": [6, 9], "confidence": 0.65},
+"Q18": {"rationale": "Confidential Information may be provided to the Disclosee's Representatives, including employees, with the Disclosee liable for them.", "label": "Entailment", "evidence": [6, 3], "confidence": 0.9},
+"Q19": {"rationale": "Disclosure to a regulatory authority is allowed only if legally compelled and after prior notice to the Sellers, with no exception for voluntary reports of suspected violations.", "label": "Contradiction", "evidence": [2, 22], "confidence": 0.55},
+"Q20": {"rationale": "The NDA contains no export control provision.", "label": "NotMentioned", "evidence": [], "confidence": 0.9}
+}
