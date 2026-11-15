@@ -1,0 +1,709 @@
+# Requirement cards for Northwind Cloud, Inc., compiled by claude-haiku-agent from the prose policies
+# (policy/compiler.py). 34 cards from 11 documents; 0 dropped for a quote not in the policy.
+company: Northwind Cloud, Inc.
+description: ''
+version: compiled-1
+rules:
+- id: C-01
+  title: Use limited to stated purpose
+  requirement: The NDA must limit the receiving party's use of our information to the purposes the agreement states,
+    and no other purpose.
+  kind: require
+  term: The NDA must limit the receiving party's use of our information to the purposes the agreement states, and
+    no other purpose.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '4.1'
+    quote: Every agreement we sign or propose must limit the receiving party's use of our information to the purposes
+      the agreement itself states, and no other purpose.
+  keywords:
+  - permitted purpose
+  - use restriction
+  - purpose limitation
+- id: C-02
+  title: Oral disclosures covered
+  requirement: The NDA must cover information disclosed orally in meetings, calls or demonstrations, not only written
+    material.
+  kind: require
+  term: The NDA must cover information disclosed orally in meetings, calls or demonstrations, not only written material.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '4.2'
+    quote: Information that we share in meetings, calls or demonstrations must be covered even though it is spoken
+      and never written down.
+  keywords:
+  - oral disclosure
+  - verbal information
+  - meetings and demonstrations
+- id: C-03
+  title: Confidentiality continues after the agreement ends
+  requirement: The NDA must state that the duties of confidence continue to bind the parties after the agreement
+    has ended or expired.
+  kind: require
+  term: The NDA must state that the duties of confidence continue to bind the parties after the agreement has ended
+    or expired.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '4.3'
+    quote: The agreement must make clear that the duties of confidence continue to bind the parties after the agreement
+      has ended or expired.
+  keywords:
+  - survive termination
+  - duties continue
+  - survival clause
+- id: C-04
+  title: Notice before compelled disclosure
+  requirement: The NDA must require the other side to tell us before it discloses our information because law, regulation
+    or a court or agency process compels it.
+  kind: require
+  term: The NDA must require the other side to tell us before it discloses our information because law, regulation
+    or a court or agency process compels it.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '4.4'
+    quote: If the other side is compelled by law, regulation or a court or agency process to disclose our information,
+      it must tell us before it does so.
+  keywords:
+  - compelled disclosure
+  - legally required disclosure
+  - court order notice
+- id: C-05
+  title: No grant of rights in disclosed information
+  requirement: The NDA must not grant the other side a license, ownership interest or any other right in the information
+    we disclose.
+  kind: forbid
+  term: The NDA must not grant the other side a license, ownership interest or any other right in the information
+    we disclose.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '4.5'
+    quote: No clause may be read as handing the other side a licence, ownership interest or any other right in the
+      information we disclose.
+  keywords:
+  - no license granted
+  - ownership of information
+  - no rights granted
+- id: C-06
+  title: Protected information covers business information for customers and partners
+  requirement: In customer and partner agreements, the definition of protected information must include business,
+    financial and commercial information, not only technical material.
+  kind: require
+  term: In customer and partner agreements, the definition of protected information must include business, financial
+    and commercial information, not only technical material.
+  applies_if: counterparty in ('customer', 'partner')
+  applies_when: agreements with customers and partners
+  severity: medium
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '5.1'
+    quote: In agreements with customers and partners, the definition of protected information must reach business,
+      financial and commercial information and may not be confined to technical material alone.
+  keywords:
+  - definition of confidential information
+  - business information
+  - commercial information
+- id: C-07
+  title: No hiring or approach restriction in customer agreements
+  requirement: The NDA must not bar either side from approaching or hiring the other side's people.
+  kind: forbid
+  term: The NDA must not bar either side from approaching or hiring the other side's people.
+  applies_if: counterparty == 'customer'
+  applies_when: agreements with customers
+  severity: medium
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '5.2'
+    quote: An agreement with a customer must not bar either side from approaching or hiring the other side's people.
+  keywords:
+  - non-solicit employees
+  - no-hire clause
+  - hiring restriction
+- id: C-08
+  title: Relationship kept confidential
+  requirement: The NDA must stop the other side from revealing that the parties have negotiated or entered into
+    the agreement.
+  kind: require
+  term: The NDA must stop the other side from revealing that the parties have negotiated or entered into the agreement.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '5.3'
+    quote: The other side must agree not to reveal that the parties have negotiated or entered into the agreement.
+  keywords:
+  - existence of agreement confidential
+  - disclose relationship
+  - negotiations confidential
+- id: C-09
+  title: No residuals clause
+  requirement: The NDA must not let the other side keep using information it remembers from our information (a residuals
+    clause).
+  kind: forbid
+  term: The NDA must not let the other side keep using information it remembers from our information (a residuals
+    clause).
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '5.4'
+    quote: We never accept a clause that lets the other side keep using whatever it happens to remember from our
+      information, often called a residuals clause.
+  keywords:
+  - residuals clause
+  - retained knowledge
+  - use of memory
+- id: C-10
+  title: Minimum duration of confidentiality
+  requirement: The duty of confidence in the NDA must run for at least the 24-month minimum.
+  kind: field
+  term: The duty of confidence in the NDA must run for at least the 24-month minimum.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: confidentiality_term_months
+    op: '>='
+    value: 24
+  approval: Deputy General Counsel
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '6.1'
+    quote: The duty of confidence must run for at least 24 months.
+  keywords:
+  - confidentiality term
+  - duration of confidentiality
+  - confidentiality period
+- id: C-11
+  title: Maximum duration of confidentiality
+  requirement: The duty of confidence in the NDA must not be stated to run for longer than the 60-month maximum.
+  kind: field
+  term: The duty of confidence in the NDA must not be stated to run for longer than the 60-month maximum.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: confidentiality_term_months
+    op: <=
+    value: 60
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '6.2'
+    quote: The duty of confidence may not be stated to run for more than 60 months.
+  keywords:
+  - confidentiality term
+  - duration of confidentiality
+  - confidentiality period
+- id: C-12
+  title: Minimum survival of obligations
+  requirement: Obligations that survive the end of the NDA must survive for at least the 24-month minimum.
+  kind: field
+  term: Obligations that survive the end of the NDA must survive for at least the 24-month minimum.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: survival_months
+    op: '>='
+    value: 24
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality and NDA Standard
+    section: '6.3'
+    quote: Obligations that survive the end of the agreement must survive for at least 24 months.
+  keywords:
+  - survival period
+  - obligations survive termination
+  - surviving obligations
+- id: C-13
+  title: Governing law
+  requirement: The NDA must be governed by Delaware or New York law unless the General Counsel approves another
+    governing law in writing.
+  kind: field
+  term: The NDA must be governed by Delaware or New York law unless the General Counsel approves another governing
+    law in writing.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: governing_law
+    op: in
+    value:
+    - delaware
+    - new york
+  approval: General Counsel
+  refs: []
+  source:
+    document: Contract Approval Matrix
+    section: '3.1'
+    quote: Agreements must be governed by the law of Delaware or New York, and any other governing law requires
+      prior written approval from the General Counsel.
+  keywords:
+  - governing law
+  - choice of law
+  - governed by the laws of
+- id: C-14
+  title: Non-solicitation of staff in partner agreements
+  requirement: Any restriction in the NDA on soliciting the other side's staff must last no longer than the 12-month
+    limit.
+  kind: field
+  term: Any restriction in the NDA on soliciting the other side's staff must last no longer than the 12-month limit.
+  applies_if: counterparty == 'partner'
+  applies_when: partner agreements that restrict soliciting the other side's staff
+  severity: medium
+  constraint:
+    field: non_solicit_months
+    op: <=
+    value: 12
+  approval: Chief Revenue Officer
+  refs: []
+  source:
+    document: Contract Approval Matrix
+    section: '4.1'
+    quote: In partner agreements, any restriction on soliciting the other side's staff may last no longer than 12
+      months, and a longer restriction requires approval from the Chief Revenue Officer.
+  keywords:
+  - non-solicit staff
+  - no-hire
+  - employee solicitation
+  - soliciting employees
+- id: C-15
+  title: No restraint on competing where California law governs
+  requirement: The NDA must not contain a clause that restricts the other party from competing or from working in
+    its profession or trade.
+  kind: forbid
+  term: The NDA must not contain a clause that restricts the other party from competing or from working in its profession
+    or trade.
+  applies_if: governing_law == 'california'
+  applies_when: agreements governed by California law
+  severity: high
+  refs: []
+  source:
+    document: Contract Approval Matrix
+    section: '4.2'
+    quote: Where California law governs, the agreement must not contain any clause that restricts the other party
+      from competing or from working in its profession or trade.
+  keywords:
+  - non-compete
+  - restraint of trade
+  - non-competition clause
+  - limit profession
+- id: C-16
+  title: No class-action waiver in business-to-business agreements
+  requirement: The NDA must not contain a class-action waiver.
+  kind: forbid
+  term: The NDA must not contain a class-action waiver.
+  applies_if: counterparty in ('vendor', 'customer', 'partner')
+  applies_when: business-to-business agreements
+  severity: medium
+  refs: []
+  source:
+    document: Contract Approval Matrix
+    section: '3.2'
+    quote: Class-action waivers are not used in business-to-business agreements.
+  keywords:
+  - class action waiver
+  - class action
+  - collective action waiver
+- id: C-17
+  title: Personal data protection must not depend on marking
+  requirement: The NDA must not make protection of personal data depend on the disclosing party marking the information
+    as confidential.
+  kind: forbid
+  term: The NDA must not make protection of personal data depend on the disclosing party marking the information
+    as confidential.
+  applies_if: personal_data
+  applies_when: personal data is exchanged with outside parties
+  severity: high
+  refs: []
+  source:
+    document: Data Protection and Privacy Policy
+    section: '3.1'
+    quote: Where personal data will be exchanged, protection may not depend on the disclosing party marking or labelling
+      the information as confidential.
+  keywords:
+  - marked confidential
+  - labelling
+  - personal data protection
+- id: C-18
+  title: Minimum confidentiality term for personal data
+  requirement: When personal data is involved, the NDA's duty of confidence must last at least the required minimum
+    term.
+  kind: field
+  term: When personal data is involved, the NDA's duty of confidence must last at least the required minimum term.
+  applies_if: personal_data
+  applies_when: personal data is involved in the exchange
+  severity: high
+  constraint:
+    field: confidentiality_term_months
+    op: '>='
+    value: 36
+  refs: []
+  source:
+    document: Data Protection and Privacy Policy
+    section: '5.1'
+    quote: When personal data is involved, the duty of confidence must last at least 36 months.
+  keywords:
+  - duration of confidentiality
+  - confidentiality term
+  - personal data survival
+- id: C-19
+  title: Standard contractual clauses for cross-border personal data
+  requirement: The agreement must incorporate the EU Standard Contractual Clauses or another transfer mechanism
+    approved by the Privacy Office.
+  kind: require
+  term: The agreement must incorporate the EU Standard Contractual Clauses or another transfer mechanism approved
+    by the Privacy Office.
+  applies_if: foreign and personal_data
+  applies_when: personal data is transferred to or from a counterparty outside the United States
+  severity: high
+  refs: []
+  source:
+    document: Data Protection and Privacy Policy
+    section: '4.1'
+    quote: When personal data is transferred to or from a counterparty outside the United States, the agreement
+      must incorporate the EU Standard Contractual Clauses or an equivalent transfer mechanism approved by the Privacy
+      Office.
+  keywords:
+  - standard contractual clauses
+  - international transfer
+  - transfer mechanism
+- id: C-20
+  title: Vendor flow-down and breach support
+  requirement: The agreement must require the vendor to flow the same data protection obligations down to its sub-processors
+    and to support Northwind in meeting data subject requests and breach duties.
+  kind: require
+  term: The agreement must require the vendor to flow the same data protection obligations down to its sub-processors
+    and to support Northwind in meeting data subject requests and breach duties.
+  applies_if: counterparty == 'vendor' and personal_data
+  applies_when: vendors that process personal data for Northwind
+  severity: medium
+  refs: []
+  source:
+    document: Data Protection and Privacy Policy
+    section: '12'
+    quote: Vendors that process personal data for Northwind must pass the security and privacy review described
+      in the Vendor and Third-Party Risk Policy, sign a data processing addendum reflecting this Policy, flow the
+      same obligations down to their own sub-processors and support Northwind in meeting data subject requests and
+      breach duties.
+  keywords:
+  - sub-processor flow-down
+  - data processing addendum
+  - vendor obligations
+- id: C-21
+  title: No transfer of ownership of our information
+  requirement: The NDA must not transfer ownership of our information, or of anything derived from it, to the other
+    side.
+  kind: forbid
+  term: The NDA must not transfer ownership of our information, or of anything derived from it, to the other side.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  refs: []
+  source:
+    document: Intellectual Property Policy
+    section: '2.1'
+    quote: No clause may transfer ownership of our information, or of anything derived from it, to the other side.
+  keywords:
+  - ownership of information
+  - assignment of rights
+  - derivative works ownership
+  - improvements ownership
+- id: C-22
+  title: No independent development rights in high-value deals
+  requirement: The NDA must not contain language that lets the other side independently develop information similar
+    to ours.
+  kind: forbid
+  term: The NDA must not contain language that lets the other side independently develop information similar to
+    ours.
+  applies_if: value_band == 'high'
+  applies_when: deals in the high value band
+  severity: high
+  refs: []
+  source:
+    document: Intellectual Property Policy
+    section: '2.2'
+    quote: For deals in the high value band, we do not accept language that lets the other side independently develop
+      information similar to ours.
+  keywords:
+  - independent development
+  - residuals clause
+  - freedom to develop
+  - independently developed
+- id: C-23
+  title: Right to obtain similar information from third parties
+  requirement: The NDA must preserve the receiving party's right to obtain similar information lawfully from an
+    independent third party.
+  kind: require
+  term: The NDA must preserve the receiving party's right to obtain similar information lawfully from an independent
+    third party.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Intellectual Property Policy
+    section: '2.3'
+    quote: The agreement must preserve the right of the receiving party to obtain similar information lawfully from
+      an independent third party.
+  keywords:
+  - independent third party
+  - publicly available information
+  - no restriction on other sources
+- id: C-24
+  title: Notice of immunity for employees under US law
+  requirement: The NDA must include the notice of immunity for confidential disclosure to government officials and
+    attorneys that federal trade secret law requires.
+  kind: require
+  term: The NDA must include the notice of immunity for confidential disclosure to government officials and attorneys
+    that federal trade secret law requires.
+  applies_if: counterparty == 'employee' and us_law
+  applies_when: agreements with employees governed by United States law
+  severity: medium
+  refs: []
+  source:
+    document: Intellectual Property Policy
+    section: '3.1'
+    quote: Agreements with employees governed by United States law must include the notice of immunity for confidential
+      disclosure to government officials and attorneys that federal trade secret law requires.
+  keywords:
+  - immunity notice
+  - whistleblower immunity
+  - disclosure to government officials
+  - disclosure to attorneys
+- id: C-25
+  title: Copies for backup and legal records
+  requirement: The NDA must permit the company to make copies of received information to the extent needed for backup,
+    disaster recovery and legally required records.
+  kind: require
+  term: The NDA must permit the company to make copies of received information to the extent needed for backup,
+    disaster recovery and legally required records.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Records Retention and Disposal Policy
+    section: '3.1'
+    quote: We must be allowed to make copies of information we receive to the extent needed for backup, disaster
+      recovery and legally required records.
+  keywords:
+  - backup copies
+  - disaster recovery
+  - legally required records
+  - retain copies
+- id: C-26
+  title: Maximum survival period of obligations
+  requirement: Obligations under the NDA that survive termination must not be stated to survive for longer than
+    the 84-month maximum.
+  kind: field
+  term: Obligations under the NDA that survive termination must not be stated to survive for longer than the 84-month
+    maximum.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: survival_months
+    op: <=
+    value: 84
+  refs: []
+  source:
+    document: Records Retention and Disposal Policy
+    section: '3.2'
+    quote: Obligations that survive the end of the agreement must not be stated to survive for more than 84 months.
+  keywords:
+  - survival period
+  - obligations survive termination
+  - surviving obligations
+  - survive termination
+- id: C-27
+  title: Return or destruction when the relationship ends
+  requirement: The NDA must require the vendor or partner to return or destroy our information when the relationship
+    ends.
+  kind: require
+  term: The NDA must require the vendor or partner to return or destroy our information when the relationship ends.
+  applies_if: counterparty in ('vendor', 'partner')
+  applies_when: vendor and partner relationships
+  severity: medium
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '3.1'
+    quote: Vendors and partners must be required to return or destroy our information when the relationship ends.
+  keywords:
+  - return or destroy information
+  - data return
+  - destruction on termination
+- id: C-28
+  title: Return deadline for vendor information
+  requirement: Return or destruction of our information must be completed within the 30-day limit after the end
+    of the relationship or our written request, whichever comes first.
+  kind: field
+  term: Return or destruction of our information must be completed within the 30-day limit after the end of the
+    relationship or our written request, whichever comes first.
+  applies_if: counterparty in ('vendor', 'partner')
+  applies_when: vendor and partner relationships
+  severity: medium
+  constraint:
+    field: return_deadline_days
+    op: <=
+    value: 30
+  approval: Chief Financial Officer
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '3.2'
+    quote: Return or destruction must be completed within 30 days of the end of the relationship or of our written
+      request, whichever comes first.
+  keywords:
+  - return deadline
+  - destruction deadline
+  - days to return
+- id: C-29
+  title: Officer certificate of return or destruction
+  requirement: The NDA must require the vendor to certify return or destruction in writing, signed by an officer
+    of the vendor.
+  kind: require
+  term: The NDA must require the vendor to certify return or destruction in writing, signed by an officer of the
+    vendor.
+  applies_if: counterparty in ('vendor', 'partner')
+  applies_when: vendor and partner relationships
+  severity: medium
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '3.2'
+    quote: The vendor must certify completion in writing, signed by an officer of the vendor, and the Business Owner
+      files the certificate in the vendor record.
+  keywords:
+  - certificate of destruction
+  - written certification
+  - officer certification
+- id: C-30
+  title: No retention of personal data after return
+  requirement: The NDA must not allow the vendor to keep any of our information after returning or destroying it,
+    including in archives, backups or working files.
+  kind: forbid
+  term: The NDA must not allow the vendor to keep any of our information after returning or destroying it, including
+    in archives, backups or working files.
+  applies_if: counterparty in ('vendor', 'partner') and personal_data
+  applies_when: vendors that handle personal data
+  severity: medium
+  approval: Chief Information Security Officer
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '3.3'
+    quote: A vendor that handles personal data must not be allowed to keep any of our information once it has returned
+      or destroyed it, whether in archives, backups or working files, unless the Chief Information Security Officer
+      approves in writing.
+  keywords:
+  - retained copies
+  - archives and backups
+  - no retention after destruction
+- id: C-31
+  title: Vendor must not reverse engineer our materials
+  requirement: The NDA must prohibit the vendor from reverse engineering, decompiling or disassembling any software,
+    hardware or material that embodies our information.
+  kind: require
+  term: The NDA must prohibit the vendor from reverse engineering, decompiling or disassembling any software, hardware
+    or material that embodies our information.
+  applies_if: counterparty in ('vendor', 'partner')
+  applies_when: vendor and partner relationships
+  severity: medium
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '3.4'
+    quote: Vendor agreements must prohibit the vendor from reverse engineering, decompiling or disassembling any
+      software, hardware or material that embodies our information.
+  keywords:
+  - no reverse engineering
+  - no decompiling
+  - no disassembly
+- id: C-32
+  title: Sharing with advisers, auditors and contractors
+  requirement: The NDA must allow the company to share information it receives with its professional advisers, auditors,
+    contractors and subcontractors who need it for the engagement.
+  kind: require
+  term: The NDA must allow the company to share information it receives with its professional advisers, auditors,
+    contractors and subcontractors who need it for the engagement.
+  applies_if: counterparty in ('vendor', 'partner')
+  applies_when: vendor and partner relationships
+  severity: medium
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '4.1'
+    quote: We must be allowed to share information we receive with our professional advisers, auditors, contractors
+      and subcontractors who need it for the engagement.
+  keywords:
+  - permitted disclosure to advisers
+  - auditor access
+  - contractor access
+- id: C-33
+  title: Company employees may access vendor information
+  requirement: The NDA must permit the company's employees who need the information to do their jobs to see it.
+  kind: require
+  term: The NDA must permit the company's employees who need the information to do their jobs to see it.
+  applies_if: counterparty in ('vendor', 'partner')
+  applies_when: vendor and partner relationships
+  severity: medium
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '4.2'
+    quote: Our employees who need the information to do their jobs must be permitted to see it.
+  keywords:
+  - internal access
+  - employee access
+  - need to know internal
+- id: C-34
+  title: Security incident notice from vendor
+  requirement: The NDA must require the vendor to notify the company of any security incident affecting our information
+    within the policy's notification deadline after discovery.
+  kind: require
+  term: The NDA must require the vendor to notify the company of any security incident affecting our information
+    within the policy's notification deadline after discovery.
+  applies_if: counterparty in ('vendor', 'partner')
+  applies_when: vendors that connect to our systems or hold our information
+  severity: medium
+  refs: []
+  source:
+    document: Vendor and Third-Party Risk Policy
+    section: '6'
+    quote: maintain a documented incident response plan and notify Northwind of any security incident affecting
+      Northwind information within 48 hours of discovery;
+  keywords:
+  - security incident notice
+  - breach notification
+  - incident notification

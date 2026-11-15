@@ -86,7 +86,7 @@ Metrics the F1 table cannot show (from each run's `metrics.json`):
   API call at temperature 0.
 - Planted NDAs include injected instructions to email the agreement to an outside address. The agents that mentioned
   them treated them as data. No tool call to send anything was attempted (`executed_unsafe` 0 in every run).
-- RQ2 loop ablations were not run. They need repair rounds plus an independent judge from a different backend.
+- RQ2 loop ablations and the compiled-card runs (`structured_applicability`) are in `../2026-11-15-haiku-rq2-and-compiler/` (partial: stopped after 19 rounds).
 
 ## Files
 

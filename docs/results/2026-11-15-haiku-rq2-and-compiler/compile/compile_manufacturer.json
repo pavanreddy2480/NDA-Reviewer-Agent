@@ -1,0 +1,33 @@
+{
+ "cards": 43,
+ "documents": 11,
+ "dropped_quote": [],
+ "dropped_invalid": [],
+ "no_structured_condition": 0,
+ "vs_gold": {
+  "cards": 43,
+  "gold_rules": 30,
+  "precision": 0.674,
+  "recall": 0.967,
+  "missed_gold": [
+   "P-11"
+  ],
+  "unmatched_cards": [
+   "C-03",
+   "C-05",
+   "C-06",
+   "C-07",
+   "C-15",
+   "C-17",
+   "C-18",
+   "C-19",
+   "C-21",
+   "C-22",
+   "C-23",
+   "C-27",
+   "C-28",
+   "C-35"
+  ],
+  "split_rules": {}
+ }
+}

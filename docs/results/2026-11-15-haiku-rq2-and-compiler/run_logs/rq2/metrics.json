@@ -1,0 +1,265 @@
+{
+ "systems": {
+  "loop_1_round": {
+   "n_ndas": 1,
+   "remaining_per_nda": 1.0,
+   "remaining_ci95": [
+    1.0,
+    1.0
+   ],
+   "loopholes_left_per_nda": 0.0,
+   "regression_rate": 0.0,
+   "redlines": 15,
+   "repair_success": 0.0,
+   "restores_original": 0.0,
+   "edit_words_per_nda": 302.0,
+   "rounds_mean": 1.0,
+   "tokens_per_nda": 50263.0,
+   "stopped": {
+    "max_rounds": 1
+   },
+   "escalations_per_nda": 2.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": 0.0
+  },
+  "loop_no_attacker": {
+   "n_ndas": 5,
+   "remaining_per_nda": 2.4,
+   "remaining_ci95": [
+    1.6,
+    3.4
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.0,
+   "redlines": 48,
+   "repair_success": 0.5,
+   "restores_original": 0.3333,
+   "edit_words_per_nda": 211.4,
+   "rounds_mean": 2.2,
+   "tokens_per_nda": 74810.2,
+   "stopped": {
+    "clean": 2,
+    "conflict": 1,
+    "max_rounds": 1,
+    "stuck": 1
+   },
+   "escalations_per_nda": 1.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  },
+  "r1": {
+   "n_ndas": 5,
+   "remaining_per_nda": 2.6,
+   "remaining_ci95": [
+    2.0,
+    3.4
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.0488,
+   "redlines": 41,
+   "repair_success": 0.5833,
+   "restores_original": 0.5,
+   "edit_words_per_nda": 175.8,
+   "rounds_mean": 1.0,
+   "tokens_per_nda": 3796.0,
+   "stopped": {
+    "clean": 5
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  },
+  "r2": {
+   "n_ndas": 5,
+   "remaining_per_nda": 2.2,
+   "remaining_ci95": [
+    1.6,
+    2.8
+   ],
+   "loopholes_left_per_nda": 0.0,
+   "regression_rate": 0.0417,
+   "redlines": 48,
+   "repair_success": 0.5833,
+   "restores_original": 0.5,
+   "edit_words_per_nda": 198.6,
+   "rounds_mean": 2.2,
+   "tokens_per_nda": 14288.0,
+   "stopped": {
+    "clean": 5
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  }
+ },
+ "comparisons": [],
+ "h2": {
+  "remaining_at_most_half_of_r1": null,
+  "remaining_at_most_half_of_r1_attacker": null,
+  "regression_rate_below_5pct": null,
+  "blind_acceptance": "needs two teammates: cc rq2 --acceptance-sheet, then cc rq2-kappa"
+ },
+ "pending_batch_items": 19,
+ "usage": {
+  "backend": "claude-haiku-agent",
+  "model": "claude-haiku (agent)",
+  "calls": 892,
+  "cached_calls": 892,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 1392675,
+  "cached_output_tokens": 137062,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "field_extract": {
+    "calls": 91,
+    "cached_calls": 91,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 33680,
+    "cached_output_tokens": 806
+   },
+   "planner": {
+    "calls": 5,
+    "cached_calls": 5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 1601,
+    "cached_output_tokens": 344
+   },
+   "frames": {
+    "calls": 60,
+    "cached_calls": 60,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 41773,
+    "cached_output_tokens": 23819
+   },
+   "reverse_check": {
+    "calls": 562,
+    "cached_calls": 562,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 904955,
+    "cached_output_tokens": 41479
+   },
+   "verifier": {
+    "calls": 27,
+    "cached_calls": 27,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 19058,
+    "cached_output_tokens": 1881
+   },
+   "approval_agent": {
+    "calls": 30,
+    "cached_calls": 30,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 33542,
+    "cached_output_tokens": 1970
+   },
+   "attacker": {
+    "calls": 36,
+    "cached_calls": 36,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 110083,
+    "cached_output_tokens": 30746
+   },
+   "repairer": {
+    "calls": 40,
+    "cached_calls": 40,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 149519,
+    "cached_output_tokens": 26299
+   },
+   "one_shot_repair": {
+    "calls": 7,
+    "cached_calls": 7,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 22067,
+    "cached_output_tokens": 4891
+   },
+   "self_refine_repair": {
+    "calls": 11,
+    "cached_calls": 11,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 31833,
+    "cached_output_tokens": 3049
+   },
+   "self_critique": {
+    "calls": 11,
+    "cached_calls": 11,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 35825,
+    "cached_output_tokens": 733
+   },
+   "deal_facts": {
+    "calls": 12,
+    "cached_calls": 12,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 8739,
+    "cached_output_tokens": 1045
+   }
+  }
+ },
+ "evaluator_usage": {
+  "backend": "claude-sonnet-agent",
+  "model": "claude-sonnet (agent)",
+  "calls": 1120,
+  "cached_calls": 1120,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 2376205,
+  "cached_output_tokens": 36298,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "independent_eval": {
+    "calls": 874,
+    "cached_calls": 874,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 2433239,
+    "cached_output_tokens": 35449
+   },
+   "field_extract": {
+    "calls": 306,
+    "cached_calls": 306,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 98058,
+    "cached_output_tokens": 3169
+   }
+  }
+ },
+ "config": {
+  "systems": [
+   "loop",
+   "r1",
+   "r1_attacker",
+   "r2",
+   "loop_no_attacker",
+   "loop_no_regression",
+   "loop_1_round"
+  ],
+  "max_rounds": 3,
+  "token_budget": null,
+  "n_ndas": 5,
+  "evaluator": "claude-sonnet-agent",
+  "attacker": "claude-haiku-agent"
+ },
+ "evaluator_noise_floor": {
+  "n": 30,
+  "flip_rate": 0.0,
+  "label_agreement": 1.0,
+  "flipped_rules": {}
+ }
+}

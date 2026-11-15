@@ -1,0 +1,21 @@
+{
+ "cards": 34,
+ "documents": 11,
+ "dropped_quote": [],
+ "dropped_invalid": [],
+ "no_structured_condition": 0,
+ "vs_gold": {
+  "cards": 34,
+  "gold_rules": 30,
+  "precision": 0.882,
+  "recall": 1.0,
+  "missed_gold": [],
+  "unmatched_cards": [
+   "C-16",
+   "C-20",
+   "C-29",
+   "C-34"
+  ],
+  "split_rules": {}
+ }
+}

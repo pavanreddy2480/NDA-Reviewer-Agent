@@ -1,0 +1,921 @@
+# Requirement cards for Keystone Precision Manufacturing, Inc., compiled by claude-haiku-agent from the prose policies
+# (policy/compiler.py). 43 cards from 11 documents; 0 dropped for a quote not in the policy.
+company: Keystone Precision Manufacturing, Inc.
+description: ''
+version: compiled-1
+rules:
+- id: C-01
+  title: Permit sharing with the recipient's own staff
+  requirement: The NDA must permit the receiving party to share Confidential Information with its own employees
+    who need it for the purpose of the work.
+  kind: require
+  term: The NDA must permit the receiving party to share Confidential Information with its own employees who need
+    it for the purpose of the work.
+  applies_if: company_side in ['disclosing', 'mutual']
+  applies_when: agreements under which Keystone shares its information with the other side
+  severity: medium
+  approval: Vice President, Human Resources, after consulting the General Counsel
+  refs: []
+  source:
+    document: Employee Confidentiality Policy
+    section: '3.1'
+    quote: Whenever Keystone signs an agreement that governs how the other side treats our information, the agreement
+      must permit the recipient to share some of that information with those of its own employees who need it for
+      the purpose of the work.
+  keywords:
+  - permitted disclosure to employees
+  - need to know
+  - representatives
+- id: C-02
+  title: Non-solicitation by individual employees and contractor engineers
+  requirement: The NDA with an individual employee or contractor engineer must commit the individual not to solicit
+    the company's personnel to leave.
+  kind: require
+  term: The NDA with an individual employee or contractor engineer must commit the individual not to solicit the
+    company's personnel to leave.
+  applies_if: counterparty == 'employee' and governing_law != 'california'
+  applies_when: agreements with an individual employee or contractor engineer where California law does not govern
+  severity: medium
+  approval: Vice President, Human Resources, after consulting the General Counsel
+  refs: []
+  source:
+    document: Employee Confidentiality Policy
+    section: '3.3'
+    quote: For that reason, each agreement with an individual employee or contractor engineer must commit the individual
+      not to solicit Keystone's personnel to leave.
+  keywords:
+  - non-solicitation of employees
+  - no solicitation of staff
+  - do not solicit personnel
+- id: C-03
+  title: No non-solicitation commitment under California law
+  requirement: The NDA must not include a commitment by an individual governed by California law not to solicit
+    the company's personnel to leave.
+  kind: forbid
+  term: The NDA must not include a commitment by an individual governed by California law not to solicit the company's
+    personnel to leave.
+  applies_if: counterparty == 'employee' and governing_law == 'california'
+  applies_when: agreements with individual employees or contractor engineers governed by California law
+  severity: medium
+  refs: []
+  source:
+    document: Employee Confidentiality Policy
+    section: '3.3'
+    quote: Where California law governs the individual's agreement, no such commitment is included, because California
+      law does not allow it.
+  keywords:
+  - non-solicitation
+  - California
+  - employee solicitation
+- id: C-04
+  title: Federal whistleblower immunity notice
+  requirement: The NDA with an employee must include a notice that federal law protects disclosure of a trade secret
+    in confidence to a government official or a lawyer solely to report or investigate a suspected violation of
+    law, and disclosure made under seal in a court filing.
+  kind: require
+  term: The NDA with an employee must include a notice that federal law protects disclosure of a trade secret in
+    confidence to a government official or a lawyer solely to report or investigate a suspected violation of law,
+    and disclosure made under seal in a court filing.
+  applies_if: counterparty == 'employee' and us_law
+  applies_when: agreements with employees governed by United States law
+  severity: high
+  refs: []
+  source:
+    document: Employee Confidentiality Policy
+    section: '4.2'
+    quote: Keystone therefore requires that each agreement with an employee that is governed by United States law,
+      whether federal or state, include a notice of this immunity.
+  keywords:
+  - whistleblower immunity notice
+  - trade secret disclosure to government
+  - immunity from liability
+- id: C-05
+  title: No restriction on reporting to government agencies
+  requirement: The NDA must not prevent an employee from filing a complaint with, communicating with or providing
+    information to a government agency without notice to the company.
+  kind: forbid
+  term: The NDA must not prevent an employee from filing a complaint with, communicating with or providing information
+    to a government agency without notice to the company.
+  applies_if: counterparty == 'employee'
+  applies_when: agreements with employees
+  severity: high
+  refs: []
+  source:
+    document: Employee Confidentiality Policy
+    section: '4.3'
+    quote: Nothing in this policy or in any agreement with Keystone prevents an employee from filing a complaint
+      with, communicating with or providing information to a government agency such as the National Labor Relations
+      Board, the Equal Employment Opportunity Commission, the Occupational Safety and Health Administration or the
+      Securities and Exchange Commission, without notice to Keystone.
+  keywords:
+  - government agency reporting
+  - whistleblower carve-out
+  - regulator communication
+- id: C-06
+  title: No restriction on discussing wages and working conditions
+  requirement: The NDA must not limit an employee's right to discuss wages, hours and working conditions with co-workers
+    or others.
+  kind: forbid
+  term: The NDA must not limit an employee's right to discuss wages, hours and working conditions with co-workers
+    or others.
+  applies_if: counterparty == 'employee'
+  applies_when: agreements with employees
+  severity: high
+  refs: []
+  source:
+    document: Employee Confidentiality Policy
+    section: '4.3'
+    quote: Nor does it limit the right of employees to discuss wages, hours and working conditions with each other
+      or with others, as protected by Section 7 of the National Labor Relations Act.
+  keywords:
+  - discuss wages
+  - working conditions
+  - concerted activity
+- id: C-07
+  title: Employee confidentiality survives departure
+  requirement: The NDA with an employee must state that the employee's confidentiality duties continue after employment
+    ends, for as long as the information remains confidential.
+  kind: require
+  term: The NDA with an employee must state that the employee's confidentiality duties continue after employment
+    ends, for as long as the information remains confidential.
+  applies_if: counterparty == 'employee'
+  applies_when: agreements with employees
+  severity: medium
+  approval: Vice President, Human Resources, after consulting the General Counsel
+  refs: []
+  source:
+    document: Employee Confidentiality Policy
+    section: '3.4'
+    quote: Employees' duties to protect confidential information continue after they leave, for as long as the information
+      remains confidential.
+  keywords:
+  - survival after employment
+  - post-employment confidentiality
+  - continues after termination
+- id: C-08
+  title: Recipient may make working copies
+  requirement: The agreement must allow the recipient to make copies of portions of the information where needed
+    for the task, subject to the other protections in the agreement.
+  kind: require
+  term: The agreement must allow the recipient to make copies of portions of the information where needed for the
+    task, subject to the other protections in the agreement.
+  applies_if: company_side in ['disclosing', 'mutual']
+  applies_when: agreements under which Keystone supplies information to an outside party
+  severity: medium
+  approval: Vice President, Engineering; Chief Technology Officer for Tier 1 data
+  refs: []
+  source:
+    document: Engineering Data Handling Policy
+    section: '3.2'
+    quote: Any agreement under which we supply information to an outside party must therefore allow the recipient
+      to make copies of portions of what we provide where that is needed for the task, subject to the other protections
+      in the agreement.
+  keywords:
+  - working copies
+  - archive copy
+  - permitted copies
+- id: C-09
+  title: Protection regardless of legend
+  requirement: The agreement must protect Keystone's information whether or not it carries a legend, and must not
+    make protection depend on whether each item was marked or identified as secret.
+  kind: require
+  term: The agreement must protect Keystone's information whether or not it carries a legend, and must not make
+    protection depend on whether each item was marked or identified as secret.
+  applies_if: company_side in ['disclosing', 'mutual']
+  applies_when: agreements where Keystone is the disclosing side
+  severity: high
+  approval: Vice President, Engineering; Chief Technology Officer for Tier 1 data
+  refs: []
+  source:
+    document: Engineering Data Handling Policy
+    section: '3.5'
+    quote: Where Keystone is the disclosing side, the agreement we sign must protect our information whether or
+      not it carries a legend, and must not make protection depend on whether each item was marked or identified
+      as secret.
+  keywords:
+  - legend
+  - marking not required
+  - identified as secret
+- id: C-10
+  title: Minimum return or destruction period
+  requirement: The time allowed to the recipient for returning or destroying Keystone's materials must be at least
+    the required minimum number of days.
+  kind: field
+  term: The time allowed to the recipient for returning or destroying Keystone's materials must be at least the
+    required minimum number of days.
+  applies_if: company_side in ['disclosing', 'mutual']
+  applies_when: agreements where Keystone discloses engineering data to an outside party
+  severity: medium
+  constraint:
+    field: return_deadline_days
+    op: '>='
+    value: 10
+  approval: Vice President, Engineering; Chief Technology Officer for Tier 1 data
+  refs: []
+  source:
+    document: Engineering Data Handling Policy
+    section: '4.2'
+    quote: The time allowed to the other side for returning or destroying our materials must be at least 10 days,
+      so that the recipient can find and process all of it.
+  keywords:
+  - return period
+  - destruction deadline
+  - return or destroy
+- id: C-11
+  title: Recipient use and safeguards for personal data
+  requirement: The agreement must require the recipient to use the personal data solely for the purpose stated and
+    to protect it with appropriate security safeguards.
+  kind: require
+  term: The agreement must require the recipient to use the personal data solely for the purpose stated and to protect
+    it with appropriate security safeguards.
+  applies_if: personal_data
+  applies_when: personal data is to be exchanged with an outside party
+  severity: high
+  refs: []
+  source:
+    document: Engineering Data Handling Policy
+    section: '5.1'
+    quote: When personal data is to be exchanged with an outside party, the agreement must require the recipient
+      to use the personal data solely for the purpose stated and to protect it with appropriate security safeguards.
+  keywords:
+  - purpose limitation
+  - security safeguards
+  - use solely for purpose
+- id: C-12
+  title: Minimum confidentiality period for personal data
+  requirement: When personal data is shared, the period during which the recipient must keep information secret
+    must be at least the required minimum term.
+  kind: field
+  term: When personal data is shared, the period during which the recipient must keep information secret must be
+    at least the required minimum term.
+  applies_if: personal_data
+  applies_when: personal data is going to be shared
+  severity: high
+  constraint:
+    field: confidentiality_term_months
+    op: '>='
+    value: 84
+  approval: Vice President, Engineering; Chief Technology Officer for Tier 1 data
+  refs: []
+  source:
+    document: Engineering Data Handling Policy
+    section: '5.2'
+    quote: If personal data is going to be shared, the period during which the recipient must keep information secret
+      must run for at least 84 months.
+  keywords:
+  - confidentiality period
+  - secrecy term
+  - personal data duration
+- id: C-13
+  title: Export control undertaking
+  requirement: The agreement must contain the recipient's undertaking to comply with applicable export control laws
+    and not to export or re-export Keystone technical data without the required authorization.
+  kind: require
+  term: The agreement must contain the recipient's undertaking to comply with applicable export control laws and
+    not to export or re-export Keystone technical data without the required authorization.
+  applies_if: foreign or not us_law
+  applies_when: the recipient is located outside the United States, or the agreement is not governed by a US state's
+    law
+  severity: high
+  refs: []
+  source:
+    document: Engineering Data Handling Policy
+    section: '5.4'
+    quote: When the recipient of our information is located outside the United States, or when the governing law
+      of the agreement is not that of a US state, the agreement must contain an undertaking by the recipient to
+      comply with applicable export control laws and not to export or re-export our technical data without the required
+      authorization.
+  keywords:
+  - export control undertaking
+  - re-export restriction
+  - comply with export laws
+- id: C-14
+  title: Recipient may use outside advisers
+  requirement: The NDA must allow the recipient to pass the information to its outside advisers, consultants and
+    agents, provided they are bound to keep it secret.
+  kind: require
+  term: The NDA must allow the recipient to pass the information to its outside advisers, consultants and agents,
+    provided they are bound to keep it secret.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '3.1'
+    quote: An agreement that governs the exchange of our information must allow the recipient to pass what it receives
+      to its outside advisers, consultants and agents, provided they are bound to keep it secret.
+  keywords:
+  - outside advisers sharing
+  - consultants agents disclosure
+  - representatives permitted
+- id: C-15
+  title: No ban on consulting outside persons
+  requirement: The NDA forbids the recipient from consulting any outside person about the information.
+  kind: forbid
+  term: The NDA forbids the recipient from consulting any outside person about the information.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '3.1'
+    quote: Wording that forbids the recipient from consulting any outside person at all is not acceptable.
+  keywords:
+  - no outside consultation
+  - advisers prohibited
+  - representatives barred
+- id: C-16
+  title: Free to obtain similar information elsewhere
+  requirement: The NDA must confirm that the recipient remains free to obtain information resembling the disclosing
+    party's from a third party.
+  kind: require
+  term: The NDA must confirm that the recipient remains free to obtain information resembling the disclosing party's
+    from a third party.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '3.3'
+    quote: Each agreement should therefore confirm that the recipient remains free to obtain information resembling
+      ours from a third party.
+  keywords:
+  - independent third party information
+  - similar information obtained
+  - no restriction on third-party sources
+- id: C-17
+  title: Independent receipt not a breach
+  requirement: The NDA treats the recipient's independent receipt of similar information from a third party as a
+    breach.
+  kind: forbid
+  term: The NDA treats the recipient's independent receipt of similar information from a third party as a breach.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '3.3'
+    quote: We will not sign a document that treats such an event as a violation.
+  keywords:
+  - similar information breach
+  - third party source breach
+  - independent receipt violation
+- id: C-18
+  title: Amendments in writing and signed
+  requirement: The NDA must provide that amendments must be in writing and signed by authorized signatories of both
+    parties.
+  kind: require
+  term: The NDA must provide that amendments must be in writing and signed by authorized signatories of both parties.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '3.5'
+    quote: Amendments must be in writing, signed by authorized signatories of both parties, and routed through the
+      same review and approval path as the original document.
+  keywords:
+  - written amendments
+  - signed amendments
+  - entire agreement amendment
+- id: C-19
+  title: Correct party names and addresses
+  requirement: The NDA must state each party's correct legal name and address.
+  kind: require
+  term: The NDA must state each party's correct legal name and address.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '3.6'
+    quote: Reviewers verify, at a minimum, that each document states the parties' correct legal names and addresses,
+      the scope of work, prices and payment terms, delivery or performance dates, warranties, limits on liability,
+      insurance, indemnities, termination rights, notices, assignment and subcontracting.
+  keywords:
+  - party legal names
+  - parties addresses
+  - notice addresses
+- id: C-20
+  title: No penalty on breach of secrecy
+  requirement: The NDA fixes a penalty or liquidated damages amount payable when a party breaches its duty of secrecy.
+  kind: forbid
+  term: The NDA fixes a penalty or liquidated damages amount payable when a party breaches its duty of secrecy.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '4.2'
+    quote: Keystone does not sign an agreement that fixes a penalty or liquidated damages amount to be paid when
+      a party breaches its duty of secrecy, and it does not ask the other side to accept one.
+  keywords:
+  - liquidated damages
+  - penalty for breach
+  - fixed damages amount
+- id: C-21
+  title: No license to patents or Tier 1 material
+  requirement: The NDA grants the other side a license to the disclosing party's patents or Tier 1 material.
+  kind: forbid
+  term: The NDA grants the other side a license to the disclosing party's patents or Tier 1 material.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: Chief Technology Officer
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '4.3'
+    quote: Licenses to Keystone's patents or Tier 1 material may be granted only with the approval of the Chief
+      Technology Officer, on advice from the General Counsel.
+  keywords:
+  - patent license grant
+  - trade secret license
+  - license to Tier 1
+- id: C-22
+  title: No non-compete on Keystone
+  requirement: The NDA contains a commitment by the company not to compete, not to sell to specified customers or
+    not to buy from other suppliers.
+  kind: forbid
+  term: The NDA contains a commitment by the company not to compete, not to sell to specified customers or not to
+    buy from other suppliers.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '4.4'
+    quote: Any commitment by Keystone not to compete, not to sell to specified customers or not to buy from other
+      suppliers requires General Counsel approval.
+  keywords:
+  - non-compete clause
+  - no-sell commitment
+  - exclusive supplier obligation
+- id: C-23
+  title: Limits on automatic renewal
+  requirement: The NDA renews automatically for a period longer than the standard renewal period, or requires long
+    advance notice to prevent renewal.
+  kind: forbid
+  term: The NDA renews automatically for a period longer than the standard renewal period, or requires long advance
+    notice to prevent renewal.
+  applies_if: 'True'
+  applies_when: applies when the NDA renews automatically
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '4.7'
+    quote: A document that renews automatically for a period longer than twelve months, or that requires more than
+      ninety days' notice to prevent renewal, requires approval by the General Counsel.
+  keywords:
+  - automatic renewal term
+  - notice to prevent renewal
+  - evergreen clause
+- id: C-24
+  title: Maximum secrecy period
+  requirement: Period during which the recipient must keep the disclosing party's information secret.
+  kind: field
+  term: Period during which the recipient must keep the disclosing party's information secret.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  constraint:
+    field: confidentiality_term_months
+    op: <=
+    value: 120
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '5.1'
+    quote: The period during which a recipient must keep our information secret, and during which we must keep theirs
+      secret, may not exceed 120 months.
+  keywords:
+  - secrecy period
+  - confidentiality term
+  - protection duration
+- id: C-25
+  title: Maximum survival after termination
+  requirement: Duration of continuing duties after the NDA is terminated.
+  kind: field
+  term: Duration of continuing duties after the NDA is terminated.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: survival_months
+    op: <=
+    value: 84
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '5.2'
+    quote: Duties that are expressed to continue after an agreement has been terminated must not extend past 84
+      months from termination.
+  keywords:
+  - survival period
+  - post-termination duties
+  - continuing obligations
+- id: C-26
+  title: Governing law Ohio or Delaware
+  requirement: Governing law of the NDA.
+  kind: field
+  term: Governing law of the NDA.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  constraint:
+    field: governing_law
+    op: in
+    value:
+    - ohio
+    - delaware
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '6.1'
+    quote: Documents that Keystone signs must be governed by the law of Ohio or the law of Delaware.
+  keywords:
+  - governing law
+  - choice of law
+  - Ohio Delaware law
+- id: C-27
+  title: Preferred dispute forum
+  requirement: Forum for disputes under the NDA.
+  kind: field
+  term: Forum for disputes under the NDA.
+  applies_if: 'True'
+  applies_when: ''
+  severity: low
+  constraint:
+    field: dispute_forum
+    op: in
+    value:
+    - ohio
+    - delaware
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '6.2'
+    quote: The preferred forum for disputes is the state or federal courts located in Montgomery County, Ohio, or
+      New Castle County, Delaware.
+  keywords:
+  - dispute forum
+  - courts jurisdiction
+  - venue Ohio Delaware
+- id: C-28
+  title: Claims period not shorter than statute
+  requirement: The NDA sets a contractual period for bringing claims that is shorter than the statutory limitation
+    period.
+  kind: forbid
+  term: The NDA sets a contractual period for bringing claims that is shorter than the statutory limitation period.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Legal Review and Approval Policy
+    section: '6.4'
+    quote: A contractual period for bringing claims shorter than the statutory limitation period requires approval
+      by the General Counsel.
+  keywords:
+  - limitation period
+  - claims deadline
+  - contractual time bar
+- id: C-29
+  title: Notice of compelled disclosure
+  requirement: The NDA must require the recipient to inform Keystone when a statute, regulation or legal process
+    compels it to disclose Keystone information.
+  kind: require
+  term: The NDA must require the recipient to inform Keystone when a statute, regulation or legal process compels
+    it to disclose Keystone information.
+  applies_if: 'True'
+  applies_when: every nondisclosure agreement with a partner or any other organization
+  severity: high
+  refs: []
+  source:
+    document: Partner and Distributor Policy
+    section: '3.2'
+    quote: Every nondisclosure agreement with a partner, and with any other organization, must therefore require
+      the recipient to inform Keystone when a statute, regulation or legal process compels it to disclose our information.
+  keywords:
+  - compelled disclosure notice
+  - legal process notice
+  - subpoena notification
+- id: C-30
+  title: Protected information must not be limited to technical matter
+  requirement: The NDA must not define protected information so narrowly that it covers only technical matter and
+    leaves out business and commercial information.
+  kind: forbid
+  term: The NDA must not define protected information so narrowly that it covers only technical matter and leaves
+    out business and commercial information.
+  applies_if: counterparty in ['partner', 'customer']
+  applies_when: nondisclosure agreements with partners or customers
+  severity: medium
+  refs: []
+  source:
+    document: Partner and Distributor Policy
+    section: '3.4'
+    quote: A nondisclosure agreement with a partner or a customer therefore must not define protected information
+      so narrowly that it covers only technical matter.
+  keywords:
+  - definition of confidential information
+  - commercial information
+  - technical information only
+- id: C-31
+  title: No disclosure of the partner relationship
+  requirement: The NDA with a partner must require the partner not to disclose that the agreement was concluded
+    or that the parties negotiated it, except as Keystone has agreed in writing.
+  kind: require
+  term: The NDA with a partner must require the partner not to disclose that the agreement was concluded or that
+    the parties negotiated it, except as Keystone has agreed in writing.
+  applies_if: counterparty == 'partner'
+  applies_when: nondisclosure agreements with partners
+  severity: medium
+  refs: []
+  source:
+    document: Partner and Distributor Policy
+    section: '4.1'
+    quote: The nondisclosure agreement with a partner must require the partner not to disclose that the agreement
+      was concluded or that the parties negotiated it, except as Keystone has agreed in writing.
+  keywords:
+  - existence of agreement
+  - negotiations confidential
+  - no announcement
+- id: C-32
+  title: No independent creation in high value partner NDAs
+  requirement: The NDA with a high value partner must not contain wording that lets the partner independently create
+    information resembling the information Keystone discloses.
+  kind: forbid
+  term: The NDA with a high value partner must not contain wording that lets the partner independently create information
+    resembling the information Keystone discloses.
+  applies_if: counterparty == 'partner' and value_band == 'high'
+  applies_when: partner relationships in the high deal value band, such as joint development or long-term manufacturing
+  severity: high
+  approval: Chief Technology Officer
+  refs: []
+  source:
+    document: Partner and Distributor Policy
+    section: '4.3'
+    quote: Where the relationship is in the high deal value band, typically a joint development or a long-term manufacturing
+      arrangement, the nondisclosure agreement must not contain wording that lets the partner independently create
+      information resembling what we disclose.
+  keywords:
+  - independent development
+  - independently create
+  - resembling information
+- id: C-33
+  title: Return or destroy supplier information after the agreement ends
+  requirement: The Receiving Party must return or destroy the information provided to it once the agreement is over.
+  kind: require
+  term: The Receiving Party must return or destroy the information provided to it once the agreement is over.
+  applies_if: counterparty == 'vendor'
+  applies_when: nondisclosure agreements with a supplier
+  severity: high
+  refs: []
+  source:
+    document: Supplier Engagement Policy
+    section: '3.1'
+    quote: Every nondisclosure agreement with a supplier must oblige the supplier to give back or destroy the information
+      we have provided once the agreement is over.
+  keywords:
+  - return or destroy
+  - confidential information
+  - end of agreement
+- id: C-34
+  title: Return or destruction deadline for supplier NDAs
+  requirement: The NDA sets the deadline for the return or destruction of information provided by the company.
+  kind: field
+  term: The NDA sets the deadline for the return or destruction of information provided by the company.
+  applies_if: counterparty == 'vendor'
+  applies_when: nondisclosure agreements with a supplier
+  severity: high
+  constraint:
+    field: return_deadline_days
+    op: <=
+    value: 30
+  approval: Vice President, Supply Chain
+  refs: []
+  source:
+    document: Supplier Engagement Policy
+    section: '3.2'
+    quote: The return or destruction has to be completed within 30 days of the end of the agreement or of our written
+      request, whichever comes first.
+  keywords:
+  - return deadline
+  - days after termination
+  - written request
+- id: C-35
+  title: No archival or residual carve-outs on medium and high value supplier deals
+  requirement: A carve-out from the return or destruction obligation for archival copies, residual knowledge or
+    retained working files.
+  kind: forbid
+  term: A carve-out from the return or destruction obligation for archival copies, residual knowledge or retained
+    working files.
+  applies_if: counterparty == 'vendor' and value_band in ('medium', 'high')
+  applies_when: supplier deals in the medium or high value band
+  severity: high
+  approval: Chief Technology Officer
+  refs: []
+  source:
+    document: Supplier Engagement Policy
+    section: '3.6'
+    quote: The agreement may not carve out archival copies, residual knowledge or retained working files for these
+      deals.
+  keywords:
+  - archival copies
+  - residual knowledge
+  - retained working files
+- id: C-36
+  title: No clause barring hiring of the other side's personnel
+  requirement: A clause that bars either side from approaching or hiring the other side's personnel.
+  kind: forbid
+  term: A clause that bars either side from approaching or hiring the other side's personnel.
+  applies_if: counterparty in ('vendor', 'customer') or governing_law == 'california'
+  applies_when: nondisclosure agreements with a supplier or a customer, and any agreement governed by California
+    law
+  severity: medium
+  refs: []
+  source:
+    document: Supplier Engagement Policy
+    section: '3.4'
+    quote: For that reason, a nondisclosure agreement with a supplier or a customer must not contain a clause that
+      bars either side from approaching or hiring the other's personnel, and no agreement governed by California
+      law, whoever the counterparty is, may contain that kind of employee-restricting clause.
+  keywords:
+  - non-solicitation
+  - hiring employees
+  - approach personnel
+- id: C-37
+  title: Verbal information protected
+  requirement: The NDA must state that information communicated verbally counts as protected information just as
+    written material does.
+  kind: require
+  term: The NDA must state that information communicated verbally counts as protected information just as written
+    material does.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Trade Secret Protection Policy
+    section: '3.1'
+    quote: Our position is that knowledge conveyed aloud deserves the same protection as a drawing or a file, and
+      any written nondisclosure agreement that Keystone signs must state that information communicated verbally
+      counts as protected information just as written material does.
+  keywords:
+  - verbal information
+  - oral disclosure
+  - conversations protected
+- id: C-38
+  title: Use limited to stated purposes
+  requirement: The NDA must restrict the recipient to using the information solely for the specific purposes described
+    in the agreement, excluding its own product development, quoting to other customers and training of its own
+    staff.
+  kind: require
+  term: The NDA must restrict the recipient to using the information solely for the specific purposes described
+    in the agreement, excluding its own product development, quoting to other customers and training of its own
+    staff.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Trade Secret Protection Policy
+    section: '3.2'
+    quote: Every nondisclosure agreement we sign must therefore restrict the recipient to using what it learns solely
+      for the specific purposes described in that agreement, and for nothing else, including its own product development,
+      quoting to other customers or training of its own staff.
+  keywords:
+  - purpose limitation
+  - use restriction
+  - no product development
+- id: C-39
+  title: No analysis or reverse engineering of samples
+  requirement: The NDA must forbid the recipient from analyzing samples, prototypes, tooling or software in order
+    to work out how they were made, including by disassembly, decompilation, chemical or metallurgical analysis
+    and dimensional scanning.
+  kind: require
+  term: The NDA must forbid the recipient from analyzing samples, prototypes, tooling or software in order to work
+    out how they were made, including by disassembly, decompilation, chemical or metallurgical analysis and dimensional
+    scanning.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Trade Secret Protection Policy
+    section: '3.4'
+    quote: We require that any nondisclosure agreement forbid the recipient from analyzing our samples, prototypes,
+      tooling or software in order to work out how they were made, including disassembly, decompilation, chemical
+      or metallurgical analysis, and dimensional scanning intended to recreate them.
+  keywords:
+  - reverse engineering prohibition
+  - no disassembly
+  - decompilation ban
+- id: C-40
+  title: No transfer of rights in information
+  requirement: The NDA must make clear that the other side acquires no license and no other right of any kind in
+    the disclosing party's information, designs or processes by receiving them.
+  kind: require
+  term: The NDA must make clear that the other side acquires no license and no other right of any kind in the disclosing
+    party's information, designs or processes by receiving them.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Trade Secret Protection Policy
+    section: '4.1'
+    quote: Each nondisclosure agreement we sign must make clear that the other side acquires no license and no other
+      right of any kind in our information, designs or processes by virtue of receiving them.
+  keywords:
+  - no license granted
+  - no rights transferred
+  - ownership retained
+- id: C-41
+  title: Secrecy duties survive termination
+  requirement: The NDA must state that the recipient's duties of secrecy and other continuing terms do not fall
+    away when the agreement is terminated or expires, but remain in force afterward.
+  kind: require
+  term: The NDA must state that the recipient's duties of secrecy and other continuing terms do not fall away when
+    the agreement is terminated or expires, but remain in force afterward.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Trade Secret Protection Policy
+    section: '5.1'
+    quote: For that reason each nondisclosure agreement must state that the recipient's duties of secrecy and the
+      other terms that are meant to continue do not fall away when the agreement is terminated or expires, but remain
+      in force afterward.
+  keywords:
+  - survival clause
+  - duties continue after termination
+  - secrecy survives expiry
+- id: C-42
+  title: Minimum secrecy period
+  requirement: Secrecy period for the recipient's duties under the NDA.
+  kind: field
+  term: Secrecy period for the recipient's duties under the NDA.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: confidentiality_term_months
+    op: '>='
+    value: 60
+  refs: []
+  source:
+    document: Trade Secret Protection Policy
+    section: '5.3'
+    quote: Every nondisclosure agreement Keystone signs must therefore keep the recipient's secrecy duties running
+      for a period of not less than 60 months.
+  keywords:
+  - secrecy period
+  - confidentiality term
+  - minimum duration
+- id: C-43
+  title: Minimum survival after termination
+  requirement: Duration of the recipient's secrecy duties after the agreement ends early.
+  kind: field
+  term: Duration of the recipient's secrecy duties after the agreement ends early.
+  applies_if: 'True'
+  applies_when: the agreement ends before the secrecy period would otherwise run out
+  severity: medium
+  constraint:
+    field: survival_months
+    op: '>='
+    value: 36
+  refs: []
+  source:
+    document: Trade Secret Protection Policy
+    section: '5.4'
+    quote: Where the agreement ends before the secrecy period would otherwise run out, the recipient's duties must
+      continue after termination for at least 36 months.
+  keywords:
+  - survival period
+  - post-termination duties
+  - continuing obligations

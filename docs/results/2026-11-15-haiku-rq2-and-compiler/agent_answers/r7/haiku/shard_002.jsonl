@@ -1,0 +1,1 @@
+{"key": "39a1c37fe869ef247a9dbd72c535312cc36173f7d327954fa26349f8a43737b2", "text": "{\"thought\": \"Approver is General Counsel and deviation is allowed. Next I check for an earlier senior counsel precedent for C-14 with this counterparty type before requesting approval.\", \"action\": \"precedent_search\", \"args\": {\"rule_id\": \"C-14\", \"counterparty\": \"employee\"}}"}
