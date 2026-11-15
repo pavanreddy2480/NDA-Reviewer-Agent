@@ -1,0 +1,16 @@
+{
+"Q1": {"rationale": "No provision requires the Receiving Party to notify the Disclosing Party of a legally required disclosure; clause 10 only refers to statutory confidentiality.", "label": "NotMentioned", "evidence": [32], "confidence": 0.8},
+"Q2": {"rationale": "The NDA contains no duty to promptly notify the Disclosing Party of unauthorized use or disclosure.", "label": "NotMentioned", "evidence": [22], "confidence": 0.85},
+"Q3": {"rationale": "Clause 3 bars disclosure to third parties without approval, but clause 22 treats consultants acting within the scope of their engagement as permitted representatives, and clause 4 allows disclosure to service providers and auditors.", "label": "Entailment", "evidence": [19, 22, 23], "confidence": 0.6},
+"Q4": {"rationale": "Clause 22 makes the Receiving Party responsible for breaches by its employees acting within the scope of their employment, which contemplates employee access.", "label": "Entailment", "evidence": [22, 19], "confidence": 0.7},
+"Q5": {"rationale": "The NDA sets no return or destruction obligation on termination; clause 6 and clause 9 only state duration and survival.", "label": "NotMentioned", "evidence": [25, 30, 31], "confidence": 0.75},
+"Q6": {"rationale": "The NDA contains no restriction on reporting violations of law to government agencies or regulators.", "label": "NotMentioned", "evidence": [19], "confidence": 0.85},
+"Q7": {"rationale": "Segment 27 expressly permits the Receiving Party to develop similar products or services, whether or not it uses ideas learned from the Disclosing Party.", "label": "Entailment", "evidence": [27], "confidence": 0.9},
+"Q8": {"rationale": "Clause 11 states that no implied or express license is created from either Party.", "label": "Entailment", "evidence": [34], "confidence": 0.9},
+"Q9": {"rationale": "Clause 3 requires at least the same care as for own information and no less than a reasonable degree of care, though it does not list the specific safeguard types.", "label": "Entailment", "evidence": [20], "confidence": 0.7},
+"Q10": {"rationale": "Clause 9 states that the Receiving Party's obligations survive termination of the Agreement or return of the Confidential Information.", "label": "Entailment", "evidence": [31], "confidence": 0.95},
+"Q11": {"rationale": "The NDA contains no confidentiality term about the fact that the agreement was agreed or negotiated.", "label": "NotMentioned", "evidence": [33], "confidence": 0.9},
+"Q12": {"rationale": "Segment 29 provides for a US$500,000 penalty payable on any breach, irrespective of actual loss suffered.", "label": "Entailment", "evidence": [29], "confidence": 0.95},
+"Q13": {"rationale": "Clause 2 covers information in whatever form, which includes verbally conveyed information.", "label": "Entailment", "evidence": [12], "confidence": 0.75},
+"Q14": {"rationale": "Clause 3 provides that Confidential Information shall be used only for the purposes of facilitating the business relationship.", "label": "Entailment", "evidence": [18], "confidence": 0.95}
+}

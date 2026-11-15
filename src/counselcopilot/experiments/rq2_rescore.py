@@ -58,7 +58,8 @@ def rescore_rq2(repaired_path: str | Path, planted: dict[int, PlantedNDA], gold_
                 evaluator_llm: LLMClient, law_pack: LawPack | None = None, labels_path: str | None = None,
                 allow_auto_labels: bool = False, hypotheses: dict[str, str] | None = None,
                 systems: tuple[str, ...] | None = None, originals_only: bool = False,
-                out_root: str = "runs") -> dict:
+                out_root: str = "runs", noise_floor: int = 0, nli_docs=None, nli_n: int = 0,
+                seed: int = 0) -> dict:
     gold_by_company = {p.company: p for p in gold_packs}
     labels = load_labels(labels_path, allow_auto=allow_auto_labels) if labels_path else {}
     law_rules = law_pack.as_rules() if law_pack else []
@@ -85,6 +86,23 @@ def rescore_rq2(repaired_path: str | Path, planted: dict[int, PlantedNDA], gold_
             rows.append(score_one(ev, res, p, eval_rules, deal, hypotheses))
         except PendingBatch:
             pending += 1
+    extra = {}
+    if noise_floor:  # the judge asked twice (seeds 0 and 1) about the same unrepaired NDA and rule
+        ids = sorted({r["doc_id"] for r in saved})
+        drafts = [planted[i].draft for i in ids]
+        deal_of = {planted[i].draft.id: gold_deal(planted[i].deal, {**labels.get(i, {}), **planted[i].label_updates})
+                   for i in ids}
+        rules_of = {planted[i].draft.id: list(gold_by_company[planted[i].deal.company].rules) + law_rules for i in ids}
+        try:
+            extra["evaluator_noise_floor"] = ev.noise_floor(drafts, rules_of, deal_of, n=noise_floor, seed=seed)
+        except PendingBatch:
+            pending += 1
+    if nli_n and nli_docs is not None and hypotheses:  # the judge against ContractNLI expert labels
+        try:
+            extra["evaluator_contractnli"] = ev.validate_on_contractnli(nli_docs, hypotheses, n=nli_n, seed=seed,
+                                                                         per_doc=True)
+        except PendingBatch:
+            pending += 1
     present = tuple(dict.fromkeys(r["system"] for r in saved))
     agg = aggregate(rows)
     comparisons = [c for c in (paired_remaining(rows, "loop", b) for b in present if b != "loop") if c]
@@ -95,6 +113,7 @@ def rescore_rq2(repaired_path: str | Path, planted: dict[int, PlantedNDA], gold_
                "remaining_at_most_half_of_r1_attacker": next((c["h2_half"] for c in comparisons
                                                               if c["b"] == "r1_attacker"), None),
                "regression_rate_below_5pct": (reg < 0.05) if reg is not None else None},
+        **extra,
         "pending_batch_items": pending,
         "evaluator_usage": usage_report(evaluator_llm),
         "config": {"repaired": str(repaired_path), "systems": list(present), "evaluator": evaluator_llm.name,

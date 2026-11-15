@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import hashlib
 import json
 import re
 import sqlite3
@@ -133,10 +134,14 @@ def export(args) -> None:
         if hit is None and tuple(segs) in attrib:
             g, name, b = attrib[tuple(segs)]
             hit, base = (g, name), list(b)
-        elif hit is None:  # some other draft: nearest saved draft
+        elif hit is None:  # some other draft: nearest saved draft, or its own task if none is close
             best = max(known, key=lambda k: difflib.SequenceMatcher(a=k, b=segs, autojunk=False).ratio())
-            hit = known[best]
-            base = list(best)
+            if difflib.SequenceMatcher(a=best, b=segs, autojunk=False).ratio() >= 0.8:
+                hit, base = known[best], list(best)
+            else:  # an unrelated NDA (e.g. ContractNLI validation)
+                tag = hashlib.sha256("\n".join(segs).encode()).hexdigest()[:8]
+                known[tuple(segs)] = hit = ("validation", f"nda_{tag}")
+                base = segs
         else:
             base = segs
         t = tasks[hit[1]]

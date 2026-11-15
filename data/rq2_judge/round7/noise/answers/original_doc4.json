@@ -1,0 +1,17 @@
+{
+"Q1": {"rationale": "No segment mentions sexual harassment or sexual assault, so the NDA does not deal with that carve-out.", "label": "NotMentioned", "evidence": [6], "confidence": 0.85},
+"Q2": {"rationale": "Clause 15 allows acquiring products or services similar to the Disclosing Party's, but it does not address acquiring information from a third party.", "label": "NotMentioned", "evidence": [15], "confidence": 0.55},
+"Q3": {"rationale": "Clause 5 permits disclosure required by law without any requirement to notify the Discloser.", "label": "NotMentioned", "evidence": [10], "confidence": 0.75},
+"Q4": {"rationale": "Clause 4 applies the obligations regardless of the way or form in which information is disclosed, which covers verbal disclosure.", "label": "Entailment", "evidence": [7], "confidence": 0.85},
+"Q5": {"rationale": "Clause 7 grants a right to copy the Confidential Information solely for the Purpose, and clause 6 requires return of copies.", "label": "Entailment", "evidence": [12, 11], "confidence": 0.9},
+"Q6": {"rationale": "The NDA does not mention sharing with the Recipient's employees.", "label": "NotMentioned", "evidence": [6], "confidence": 0.85},
+"Q7": {"rationale": "Clause 2 prohibits use for any purpose except the Purpose without the Discloser's written agreement.", "label": "Entailment", "evidence": [5], "confidence": 0.95},
+"Q8": {"rationale": "Clause 7 states that neither the Agreement nor the supply of information grants any licence, interest or right.", "label": "Entailment", "evidence": [12], "confidence": 0.9},
+"Q9": {"rationale": "The NDA contains no term about disclosing the fact that the Agreement was agreed or negotiated.", "label": "NotMentioned", "evidence": [1], "confidence": 0.9},
+"Q10": {"rationale": "Clause 3 bars disclosure to any third party, and the only exception (clause 5) covers disclosure required by law or competent authority, not voluntary reports to government agencies.", "label": "Contradiction", "evidence": [6, 10], "confidence": 0.6},
+"Q11": {"rationale": "The NDA contains no trade secret immunity notice.", "label": "NotMentioned", "evidence": [10], "confidence": 0.9},
+"Q12": {"rationale": "Clause 8 states that the undertakings in clauses 2 and 3 continue in force indefinitely.", "label": "Entailment", "evidence": [13], "confidence": 0.85},
+"Q13": {"rationale": "The paragraph after clause 9 allows development of similar products whether or not it uses ideas learned from the Discloser, which gives a residuals-type freedom.", "label": "Entailment", "evidence": [15], "confidence": 0.6},
+"Q14": {"rationale": "The NDA does not permit sharing with consultants, agents or professional advisors; clause 3 bars disclosure to any third party.", "label": "NotMentioned", "evidence": [6], "confidence": 0.8},
+"Q15": {"rationale": "Clause 7 says no interest or right is granted in intellectual property, which is incompatible with transferring ownership to the Recipient.", "label": "Contradiction", "evidence": [7, 12], "confidence": 0.75}
+}

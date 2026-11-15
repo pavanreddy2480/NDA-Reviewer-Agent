@@ -1,0 +1,19 @@
+{
+"Q1": {"rationale": "The NDA has no reverse engineering prohibition; segment 20-21 bars using Confidential Information as a basis for designing similar systems, which is a different restriction.", "label": "NotMentioned", "evidence": [21], "confidence": 0.85},
+"Q2": {"rationale": "Segments 25 and 26 require return within 15 days of written demand or after the review decision, not upon termination of the Agreement, which has no termination clause.", "label": "NotMentioned", "evidence": [25, 26], "confidence": 0.55},
+"Q3": {"rationale": "Segment 34 states that neither party grants any right or license to Confidential Information by virtue of disclosure.", "label": "Entailment", "evidence": [34], "confidence": 0.97},
+"Q4": {"rationale": "The NDA contains no confidentiality obligation over the fact that the Agreement was agreed or negotiated.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q5": {"rationale": "Segments 7 and 9 extend Confidential Information to products, systems, business topics and any information regardless of form, which is incompatible with a technical-only scope.", "label": "Contradiction", "evidence": [7, 9], "confidence": 0.9},
+"Q6": {"rationale": "Segment 9 covers all information provided regardless of form and contains no requirement that the Disclosing Party expressly identify it.", "label": "NotMentioned", "evidence": [9], "confidence": 0.75},
+"Q7": {"rationale": "The NDA has no express survival clause and no stated term; segment 36 only binds successors and assigns.", "label": "NotMentioned", "evidence": [36], "confidence": 0.8},
+"Q8": {"rationale": "The NDA does not permit independent development; segment 21 restricts designing similar systems that use Confidential Information as a basis, which is not an independent development carve-out.", "label": "NotMentioned", "evidence": [20, 21], "confidence": 0.6},
+"Q9": {"rationale": "Segment 26 requires return of all information without retaining any copies, which excludes retention after return.", "label": "Contradiction", "evidence": [26], "confidence": 0.9},
+"Q10": {"rationale": "Segment 9 expressly includes oral information within Confidential Information.", "label": "Entailment", "evidence": [9], "confidence": 0.97},
+"Q11": {"rationale": "The NDA contains no non-solicitation covenant regarding Disclosing Party's representatives.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q12": {"rationale": "Segment 17 bars disclosure to any person without express written consent, so sharing with third parties (including consultants or advisors) is permitted only with consent; no category is named.", "label": "Entailment", "evidence": [17], "confidence": 0.4},
+"Q13": {"rationale": "Segment 16 bars reproduction without express written consent, so copying is permitted with that consent as a carve-out.", "label": "Entailment", "evidence": [16], "confidence": 0.6},
+"Q14": {"rationale": "The NDA has no clause requiring notice to the Disclosing Party when disclosure is compelled by law or process.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q15": {"rationale": "The NDA excludes only public-domain information and does not address information acquired from a third party.", "label": "NotMentioned", "evidence": [11], "confidence": 0.7},
+"Q16": {"rationale": "Segment 18 permits internal dissemination to officers and employees who have a need to know.", "label": "Entailment", "evidence": [18], "confidence": 0.97},
+"Q17": {"rationale": "Segment 19 prohibits any use of Confidential Information without express written consent, which is stricter than a restriction to the stated purposes.", "label": "Entailment", "evidence": [19], "confidence": 0.6}
+}

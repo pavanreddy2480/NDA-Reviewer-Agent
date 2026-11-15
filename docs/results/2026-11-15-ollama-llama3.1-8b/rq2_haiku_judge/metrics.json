@@ -133,26 +133,50 @@
   "remaining_at_most_half_of_r1_attacker": false,
   "regression_rate_below_5pct": true
  },
+ "evaluator_noise_floor": {
+  "n": 80,
+  "flip_rate": 0.025,
+  "label_agreement": 0.95,
+  "flipped_rules": {
+   "P-03": 1,
+   "P-27": 1
+  }
+ },
+ "evaluator_contractnli": {
+  "n": 170,
+  "n_docs": 10,
+  "agreement": 0.8471,
+  "kappa": 0.7312,
+  "kappa_ci95": [
+   0.6352,
+   0.8192
+  ],
+  "recall_per_gold_label": {
+   "Contradiction": 0.75,
+   "Entailment": 0.9565,
+   "NotMentioned": 0.7069
+  }
+ },
  "pending_batch_items": 0,
  "evaluator_usage": {
   "backend": "claude-haiku-agent",
   "model": "claude-haiku (agent)",
-  "calls": 1133,
-  "cached_calls": 1133,
+  "calls": 1463,
+  "cached_calls": 1463,
   "input_tokens_uncached": 0,
   "output_tokens_uncached": 0,
   "cost_usd_uncached": 0.0,
-  "cached_input_tokens": 2388278,
-  "cached_output_tokens": 47295,
+  "cached_input_tokens": 3337900,
+  "cached_output_tokens": 64936,
   "cost_usd_full": 0.0,
   "by_agent": {
    "independent_eval": {
-    "calls": 801,
-    "cached_calls": 801,
+    "calls": 1131,
+    "cached_calls": 1131,
     "input_tokens": 0,
     "output_tokens": 0,
-    "cached_input_tokens": 2286958,
-    "cached_output_tokens": 44545
+    "cached_input_tokens": 3236580,
+    "cached_output_tokens": 62186
    },
    "field_extract": {
     "calls": 332,

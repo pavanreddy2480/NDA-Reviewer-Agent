@@ -181,21 +181,35 @@ against `r1`, 0.54 (0.36–0.79) against `r1_attacker`, 0.60 (0.43–0.83) again
    the ratio is 0.59, with a wide CI (0.40–0.84). More NDAs are needed to decide it.
 3. **The loop pays for it in edits.** 132 redlines and about 440 changed words per NDA, 3–7 times the baselines. Whether
    a lawyer would accept that many redlines is what the blind acceptance check (two teammates) has to answer.
-4. **Most baseline regressions are one law rule.** 8 of the 14 confirmed baseline regressions are `LAW-SEC-21F17` (the NDA
+4. **Most baseline regressions come from one law rule.** 8 of the 14 confirmed baseline regressions are `LAW-SEC-21F17` (the NDA
    must not stop reports to regulators). Llama's inserted confidentiality clauses ("shall not disclose to any third
    party") can trip it, but the judge also sometimes passed the unedited NDA that already had such a clause, so part of
-   this may be judge noise. No noise floor run was done.
+   this may be judge error (see the noise floor below).
 
 **Fix made along the way.** Regression attribution charged a regression to every redline of a round even when an
 earlier round had already caused it (the rule was broken on that round's starting draft). `IndependentEvaluator.attribute` now
 checks the round's starting draft first and only attributes rules that were still satisfied there. Before the fix,
 `r2`'s redline regression rate read 96% and the loop's 9%.
 
-**Caveats.** 5 NDAs, one llama seed, a judge that has not been validated (no ContractNLI agreement check and no noise
-floor yet). Claude also wrote the policy packs and the auto labels, so the judge is the same model family as the
-benchmark authors (not as any system under test). The attacker's scenarios and each system's token use are not in
-`repaired_drafts.jsonl`, so attacker recall and tokens per NDA are not reported. Files: `rq2_haiku_judge/` (metrics,
-per-NDA scores with every redline, and the command's output).
+**Is the judge reliable?** (`cc rq2-score ... --noise-floor 80 --validate-nli 10`, one more round of 3 Haiku agents)
+
+- **Noise floor.** 80 (unrepaired NDA, rule) pairs, each asked twice by two different agents (seed 0 and seed 1).
+  The verdict flipped on 2 of 80 (2.5%: P-03 and P-27 once each), and the label matched 95% of the time. So the
+  judge's run-to-run noise is well below the gaps between systems. The fix and regression counts above also need a
+  second agent to agree before they count.
+- **Agreement with ContractNLI's expert labels.** All 17 hypotheses on 10 test NDAs the repairs did not use (170
+  items): 84.7% agreement, Cohen's kappa 0.73 (95% CI 0.64–0.82). Recall is 0.96 when the gold label is Entailment,
+  0.75 for Contradiction and 0.71 for NotMentioned. So the judge's commonest error is to see a term that is not
+  there. For a require rule that hides a remaining problem rather than inventing one.
+- `LAW-SEC-21F17` did not flip in the noise sample, so run-to-run noise does not explain its regressions. Whether
+  they are real still needs a person to read the 8 clauses.
+
+**Remaining caveats.** 5 NDAs and one llama seed. The validation is on ContractNLI NDAs, not on repaired drafts (the
+~100 human labels on edited drafts are still to do). Claude also wrote the policy packs and the auto labels, so the
+judge is the same model family as the benchmark authors (not as any system under test). The attacker's scenarios and
+each system's token use are not in `repaired_drafts.jsonl`, so attacker recall and tokens per NDA are not reported.
+Files: `rq2_haiku_judge/` (metrics with the noise floor and validation, per-NDA scores with every redline, and the
+command's output).
 
 ## Caveats
 

@@ -132,18 +132,25 @@ def cmd_rq2_score(args) -> None:
     from .policy.schema import PolicyPack
 
     ev = load_backend(args.evaluator_backend, args.config, use_cache=not args.no_cache, batch_queue=args.batch_queue)
-    hyps = None
-    if not args.no_hypotheses:
+    hyps, nli_docs = None, None
+    planted = load_planted(args.planted)
+    if not args.no_hypotheses or args.validate_nli:
         try:
             from .cli import _load_data
 
             d = _load_data(args, ("test",))
             hyps = {k: h.text for k, h in d.hypotheses.items()}
+            # validation NDAs: test documents the repairs did not use
+            from .experiments.rq2_rescore import load_repaired
+
+            used = {r["doc_id"] for r in load_repaired(args.repaired)}
+            nli_docs = [doc for doc in d["test"] if doc.id not in used]
         except FileNotFoundError:
             print("ContractNLI not found: natural loopholes are not re-checked", file=sys.stderr)
-    m = rescore_rq2(args.repaired, load_planted(args.planted), [PolicyPack.load(p) for p in args.gold_pack], ev,
+    m = rescore_rq2(args.repaired, planted, [PolicyPack.load(p) for p in args.gold_pack], ev,
                     _law(args.law_pack), args.labels, args.allow_auto, hyps,
-                    tuple(args.systems) if args.systems else None, args.originals_only)
+                    tuple(args.systems) if args.systems else None, args.originals_only,
+                    noise_floor=args.noise_floor, nli_docs=nli_docs, nli_n=args.validate_nli)
     print(json.dumps(m, indent=1, default=str))
     if m["pending_batch_items"]:
         print(f"{m['pending_batch_items']} items wait on judge answers in the queue; answer it (cc batch), "
@@ -387,6 +394,10 @@ def register(sub, llm_args) -> None:
     rs.add_argument("--labels", default=None)
     rs.add_argument("--allow-auto", action="store_true")
     rs.add_argument("--no-hypotheses", action="store_true", help="skip re-checking natural loopholes")
+    rs.add_argument("--noise-floor", type=int, default=0,
+                    help="ask the judge N (unrepaired NDA, rule) pairs twice and report the flip rate")
+    rs.add_argument("--validate-nli", type=int, default=0,
+                    help="judge every hypothesis of N unused ContractNLI test NDAs against the expert labels")
     rs.set_defaults(fn=cmd_rq2_score)
 
     k = sub.add_parser("rq2-kappa", help="blind acceptance rate per system and kappa between two raters")
