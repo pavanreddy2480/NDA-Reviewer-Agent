@@ -260,7 +260,10 @@ def run_rq2(llm: LLMClient, packs: list[PolicyPack], planted: dict[int, PlantedN
         drafts = [planted[i].draft for i in docs]
         deal_of = {planted[i].draft.id: planted[i].deal for i in docs}
         rules = list(gold_by_company[planted[docs[0]].deal.company].rules) if docs else []
-        metrics["evaluator_noise_floor"] = ev.noise_floor(drafts, rules, deal_of, n=noise_floor, seed=seed)
+        try:
+            metrics["evaluator_noise_floor"] = ev.noise_floor(drafts, rules, deal_of, n=noise_floor, seed=seed)
+        except PendingBatch:  # batch mode: the judge's repeat checks are queued with the rest
+            metrics["pending_batch_items"] += 1
     out = run_dir(f"rq2-{llm.name}", out_root)
     write_jsonl(out / "repairs.jsonl", rows)
     write_jsonl(out / "detections.jsonl", detections)

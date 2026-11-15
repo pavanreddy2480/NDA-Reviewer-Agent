@@ -135,8 +135,9 @@ def export(args) -> None:
             g, name, b = attrib[tuple(segs)]
             hit, base = (g, name), list(b)
         elif hit is None:  # some other draft: nearest saved draft, or its own task if none is close
-            best = max(known, key=lambda k: difflib.SequenceMatcher(a=k, b=segs, autojunk=False).ratio())
-            if difflib.SequenceMatcher(a=best, b=segs, autojunk=False).ratio() >= 0.8:
+            best = max(known, key=lambda k: difflib.SequenceMatcher(a=k, b=segs, autojunk=False).ratio(),
+                       default=None)
+            if best is not None and difflib.SequenceMatcher(a=best, b=segs, autojunk=False).ratio() >= 0.8:
                 hit, base = known[best], list(best)
             else:  # an unrelated NDA (e.g. ContractNLI validation)
                 tag = hashlib.sha256("\n".join(segs).encode()).hexdigest()[:8]

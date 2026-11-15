@@ -95,14 +95,16 @@ def cmd_rq2(args) -> None:
     if args.acceptance_sheet:
         print(acceptance_sheet(args.acceptance_sheet, args.sheet_out, args.n_sheet))
         return
-    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache)
+    # --batch-queue: batch mode for the repair systems too (agent backends): uncached requests are queued
+    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache, batch_queue=args.batch_queue)
     # --evaluator-batch-queue: the repair systems run live, but every uncached judge request is stored
     # in the queue instead of being sent. Answer the queue later (cc batch submit/collect, or export/load),
     # then rerun the same command: repairs come from the cache and scoring finishes.
     ev = load_backend(args.evaluator_backend, args.config, use_cache=not args.no_cache,
                       batch_queue=args.evaluator_batch_queue)
     checker = load_backend(args.checker_backend, args.config) if args.checker_backend else None
-    attacker = load_backend(args.attacker_backend, args.config) if args.attacker_backend else None
+    attacker = (load_backend(args.attacker_backend, args.config, batch_queue=args.batch_queue)
+                if args.attacker_backend else None)
     hyps = None
     if not args.no_hypotheses:
         try:
@@ -384,6 +386,8 @@ def register(sub, llm_args) -> None:
     r2.add_argument("--evaluator-batch-queue", default=None,
                     help="store judge requests here (as q.<backend>.jsonl) instead of sending them; answer the "
                          "queue with cc batch, then rerun. Repairs still run live")
+    r2.add_argument("--batch-queue", default=None,
+                    help="batch mode for the repair systems (agent backends): queue uncached requests here")
     r2.add_argument("--checker-backend", default=None)
     r2.add_argument("--attacker-backend", default=None, help="ablation: attacker on a different model")
     r2.add_argument("--systems", nargs="+", default=["loop", "r1", "r1_attacker", "r2"], choices=SYSTEMS)
