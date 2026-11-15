@@ -219,3 +219,35 @@ def test_rq2_score_rejudges_saved_repairs_like_rq2(tmp_path):
     row["repaired"] = row["repaired"] + ["tampered"]
     with pytest.raises(ValueError):
         rebuild(row, planted[row["doc_id"]].draft)
+
+
+def test_rq2_systems_do_not_share_an_attacker(tmp_path, monkeypatch):
+    """Scenario ids (S-001, ...) go into the repair prompts, so each system needs its own attacker:
+    with a shared counter, r1_attacker's redlines would depend on how far `loop` got before it."""
+    from counselcopilot.benchmark.planter import load_planted
+    from counselcopilot.experiments import rq2 as rq2mod
+    from counselcopilot.llm import load_backend
+    from counselcopilot.policy.schema import LawPack, PolicyPack
+
+    made = []
+
+    class Recording(rq2mod.OpposingCounsel):
+        def __init__(self, *a, **k):
+            super().__init__(*a, **k)
+            made.append(self)
+
+    monkeypatch.setattr(rq2mod, "OpposingCounsel", Recording)
+    root = Path(__file__).resolve().parents[1]
+    cfg = tmp_path / "b.toml"
+    text = (root / "configs" / "backends.toml").read_text(encoding="utf-8")
+    cfg.write_text(text.replace('path = "data/cache/llm.sqlite"', f'path = "{(tmp_path / "c.sqlite").as_posix()}"'),
+                   encoding="utf-8")
+    packs = [PolicyPack.load(root / "packs" / "policynda" / c / "gold_rules.yaml")
+             for c in ("saas", "hospital", "manufacturer")]
+    planted = load_planted(root / "data" / "planted" / "test_seed0.json")
+    law = LawPack.load(root / "packs" / "law" / "us_law_pack.yaml")
+    systems = ("loop", "r1_attacker", "loop_1_round")
+    rq2mod.run_rq2(load_backend("heuristic", cfg), packs, planted, load_backend("heuristic-judge", cfg), law,
+                   systems=systems, labels_path=str(root / "data" / "labels" / "ndas_auto.yaml"),
+                   allow_auto_labels=True, limit=1, out_root=str(tmp_path / "runs"))
+    assert len(made) == len(systems) and len({id(a) for a in made}) == len(systems)

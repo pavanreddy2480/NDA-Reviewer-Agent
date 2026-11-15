@@ -219,10 +219,12 @@ def run_rq2(llm: LLMClient, packs: list[PolicyPack], planted: dict[int, PlantedN
         detections.append({"doc_id": doc_id, "findings": [f.model_dump(mode="json") for f in findings]})
         rules = list(pack.rules) + law_rules
         repairer = Repairer(llm)
-        attacker = OpposingCounsel(attacker_llm or llm)
         deal = gold_deal(p.deal, {**labels.get(doc_id, {}), **p.label_updates})
         eval_rules = list(gold_by_company[p.deal.company].rules) + law_rules
         for name in systems:
+            # a fresh attacker per system: its scenario ids (S-001, ...) go into the repair prompts, so a shared
+            # counter would make one system's redlines depend on which systems ran before it
+            attacker = OpposingCounsel(attacker_llm or llm)
             run = make_system(name, repairer, attacker, regress_pipe.detect, rules, max_rounds, token_budget, clients)
             try:
                 res = run(p.draft, p.deal, findings)
