@@ -44,8 +44,15 @@ class RuleStatus:
 
 
 class IndependentEvaluator:
-    def __init__(self, llm: LLMClient):
+    def __init__(self, llm: LLMClient, max_workers: int = 4):
         self.llm = llm
+        self.max_workers = max_workers  # keep low: the evaluator is usually a rate-limited API
+
+    def _check_all(self, jobs: list[tuple[Rule, Draft, int]]) -> list[RuleStatus]:
+        """`check` over independent (rule, draft, seed) jobs together. In batch mode every uncached
+        job is queued before PendingBatch is raised, so one batch round answers a whole stage
+        instead of one request per round."""
+        return self.llm.map(lambda j: self.check(*j), jobs, self.max_workers)
 
     def check(self, rule: Rule, draft: Draft, seed: int = 0) -> RuleStatus:
         if rule.kind == "field":
@@ -73,10 +80,16 @@ class IndependentEvaluator:
         A fix (broken -> ok) or regression (ok -> broken) counts only if confirmed twice."""
         rules = [r for r in rules if r.applies_to(deal)]
         by_id = {r.id: r for r in rules}
-        b = {r.id: self.check(r, before) for r in rules}
-        a = {r.id: self.check(r, after) for r in rules}
-        fixed = [i for i in b if not b[i].ok and a[i].ok and self._confirmed(by_id[i], after, True)]
-        regressions = [i for i in b if b[i].ok and not a[i].ok and self._confirmed(by_id[i], after, False)]
+        both = self._check_all([(r, before, 0) for r in rules] + [(r, after, 0) for r in rules])
+        b = {r.id: s for r, s in zip(rules, both[:len(rules)])}
+        a = {r.id: s for r, s in zip(rules, both[len(rules):])}
+        # second-seed confirmation of each flip (field rules are deterministic and need none)
+        flips = [i for i in b if b[i].ok != a[i].ok]
+        to_confirm = [i for i in flips if by_id[i].kind != "field"]
+        second = dict(zip(to_confirm, self._check_all([(by_id[i], after, 1) for i in to_confirm])))
+        confirmed = {i: by_id[i].kind == "field" or second[i].ok == a[i].ok for i in flips}
+        fixed = [i for i in flips if a[i].ok and confirmed[i]]
+        regressions = [i for i in flips if b[i].ok and confirmed[i]]
         # an unconfirmed ok -> broken flip is treated as evaluator noise, not as a remaining defect
         remaining = sorted(set(i for i in a if not a[i].ok and (not b[i].ok or i in regressions)))
         return {"fixed": fixed, "remaining": remaining, "regressions": regressions, "n_rules": len(rules),
@@ -86,10 +99,12 @@ class IndependentEvaluator:
         """Which redline causes which regression: apply each edit alone and re-check only the
         regressed rules. H2's regression rate = share of redlines with at least one."""
         by_id = {r.id: r for r in rules}
-        out: dict[int, list[str]] = {}
-        for k, e in enumerate(edits):
-            one = before.apply([e])
-            out[k] = [rid for rid in regressed if not self.check(by_id[rid], one).ok]
+        jobs = [(k, rid, before.apply([e])) for k, e in enumerate(edits) for rid in regressed]
+        res = self._check_all([(by_id[rid], one, 0) for _, rid, one in jobs])
+        out: dict[int, list[str]] = {k: [] for k in range(len(edits))}
+        for (k, rid, _), s in zip(jobs, res):
+            if not s.ok:
+                out[k].append(rid)
         return out
 
     def noise_floor(self, drafts: list[Draft], rules: list[Rule], deal_of: dict[str, DealContext],

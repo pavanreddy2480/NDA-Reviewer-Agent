@@ -95,7 +95,11 @@ def cmd_rq2(args) -> None:
         print(acceptance_sheet(args.acceptance_sheet, args.sheet_out, args.n_sheet))
         return
     llm = load_backend(args.backend, args.config, use_cache=not args.no_cache)
-    ev = load_backend(args.evaluator_backend, args.config, use_cache=not args.no_cache)
+    # --evaluator-batch-queue: the repair systems run live, but every uncached judge request is stored
+    # in the queue instead of being sent. Answer the queue later (cc batch submit/collect, or export/load),
+    # then rerun the same command: repairs come from the cache and scoring finishes.
+    ev = load_backend(args.evaluator_backend, args.config, use_cache=not args.no_cache,
+                      batch_queue=args.evaluator_batch_queue)
     checker = load_backend(args.checker_backend, args.config) if args.checker_backend else None
     attacker = load_backend(args.attacker_backend, args.config) if args.attacker_backend else None
     hyps = None
@@ -112,7 +116,11 @@ def cmd_rq2(args) -> None:
                 [PolicyPack.load(p) for p in args.gold_pack] if args.gold_pack else None,
                 args.labels, args.allow_auto, hyps, args.limit, args.max_rounds, args.token_budget,
                 noise_floor=args.noise_floor)
-    print(json.dumps({k: m[k] for k in ("systems", "comparisons", "h2", "out_dir")}, indent=1, default=str))
+    print(json.dumps({k: m[k] for k in ("systems", "comparisons", "h2", "pending_batch_items", "out_dir")},
+                     indent=1, default=str))
+    if m["pending_batch_items"]:
+        print(f"{m['pending_batch_items']} system runs wait on judge answers in the queue; answer it "
+              "(cc batch), load the answers and run this command again.", file=sys.stderr)
 
 
 def cmd_rq2_kappa(args) -> None:
@@ -320,6 +328,9 @@ def register(sub, llm_args) -> None:
     r2.add_argument("--planted", default="data/planted/test_seed0.json")
     r2.add_argument("--law-pack", default="packs/law/us_law_pack.yaml")
     r2.add_argument("--evaluator-backend", default="gemini-pro", help="never a backend the repair systems use")
+    r2.add_argument("--evaluator-batch-queue", default=None,
+                    help="store judge requests here (as q.<backend>.jsonl) instead of sending them; answer the "
+                         "queue with cc batch, then rerun. Repairs still run live")
     r2.add_argument("--checker-backend", default=None)
     r2.add_argument("--attacker-backend", default=None, help="ablation: attacker on a different model")
     r2.add_argument("--systems", nargs="+", default=["loop", "r1", "r1_attacker", "r2"], choices=SYSTEMS)

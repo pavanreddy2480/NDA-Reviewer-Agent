@@ -116,6 +116,40 @@ def test_score_repair_finds_fix_and_regression():
     assert out["edit_segments_changed"] == 1
 
 
+def test_batch_mode_queues_a_whole_scoring_stage_at_once(tmp_path):
+    """With the judge in batch mode, one pass stores every before/after check, not just the first
+    (otherwise ~1,200 judge requests would need ~1,200 answer-and-rerun rounds)."""
+    from counselcopilot.llm import BatchQueue, PendingBatch, ResponseCache
+
+    rules = PACK.applicable(deal(counterparty_type="vendor"))
+    live = evaluator()
+    expected = live.score_repair(BEFORE, AFTER, list(PACK.rules), deal(counterparty_type="vendor"))
+    first_stage = 2 * len(rules)  # a check (or field extraction) per rule, on each draft
+
+    ev = evaluator()
+    ev.llm.cache, ev.llm.batch_queue = ResponseCache(tmp_path / "c.sqlite"), BatchQueue(tmp_path / "q.jsonl")
+    with pytest.raises(PendingBatch):
+        ev.score_repair(BEFORE, AFTER, list(PACK.rules), deal(counterparty_type="vendor"))
+    queued = [json.loads(l) for l in (tmp_path / "q.jsonl").read_text().splitlines() if l.strip()]
+    assert len(queued) >= first_stage - 2  # identical requests (a field unchanged by the repair) are stored once
+
+    # answer the queue round by round, as cc batch load would, until scoring completes
+    answerer = evaluator()
+    for _ in range(5):
+        for item in [json.loads(l) for l in (tmp_path / "q.jsonl").read_text().splitlines() if l.strip()]:
+            if ev.llm.cache.get(item["key"]) is None:
+                r = item["request"]
+                from counselcopilot.llm.base import LLMRequest, Message
+                req = LLMRequest(**{**r, "messages": [Message(**m) for m in r["messages"]]})
+                ev.llm.cache.put(item["key"], ev.llm.model, answerer.llm._call(req).to_cache())
+        try:
+            out = ev.score_repair(BEFORE, AFTER, list(PACK.rules), deal(counterparty_type="vendor"))
+            break
+        except PendingBatch:
+            continue
+    assert out == expected
+
+
 def test_score_repair_only_checks_applicable_rules():
     out = evaluator().score_repair(BEFORE, BEFORE, list(PACK.rules), deal(counterparty_type="vendor"))
     assert out["fixed"] == [] and out["regressions"] == []
