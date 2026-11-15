@@ -1,0 +1,21 @@
+{
+"Q1": {"rationale": "Segment 72(a) requires the Recipient to promptly notify, to the extent practicable, before disclosing under governmental, judicial or regulatory request.", "label": "Entailment", "evidence": [72, 35], "confidence": 0.9},
+"Q2": {"rationale": "No segment mentions sexual harassment or sexual assault; the confidentiality duties are general and the NDA does not deal with this disclosure.", "label": "NotMentioned", "evidence": [25, 40], "confidence": 0.8},
+"Q3": {"rationale": "Segment 38 permits disclosure to directors, officers, employees, agents or representatives who have a need to know.", "label": "Entailment", "evidence": [38], "confidence": 0.95},
+"Q4": {"rationale": "Segment 60 bars duplication of tangible Confidential Information except for purposes of the Agreement, which implies copying is allowed in some circumstances.", "label": "Entailment", "evidence": [60], "confidence": 0.85},
+"Q5": {"rationale": "Segment 38 allows sharing with agents and representatives, and segment 40 excepts other third-party disclosures provided for herein; consultants and advisors are not named but fall within agents or representatives.", "label": "Entailment", "evidence": [38, 40], "confidence": 0.65},
+"Q6": {"rationale": "Segment 78(b) keeps the duty of confidence for information disclosed during the term in effect indefinitely, and segment 75 imposes a 24-month post-termination restriction.", "label": "Entailment", "evidence": [78, 75], "confidence": 0.95},
+"Q7": {"rationale": "No non-solicitation covenant appears; segment 75 is a non-competition restriction only.", "label": "NotMentioned", "evidence": [75], "confidence": 0.85},
+"Q8": {"rationale": "Segment 61 bars disclosure of Confidential Information or any dispute to any government agency or regulator without consent, and the only carve-outs (35, 72) cover legally required disclosure, not voluntary whistleblower reports.", "label": "Contradiction", "evidence": [61, 35, 72], "confidence": 0.75},
+"Q9": {"rationale": "Segment 25 covers information in tangible or intangible form, whenever and however disclosed, which includes verbally conveyed information.", "label": "Entailment", "evidence": [25], "confidence": 0.9},
+"Q10": {"rationale": "Segment 46 states that no other right or license in the Confidential Information is granted to the Parties.", "label": "Entailment", "evidence": [46], "confidence": 0.8},
+"Q11": {"rationale": "No immunity notice for trade secret disclosure to government officials or attorneys appears in the NDA.", "label": "NotMentioned", "evidence": [18, 70], "confidence": 0.9},
+"Q12": {"rationale": "Segment 25 defines Confidential Information by nature and not by marking, so no express identification requirement exists and the definition is incompatible with one.", "label": "Contradiction", "evidence": [25], "confidence": 0.7},
+"Q13": {"rationale": "Segment 67 carves out information received from a third party without breach, which permits acquiring such information outside the restrictions.", "label": "Entailment", "evidence": [67, 68], "confidence": 0.6},
+"Q14": {"rationale": "Segment 54 bars manufacturing or testing any product embodying Confidential Information, which restricts reverse engineering in substance but not by that name.", "label": "Entailment", "evidence": [54], "confidence": 0.6},
+"Q15": {"rationale": "Segment 83 provides for recovery of costs and fees, and no fixed sum or penalty is stated.", "label": "NotMentioned", "evidence": [83], "confidence": 0.9},
+"Q16": {"rationale": "No notice of the trade secret whistleblower immunity appears in the NDA.", "label": "NotMentioned", "evidence": [18, 70], "confidence": 0.9},
+"Q17": {"rationale": "Segment 45 limits use of Confidential Information solely to the Transaction and forbids other purposes without consent.", "label": "Entailment", "evidence": [45, 54], "confidence": 0.95},
+"Q18": {"rationale": "No fixed penalty or liquidated damages provision appears; segment 83 provides only for costs and fees.", "label": "NotMentioned", "evidence": [83], "confidence": 0.9},
+"Q19": {"rationale": "Segment 29 lists personal identifiable information as Confidential Information, segment 45 limits its use to the Transaction, and segment 39 requires reasonable care in protecting it.", "label": "Entailment", "evidence": [29, 39, 45], "confidence": 0.6}
+}

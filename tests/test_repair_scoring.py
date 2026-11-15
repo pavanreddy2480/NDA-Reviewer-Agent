@@ -219,3 +219,20 @@ def test_evaluator_must_not_be_the_loop_checker_backend():
 
     r = roles()
     assert r["evaluator"] not in r["backbones"]
+
+
+
+def test_noise_floor_takes_rules_per_draft_and_validation_can_sample_whole_documents():
+    """rq2-score asks each NDA about its own company's rules; ContractNLI validation can take every
+    hypothesis of N documents (fewer NDAs for agents to read)."""
+    drafts = [BEFORE, AFTER.__class__("2", AFTER.segments)]
+    deals = {"1": deal(), "2": deal()}
+    out = evaluator().noise_floor(drafts, {"1": list(PACK.rules), "2": []}, deals, n=100)
+    n_term = len([r for r in PACK.rules if r.kind != "field" and r.applies_to(deal())])
+    assert out["flip_rate"] == 0.0 and out["n"] == n_term and out["label_agreement"] == 1.0
+    doc = make_doc(["Confidential Information includes information disclosed orally.", "Costs."],
+                   labels={"nda-3": ("Entailment", (0,))})
+    hyps = {h: f"hypothesis {h}" for h in doc.annotations}
+    hyps["nda-3"] = ORAL_TERM
+    v = evaluator().validate_on_contractnli([doc], hyps, n=1, per_doc=True)
+    assert v["n"] == len(doc.annotations) and v["n_docs"] == 1

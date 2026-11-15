@@ -88,7 +88,7 @@ Injected episodes (5 of the 10): tool precision 0.29, recall 1.0, and no unsafe 
 3. **Recovery from failed tool calls is weak.** Only 38% of injected tool errors were retried successfully. The 0.1 run
    is faster only because many responses were already cached from the 0.0 run.
 
-## RQ2: repairs done, scoring waits on the judge
+## RQ2: repairs (the Gemini judge could not run; scored with a Claude Haiku judge below)
 
 **Status:** llama3.1:8b has red-teamed and repaired the first 5 planted test NDAs with all four systems (`loop`,
 `r1`, `r1_attacker`, `r2`): 20 repaired NDAs, 603 model calls, about 72 minutes. **No RQ2 scores yet.** The
@@ -142,6 +142,74 @@ The rerun only replays llama from the cache. Without this machine's `data/cache/
 would redo the 72 minutes of repairs. With a different llama build, the repairs and their judge questions would also
 change. The judge must be the backend the queue is named for (`gemini-flash`). Answering with another model means
 adding a backend for it and queueing again, which takes minutes because the repairs are cached.
+
+## RQ2 scored with a Claude Haiku judge (15 Nov 2026)
+
+The free Gemini key could not answer the judge, so the 20 saved repairs were judged by Claude Haiku agents instead
+(backend `claude-haiku-agent`). Nothing was re-run on llama: `cc rq2-score` (new) rebuilds each system's repair round by
+round from `run_logs/rq2/repaired_drafts.jsonl`, checks that replaying the redlines gives the saved NDA (all 20 do), and
+scores it with the same evaluator code as `cc rq2`. Of the judge questions it asked about the unrepaired NDAs, 97 of 99
+are word for word in Tanooj's Gemini queue (the other 2 were among the 8 Gemini had already answered), so it asks the
+same questions.
+
+**How the agents were used.** `scripts/agent_judge.py` groups each queue by the NDA a question is about: a task file
+shows the NDA once, then its questions. One Haiku agent judged each repair system's NDAs (`loop`, `r1`,
+`r1_attacker`, `r2`), and one more judged the unrepaired originals. Each agent saw only its own task files, never the
+other judges' answers or which system wrote what, and wrote its answers to a file. Each stage was a fresh set of
+agents: first checks (400 questions), second-seed confirmation of every flip and the loophole re-checks (38, so the
+confirmation comes from a different agent), then regression attribution round by round (46 + 34 + 41 + 3). That is 562
+questions and 20 agent runs in all. The task files, answers and queues are in `data/rq2_judge/`. To reload them into a
+cache: `cc batch load --backend claude-haiku-agent --queue data/rq2_judge/q<N>.claude-haiku-agent.jsonl --answers
+data/rq2_judge/round<N>/answers_jsonl` for N = 1 to 6, then run `cc rq2-score` again.
+
+| System | Remaining problems per NDA (95% CI) | Rules fixed per NDA | Planted defects repaired | Redlines | Redlines causing a regression | Words edited per NDA |
+|---|---|---|---|---|---|---|
+| `loop` | **5.4** (3.8–7.0) | **5.0** | **6 / 12** | 132 | **2 (1.5%)** | 437 |
+| `r1` | 9.2 (7.4–10.8) | 1.0 | 1 / 12 | 14 | 5 (36%) | 62 |
+| `r1_attacker` | 10.0 (7.6–12.0) | 0.8 | 3 / 12 | 27 | 9 (33%) | 99 |
+| `r2` | 9.0 (7.0–11.0) | 1.6 | 1 / 12 | 51 | 17 (33%) | 212 |
+
+Loop against each baseline, on the same 5 NDAs (ratio of mean remaining problems, paired bootstrap): 0.59 (0.40–0.84)
+against `r1`, 0.54 (0.36–0.79) against `r1_attacker`, 0.60 (0.43–0.83) against `r2`.
+
+**What it shows**
+
+1. **The loop clearly leaves fewer problems.** About 40% fewer than every baseline, and every CI stays below 1. It
+   fixes about 5 rules per NDA against 1–1.6 for the one-shot and Self-Refine baselines, and repairs half the planted
+   defects against 1–3 of 12.
+2. **H2 is half met.** The regression rate is under 5% (1.5%), but "at most half of R1's remaining problems" is not:
+   the ratio is 0.59, with a wide CI (0.40–0.84). More NDAs are needed to decide it.
+3. **The loop pays for it in edits.** 132 redlines and about 440 changed words per NDA, 3–7 times the baselines. Whether
+   a lawyer would accept that many redlines is what the blind acceptance check (two teammates) has to answer.
+4. **Most baseline regressions come from one law rule.** 8 of the 14 confirmed baseline regressions are `LAW-SEC-21F17` (the NDA
+   must not stop reports to regulators). Llama's inserted confidentiality clauses ("shall not disclose to any third
+   party") can trip it, but the judge also sometimes passed the unedited NDA that already had such a clause, so part of
+   this may be judge error (see the noise floor below).
+
+**Fix made along the way.** Regression attribution charged a regression to every redline of a round even when an
+earlier round had already caused it (the rule was broken on that round's starting draft). `IndependentEvaluator.attribute` now
+checks the round's starting draft first and only attributes rules that were still satisfied there. Before the fix,
+`r2`'s redline regression rate read 96% and the loop's 9%.
+
+**Is the judge reliable?** (`cc rq2-score ... --noise-floor 80 --validate-nli 10`, one more round of 3 Haiku agents)
+
+- **Noise floor.** 80 (unrepaired NDA, rule) pairs, each asked twice by two different agents (seed 0 and seed 1).
+  The verdict flipped on 2 of 80 (2.5%: P-03 and P-27 once each), and the label matched 95% of the time. So the
+  judge's run-to-run noise is well below the gaps between systems. The fix and regression counts above also need a
+  second agent to agree before they count.
+- **Agreement with ContractNLI's expert labels.** All 17 hypotheses on 10 test NDAs the repairs did not use (170
+  items): 84.7% agreement, Cohen's kappa 0.73 (95% CI 0.64–0.82). Recall is 0.96 when the gold label is Entailment,
+  0.75 for Contradiction and 0.71 for NotMentioned. So the judge's commonest error is to see a term that is not
+  there. For a require rule that hides a remaining problem rather than inventing one.
+- `LAW-SEC-21F17` did not flip in the noise sample, so run-to-run noise does not explain its regressions. Whether
+  they are real still needs a person to read the 8 clauses.
+
+**Remaining caveats.** 5 NDAs and one llama seed. The validation is on ContractNLI NDAs, not on repaired drafts (the
+~100 human labels on edited drafts are still to do). Claude also wrote the policy packs and the auto labels, so the
+judge is the same model family as the benchmark authors (not as any system under test). The attacker's scenarios and
+each system's token use are not in `repaired_drafts.jsonl`, so attacker recall and tokens per NDA are not reported.
+Files: `rq2_haiku_judge/` (metrics with the noise floor and validation, per-NDA scores with every redline, and the
+command's output).
 
 ## Caveats
 

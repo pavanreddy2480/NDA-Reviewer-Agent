@@ -1,0 +1,22 @@
+{
+"Q1": {"rationale": "Segment 8 defines Confidential Information to cover information in oral, written or electronic form.", "label": "Entailment", "evidence": [8], "confidence": 0.97},
+"Q2": {"rationale": "The NDA sets confidentiality and non-disclosure duties but contains no restriction on use limited to the stated purposes.", "label": "NotMentioned", "evidence": [4], "confidence": 0.7},
+"Q3": {"rationale": "The NDA does not address any grant or denial of rights or licences in Confidential Information; segment 18 only disclaims a commitment to supply information.", "label": "NotMentioned", "evidence": [18], "confidence": 0.75},
+"Q4": {"rationale": "Segments 19 and 20 set confidentiality periods running beyond the agreement date (three years, sixty months, or completion of the Sale).", "label": "Entailment", "evidence": [19, 20], "confidence": 0.85},
+"Q5": {"value": 36, "evidence": [19, 20]},
+"Q6": {"value": 36, "evidence": [19, 20]},
+"Q7": {"rationale": "Segment 24 requires the Disclosee to immediately notify the Sellers before any legally compelled disclosure.", "label": "Entailment", "evidence": [24], "confidence": 0.97},
+"Q8": {"value": null, "evidence": []},
+"Q9": {"rationale": "The NDA contains no reverse engineering prohibition.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q10": {"rationale": "Segment 30 states that Confidential Information is limited to technical information and excludes business or financial information.", "label": "Entailment", "evidence": [30], "confidence": 0.95},
+"Q11": {"rationale": "Segment 7c makes the fact of the Sale negotiations and any fact concerning the Sale Confidential Information, which covers disclosing the fact of negotiation.", "label": "Entailment", "evidence": [11], "confidence": 0.9},
+"Q12": {"rationale": "Segment 5 contemplates disclosure to professional advisors and segment 8 includes financial, legal and tax advisors among Representatives.", "label": "Entailment", "evidence": [5, 8], "confidence": 0.9},
+"Q13": {"rationale": "The exclusions cover public information and prior possession, not acquisition of similar information from a third party.", "label": "NotMentioned", "evidence": [13, 14], "confidence": 0.7},
+"Q14": {"rationale": "Segment 23 imposes a US$500,000 penalty on breach irrespective of actual loss suffered.", "label": "Entailment", "evidence": [23], "confidence": 0.97},
+"Q15": {"value": "ohio", "evidence": [0, 1, 28, 29]},
+"Q16": {"rationale": "Segment 8 covers all information of any kind, oral or written, with no requirement that it be expressly identified.", "label": "Contradiction", "evidence": [8], "confidence": 0.7},
+"Q17": {"rationale": "The NDA contains no permission to make copies of Confidential Information.", "label": "NotMentioned", "evidence": [], "confidence": 0.7},
+"Q18": {"rationale": "The NDA contains no export control provision.", "label": "NotMentioned", "evidence": [], "confidence": 0.92},
+"Q19": {"rationale": "Segment 24 allows only legally compelled disclosure to a regulatory authority, with notice, and the general confidentiality duty in segments 4 and 8 would otherwise bar voluntary reports to government agencies.", "label": "Entailment", "evidence": [4, 24], "confidence": 0.55},
+"Q20": {"rationale": "Segment 8 names employees among the Representatives to whom Confidential Information may be provided, and segment 5 requires them to be made aware of the Agreement.", "label": "Entailment", "evidence": [5, 8], "confidence": 0.85}
+}

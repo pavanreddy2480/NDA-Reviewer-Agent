@@ -1,0 +1,439 @@
+{
+ "strict": {
+  "overall": {
+   "tp": 31,
+   "fp": 11,
+   "fn": 22,
+   "precision": 0.7381,
+   "recall": 0.5849,
+   "f1": 0.6526
+  },
+  "by_type": {
+   "approval_needed": {
+    "tp": 6,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   },
+   "omission": {
+    "tp": 16,
+    "fp": 0,
+    "fn": 19,
+    "precision": 1.0,
+    "recall": 0.4571,
+    "f1": 0.6275
+   },
+   "statutory_risk": {
+    "tp": 3,
+    "fp": 2,
+    "fn": 0,
+    "precision": 0.6,
+    "recall": 1.0,
+    "f1": 0.75
+   },
+   "violation": {
+    "tp": 6,
+    "fp": 9,
+    "fn": 3,
+    "precision": 0.4,
+    "recall": 0.6667,
+    "f1": 0.5
+   }
+  },
+  "false_alarms_per_nda": 2.2,
+  "n_ndas": 5,
+  "n_gold_defects": 53,
+  "n_gold_with_evidence": 6,
+  "per_doc": [
+   [
+    5,
+    3,
+    5
+   ],
+   [
+    3,
+    0,
+    5
+   ],
+   [
+    6,
+    4,
+    5
+   ],
+   [
+    10,
+    2,
+    4
+   ],
+   [
+    7,
+    2,
+    3
+   ]
+  ],
+  "ci95": {
+   "precision": [
+    0.6383,
+    0.8333
+   ],
+   "recall": [
+    0.4681,
+    0.678
+   ],
+   "f1": [
+    0.557,
+    0.7327
+   ]
+  }
+ },
+ "lenient": {
+  "overall": {
+   "tp": 31,
+   "fp": 11,
+   "fn": 22,
+   "precision": 0.7381,
+   "recall": 0.5849,
+   "f1": 0.6526
+  },
+  "by_type": {
+   "approval_needed": {
+    "tp": 6,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   },
+   "omission": {
+    "tp": 16,
+    "fp": 0,
+    "fn": 19,
+    "precision": 1.0,
+    "recall": 0.4571,
+    "f1": 0.6275
+   },
+   "statutory_risk": {
+    "tp": 3,
+    "fp": 2,
+    "fn": 0,
+    "precision": 0.6,
+    "recall": 1.0,
+    "f1": 0.75
+   },
+   "violation": {
+    "tp": 6,
+    "fp": 9,
+    "fn": 3,
+    "precision": 0.4,
+    "recall": 0.6667,
+    "f1": 0.5
+   }
+  },
+  "false_alarms_per_nda": 2.2,
+  "n_ndas": 5,
+  "n_gold_defects": 53,
+  "n_gold_with_evidence": 6,
+  "per_doc": [
+   [
+    5,
+    3,
+    5
+   ],
+   [
+    3,
+    0,
+    5
+   ],
+   [
+    6,
+    4,
+    5
+   ],
+   [
+    10,
+    2,
+    4
+   ],
+   [
+    7,
+    2,
+    3
+   ]
+  ],
+  "ci95": {
+   "precision": [
+    0.6383,
+    0.8333
+   ],
+   "recall": [
+    0.4681,
+    0.678
+   ],
+   "f1": [
+    0.557,
+    0.7327
+   ]
+  }
+ },
+ "rule_only": {
+  "overall": {
+   "tp": 35,
+   "fp": 7,
+   "fn": 18,
+   "precision": 0.8333,
+   "recall": 0.6604,
+   "f1": 0.7368
+  },
+  "by_type": {
+   "approval_needed": {
+    "tp": 6,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   },
+   "omission": {
+    "tp": 20,
+    "fp": 0,
+    "fn": 15,
+    "precision": 1.0,
+    "recall": 0.5714,
+    "f1": 0.7273
+   },
+   "statutory_risk": {
+    "tp": 3,
+    "fp": 2,
+    "fn": 0,
+    "precision": 0.6,
+    "recall": 1.0,
+    "f1": 0.75
+   },
+   "violation": {
+    "tp": 6,
+    "fp": 5,
+    "fn": 3,
+    "precision": 0.5455,
+    "recall": 0.6667,
+    "f1": 0.6
+   }
+  },
+  "false_alarms_per_nda": 1.4,
+  "n_ndas": 5,
+  "n_gold_defects": 53,
+  "n_gold_with_evidence": 6,
+  "per_doc": [
+   [
+    6,
+    2,
+    4
+   ],
+   [
+    3,
+    0,
+    5
+   ],
+   [
+    7,
+    3,
+    4
+   ],
+   [
+    12,
+    0,
+    2
+   ],
+   [
+    7,
+    2,
+    3
+   ]
+  ],
+  "type_accuracy": 0.8857,
+  "ci95": {
+   "precision": [
+    0.7317,
+    0.9487
+   ],
+   "recall": [
+    0.5111,
+    0.7778
+   ],
+   "f1": [
+    0.6301,
+    0.8475
+   ]
+  }
+ },
+ "check_errors": 0,
+ "checks_per_nda": 22.4,
+ "agent_searches_per_nda": 0.0,
+ "applicable_rules_per_nda": 22.4,
+ "fact_accuracy": {
+  "personal_data": {
+   "accuracy": 1.0,
+   "n": 3
+  },
+  "governing_law": {
+   "accuracy": 1.0,
+   "n": 5
+  }
+ },
+ "pending_batch_ndas": 0,
+ "rules": "oracle_rules",
+ "compiler": {},
+ "usage": {
+  "backend": "claude-haiku-agent",
+  "model": "claude-haiku (agent)",
+  "calls": 105,
+  "cached_calls": 105,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 276712,
+  "cached_output_tokens": 6039,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "deal_facts": {
+    "calls": 5,
+    "cached_calls": 5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 2790,
+    "cached_output_tokens": 388
+   },
+   "field_extract": {
+    "calls": 20,
+    "cached_calls": 20,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 41494,
+    "cached_output_tokens": 173
+   },
+   "reverse_check": {
+    "calls": 80,
+    "cached_calls": 80,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 232428,
+    "cached_output_tokens": 5478
+   }
+  }
+ },
+ "config": {
+  "split": "test",
+  "preset": "exhaustive_filtered",
+  "reverse": true,
+  "forward": false,
+  "applicability_filter": true,
+  "exhaustive": true,
+  "k_segments": 12,
+  "neighbours": 1,
+  "forward_rules_per_segment": 3,
+  "forward_min_score": 4.0,
+  "agentic": false,
+  "agentic_min_confidence": 0.7,
+  "agentic_max_steps": 4,
+  "agentic_max_segments": 8,
+  "agentic_switch_confidence": 0.8,
+  "max_workers": 4,
+  "temperature": 0.0,
+  "seed": 0,
+  "applicability": "model",
+  "frames": false,
+  "xref": false,
+  "n_docs": 5,
+  "packs": [
+   "Northwind Cloud, Inc.",
+   "Bayview Health Partners",
+   "Keystone Precision Manufacturing, Inc."
+  ],
+  "law_pack": "draft-0",
+  "planted": true,
+  "hide_facts": true,
+  "deal_seed": 0,
+  "checker": "claude-haiku-agent"
+ },
+ "planted_only": {
+  "overall": {
+   "tp": 6,
+   "fp": 11,
+   "fn": 6,
+   "precision": 0.3529,
+   "recall": 0.5,
+   "f1": 0.4138
+  },
+  "ci95": {
+   "precision": [
+    0.15,
+    0.5714
+   ],
+   "recall": [
+    0.3,
+    0.8333
+   ],
+   "f1": [
+    0.2308,
+    0.5556
+   ]
+  },
+  "n_gold_defects": 12
+ },
+ "natural_only": {
+  "overall": {
+   "tp": 25,
+   "fp": 11,
+   "fn": 16,
+   "precision": 0.6944,
+   "recall": 0.6098,
+   "f1": 0.6494
+  },
+  "ci95": {
+   "precision": [
+    0.6053,
+    0.795
+   ],
+   "recall": [
+    0.5143,
+    0.7083
+   ],
+   "f1": [
+    0.5641,
+    0.7368
+   ]
+  },
+  "n_gold_defects": 41
+ },
+ "injection": {
+  "injected": {
+   "overall": {
+    "tp": 5,
+    "fp": 3,
+    "fn": 5,
+    "precision": 0.625,
+    "recall": 0.5,
+    "f1": 0.5556
+   },
+   "n_ndas": 1
+  },
+  "clean": {
+   "overall": {
+    "tp": 26,
+    "fp": 8,
+    "fn": 17,
+    "precision": 0.7647,
+    "recall": 0.6047,
+    "f1": 0.6753
+   },
+   "n_ndas": 4
+  }
+ },
+ "system": {
+  "name": "reviewer",
+  "preset": "exhaustive_filtered",
+  "ablation": null
+ },
+ "unscored_findings": 0
+}

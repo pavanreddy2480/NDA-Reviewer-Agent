@@ -283,3 +283,11 @@ def test_project_config_claude_data_makers_are_not_tested_families():
 def test_project_config_fallback_data_makers_are_independent():
     r = roles()
     assert check_data_maker([r["pack_generator"], *r["labellers"]]) == []
+
+
+def test_thinking_blocks_are_stripped_before_parsing():
+    from counselcopilot.llm.backends import strip_thinking
+
+    assert strip_thinking('<think>let me see</think>\n{"a": 1}') == '{"a": 1}'
+    assert strip_thinking('<think>cut off before the end') == ""
+    assert strip_thinking('{"a": 1}') == '{"a": 1}'

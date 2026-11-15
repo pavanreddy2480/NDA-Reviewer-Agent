@@ -86,6 +86,7 @@ re-running a finished experiment costs nothing. `--no-cache` turns this off.
 | `cc sweep --padding DIRS` | Padded policy corpora (40k, 150k tokens) for the policy-size sweep |
 | `cc frames silver` / `cc finetune data` | Silver obligation frames and the QLoRA training mix ([guide](docs/guides/qlora-kaggle.md)) |
 | `cc compare RUN_A RUN_B` / `cc report RUN...` | Paired bootstrap between two RQ1 runs; one Markdown table of many runs |
+| `scripts/run_ablations.sh` / `cc ablations RUN...` | Every ablation study ([design](docs/design/ablation-studies.md)) on local Ollama Llama, then Gemini Flash; the report pairs each ablation with the full system (paired bootstrap, Holm-corrected) |
 | `cc smoke --out runs/smoke` | Every experiment on a synthetic mini-benchmark with the offline `heuristic` backend, in about 15 s. A plumbing check, not results |
 
 **Local Postgres on Windows.** Smart App Control blocks the Windows `initdb.exe`, so the database

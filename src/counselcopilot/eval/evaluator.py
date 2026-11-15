@@ -99,6 +99,9 @@ class IndependentEvaluator:
         """Which redline causes which regression: apply each edit alone and re-check only the
         regressed rules. H2's regression rate = share of redlines with at least one."""
         by_id = {r.id: r for r in rules}
+        # a rule already broken on this round's draft (an earlier round broke it) is not this round's doing
+        base = self._check_all([(by_id[rid], before, 0) for rid in regressed])
+        regressed = [rid for rid, s in zip(regressed, base) if s.ok]
         jobs = [(k, rid, before.apply([e])) for k, e in enumerate(edits) for rid in regressed]
         res = self._check_all([(by_id[rid], one, 0) for _, rid, one in jobs])
         out: dict[int, list[str]] = {k: [] for k in range(len(edits))}
@@ -107,27 +110,49 @@ class IndependentEvaluator:
                 out[k].append(rid)
         return out
 
-    def noise_floor(self, drafts: list[Draft], rules: list[Rule], deal_of: dict[str, DealContext],
-                    n: int = 20, seed: int = 0) -> dict:
+    def noise_floor(self, drafts: list[Draft], rules: list[Rule] | dict[str, list[Rule]],
+                    deal_of: dict[str, DealContext], n: int = 20, seed: int = 0) -> dict:
         """A/A test: check unchanged drafts twice (two seeds) and report the flip rate. RQ2
-        regression and fix rates are reported next to this floor."""
+        regression and fix rates are reported next to this floor. `rules` may map draft id -> rules
+        (each NDA's own company pack). All checks are sent together, so one batch round answers them."""
         rng = random.Random(seed)
-        pairs = [(d, r) for d in drafts for r in rules if r.kind != "field" and r.applies_to(deal_of[d.id])]
-        flips = [self.check(r, d).ok != self.check(r, d, seed=1).ok for d, r in rng.sample(pairs, min(n, len(pairs)))]
-        return {"n": len(flips), "flip_rate": round(sum(flips) / max(len(flips), 1), 4)}
+        rules_of = rules if isinstance(rules, dict) else {d.id: rules for d in drafts}
+        pairs = [(d, r) for d in drafts for r in rules_of.get(d.id, [])
+                 if r.kind != "field" and r.applies_to(deal_of[d.id])]
+        pairs = rng.sample(pairs, min(n, len(pairs)))
+        res = self._check_all([(r, d, 0) for d, r in pairs] + [(r, d, 1) for d, r in pairs])
+        first, second = res[:len(pairs)], res[len(pairs):]
+        flips = [a.ok != b.ok for a, b in zip(first, second)]
+        by_rule: dict[str, list[bool]] = {}
+        for (d, r), f in zip(pairs, flips):
+            by_rule.setdefault(r.id, []).append(f)
+        return {"n": len(flips), "flip_rate": round(sum(flips) / max(len(flips), 1), 4),
+                "label_agreement": round(sum(a.result.label == b.result.label for a, b in zip(first, second))
+                                         / max(len(pairs), 1), 4),
+                "flipped_rules": {k: sum(v) for k, v in sorted(by_rule.items()) if any(v)}}
 
-    def validate_on_contractnli(self, docs, hypotheses: dict[str, str], n: int = 200, seed: int = 0) -> dict:
+    def validate_on_contractnli(self, docs, hypotheses: dict[str, str], n: int = 200, seed: int = 0,
+                                per_doc: bool = False) -> dict:
         """Agreement with ContractNLI's expert labels on unedited test NDAs: no human time.
-        Each item is (NDA, hypothesis); the evaluator answers for the hypothesis as the term."""
+        Each item is (NDA, hypothesis); the evaluator answers for the hypothesis as the term.
+        per_doc=True takes every hypothesis of n random documents instead of n random items (fewer
+        NDAs to read when agents answer). All checks are sent together (one batch round)."""
         rng = random.Random(seed)
-        items = [(d, h) for d in docs for h in d.annotations]
-        gold, pred = [], []
-        for d, h in rng.sample(items, min(n, len(items))):
-            rule = Rule(id="EVAL-1", title=h, requirement=hypotheses[h], term=hypotheses[h], kind="require")
-            pred.append(self.check(rule, Draft.from_nda(d)).result.label)
-            gold.append(d.annotations[h].label.value)
-        return {"n": len(gold), "agreement": round(sum(g == p for g, p in zip(gold, pred)) / max(len(gold), 1), 4),
-                "kappa": cohen_kappa(gold, pred), "kappa_ci95": kappa_ci(gold, pred)}
+        if per_doc:
+            items = [(d, h) for d in rng.sample(list(docs), min(n, len(docs))) for h in d.annotations]
+        else:
+            items = [(d, h) for d in docs for h in d.annotations]
+            items = rng.sample(items, min(n, len(items)))
+        jobs = [(Rule(id=f"EVAL-{h}", title=h, requirement=hypotheses[h], term=hypotheses[h], kind="require"),
+                 Draft.from_nda(d), 0) for d, h in items]
+        pred = [s.result.label for s in self._check_all(jobs)]
+        gold = [d.annotations[h].label.value for d, h in items]
+        per_label = {g: round(sum(p == g for gg, p in zip(gold, pred) if gg == g) / gold.count(g), 4)
+                     for g in sorted(set(gold))}
+        return {"n": len(gold), "n_docs": len({d.id for d, _ in items}),
+                "agreement": round(sum(g == p for g, p in zip(gold, pred)) / max(len(gold), 1), 4),
+                "kappa": cohen_kappa(gold, pred), "kappa_ci95": kappa_ci(gold, pred),
+                "recall_per_gold_label": per_label}
 
     @staticmethod
     def validate(human_ok: list[bool], model_ok: list[bool]) -> dict:

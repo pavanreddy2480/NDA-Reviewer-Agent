@@ -1,0 +1,21 @@
+{
+"Q1": {"rationale": "Segment 5a expressly covers information 'whether in oral, written or electronic form', so verbally conveyed information is Confidential Information.", "label": "Entailment", "evidence": [5], "confidence": 0.95},
+"Q2": {"rationale": "The NDA has no general use restriction limited to stated purposes; segment 28 instead lets personnel use information retained in unaided memory 'for any purpose', which is incompatible with such a restriction.", "label": "Contradiction", "evidence": [28], "confidence": 0.6},
+"Q3": {"rationale": "Segment 17 sets obligations to expire at the earlier of sixty months after signing or completion of the Sale, so obligations continue beyond the agreement's date.", "label": "Entailment", "evidence": [17], "confidence": 0.65},
+"Q4": {"rationale": "Segment 28 gives a use right in information retained in unaided memory, and segment 15 only disclaims any commitment to supply information, so the NDA does not clearly bar granting rights and in part grants one.", "label": "Contradiction", "evidence": [28, 15], "confidence": 0.5},
+"Q5": {"value": 60, "evidence": [17]},
+"Q6": {"value": null, "evidence": []},
+"Q7": {"rationale": "Segment 21 requires the Disclosee to immediately notify the Sellers before disclosing Confidential Information under legal compulsion.", "label": "Entailment", "evidence": [21], "confidence": 0.95},
+"Q8": {"rationale": "The NDA contains no prohibition on reverse engineering.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q9": {"rationale": "Segment 26 states that Confidential Information 'shall be limited to technical information' and 'shall not include business or financial information'.", "label": "Entailment", "evidence": [26], "confidence": 0.9},
+"Q10": {"rationale": "Segment 5c makes the fact of involvement in, and the status of, negotiations and 'any fact concerning the Sale' Confidential Information, so disclosing that the agreement was negotiated is restricted.", "label": "Entailment", "evidence": [8], "confidence": 0.85},
+"Q11": {"rationale": "Segment 5 includes advisors within Representatives and segment 2 allows disclosure to professional advisors with prior written consent of the Sellers.", "label": "Entailment", "evidence": [2, 5], "confidence": 0.8},
+"Q12": {"rationale": "The NDA says nothing about acquiring similar information from third parties; its only third-party carve-outs concern public or previously possessed information.", "label": "NotMentioned", "evidence": [], "confidence": 0.7},
+"Q13": {"rationale": "Segment 20 requires the breaching party to pay a US$500,000 penalty on any breach.", "label": "Entailment", "evidence": [20], "confidence": 0.97},
+"Q14": {"value": "unspecified", "evidence": [25]},
+"Q15": {"rationale": "The NDA contains no provision addressing the making of copies of Confidential Information.", "label": "NotMentioned", "evidence": [], "confidence": 0.7},
+"Q16": {"rationale": "Segment 5 defines Confidential Information of any kind in any form without any requirement that it be expressly identified, which is incompatible with an identification requirement.", "label": "Contradiction", "evidence": [5], "confidence": 0.55},
+"Q17": {"rationale": "Segment 5 provides that Confidential Information may be provided to the Disclosee's employees (Representatives), so sharing with employees is permitted.", "label": "Entailment", "evidence": [5], "confidence": 0.9},
+"Q18": {"rationale": "Segment 2 requires prior written consent of the Sellers before any disclosure, and segment 21 covers disclosure to regulators only when legally compelled, with no exception for voluntary reports of violations of law.", "label": "Entailment", "evidence": [2, 21], "confidence": 0.6},
+"Q19": {"rationale": "The NDA contains no export control provision; segment 3 refers only to Belgian insider dealing rules.", "label": "NotMentioned", "evidence": [3], "confidence": 0.9}
+}

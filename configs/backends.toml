@@ -35,6 +35,14 @@ model = "qwen3:14b"
 family = "qwen"
 structured = "json_schema"
 
+# Non-thinking alternative to qwen3:14b (`ollama pull qwen2.5:14b`), if Qwen3's answers fail to parse.
+[backends.qwen25-ollama]
+provider = "openai_compat"
+base_url = "http://localhost:11434/v1"
+model = "qwen2.5:14b"
+family = "qwen"
+structured = "json_schema"
+
 # Full stage-1 runs on Kaggle (see docs/guides/kaggle-vllm.md):
 # vllm serve hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4 --max-model-len 16384
 [backends.llama-vllm]

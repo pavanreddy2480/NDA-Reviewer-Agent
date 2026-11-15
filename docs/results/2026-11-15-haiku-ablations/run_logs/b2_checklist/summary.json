@@ -1,0 +1,153 @@
+{
+ "strict": {
+  "overall": {
+   "tp": 31,
+   "fp": 48,
+   "fn": 22,
+   "precision": 0.3924,
+   "recall": 0.5849,
+   "f1": 0.4697
+  },
+  "by_type": {
+   "approval_needed": {
+    "tp": 6,
+    "fp": 8,
+    "fn": 0,
+    "precision": 0.4286,
+    "recall": 1.0,
+    "f1": 0.6
+   },
+   "omission": {
+    "tp": 16,
+    "fp": 11,
+    "fn": 19,
+    "precision": 0.5926,
+    "recall": 0.4571,
+    "f1": 0.5161
+   },
+   "statutory_risk": {
+    "tp": 3,
+    "fp": 11,
+    "fn": 0,
+    "precision": 0.2143,
+    "recall": 1.0,
+    "f1": 0.3529
+   },
+   "violation": {
+    "tp": 6,
+    "fp": 18,
+    "fn": 3,
+    "precision": 0.25,
+    "recall": 0.6667,
+    "f1": 0.3636
+   }
+  },
+  "false_alarms_per_nda": 9.6,
+  "n_ndas": 5,
+  "n_gold_defects": 53,
+  "n_gold_with_evidence": 6,
+  "per_doc": [
+   [
+    5,
+    12,
+    5
+   ],
+   [
+    3,
+    8,
+    5
+   ],
+   [
+    6,
+    9,
+    5
+   ],
+   [
+    10,
+    11,
+    4
+   ],
+   [
+    7,
+    8,
+    3
+   ]
+  ],
+  "ci95": {
+   "precision": [
+    0.3099,
+    0.4568
+   ],
+   "recall": [
+    0.4681,
+    0.678
+   ],
+   "f1": [
+    0.3729,
+    0.5441
+   ]
+  }
+ },
+ "rules": "oracle_rules",
+ "compiler": {},
+ "checks_per_nda": 37.0,
+ "applicable_rules_per_nda": 22.4,
+ "fact_accuracy": {
+  "personal_data": {
+   "accuracy": 1.0,
+   "n": 3
+  },
+  "governing_law": {
+   "accuracy": 1.0,
+   "n": 5
+  }
+ },
+ "pending_batch_ndas": 0,
+ "usage": {
+  "backend": "claude-haiku-agent",
+  "model": "claude-haiku (agent)",
+  "calls": 283,
+  "cached_calls": 283,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 600058,
+  "cached_output_tokens": 13267,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "b2_naive_rag": {
+    "calls": 110,
+    "cached_calls": 110,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 141491,
+    "cached_output_tokens": 2869
+   },
+   "deal_facts": {
+    "calls": 5,
+    "cached_calls": 5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 2790,
+    "cached_output_tokens": 388
+   },
+   "field_extract": {
+    "calls": 22,
+    "cached_calls": 22,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 45914,
+    "cached_output_tokens": 187
+   },
+   "reverse_check": {
+    "calls": 146,
+    "cached_calls": 146,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 409863,
+    "cached_output_tokens": 9823
+   }
+  }
+ },
+ "out_dir": "runs/20261115-085549-rq1-b2_checklist-test-claude-haiku-agent"
+}

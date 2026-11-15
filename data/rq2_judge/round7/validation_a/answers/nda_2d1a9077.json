@@ -1,0 +1,19 @@
+{
+"Q1": {"rationale": "The agreement contains no reverse engineering prohibition; the only related text is the use restriction in segment 15.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q2": {"rationale": "Segment 32 requires return or destruction only promptly upon written request, not upon termination of the Agreement, so the termination trigger is absent.", "label": "NotMentioned", "evidence": [32], "confidence": 0.55},
+"Q3": {"rationale": "The NDA does not state that no right or license to Confidential Information is granted; segment 37 concerns only the Transaction.", "label": "NotMentioned", "evidence": [], "confidence": 0.7},
+"Q4": {"rationale": "Segment 14 bars disclosing the fact that discussions are taking place concerning the Transaction or any terms of it, which covers the fact of the agreement's negotiation.", "label": "Entailment", "evidence": [14], "confidence": 0.85},
+"Q5": {"rationale": "Segment 4 covers business prospects, financial condition, operations and assets as well as technology, which is incompatible with a technical-only scope.", "label": "Contradiction", "evidence": [4], "confidence": 0.9},
+"Q6": {"rationale": "The NDA contains no requirement that Evaluation Material be expressly identified or marked by the Disclosing Party.", "label": "NotMentioned", "evidence": [], "confidence": 0.7},
+"Q7": {"rationale": "Segment 35 states that sections 4, 5 and 7 through 12 survive any termination of the Agreement.", "label": "Entailment", "evidence": [35], "confidence": 0.97},
+"Q8": {"rationale": "Segment 12(d) excludes independently developed information, and segment 27 permits developing similar or related technology.", "label": "Entailment", "evidence": [12, 27], "confidence": 0.95},
+"Q9": {"rationale": "Segment 33 lets the receiving party and its Representatives retain one copy of the Evaluation Material, and segment 34 continues confidentiality after return or destruction.", "label": "Entailment", "evidence": [33, 34], "confidence": 0.95},
+"Q10": {"rationale": "The NDA does not expressly mention verbally conveyed information as Confidential Information; Evaluation Material is described without reference to oral form.", "label": "NotMentioned", "evidence": [4], "confidence": 0.6},
+"Q11": {"rationale": "The NDA contains no non-solicitation covenant regarding the other party's representatives.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q12": {"rationale": "Segment 5 defines Representatives to include agents and advisors, and segment 14 permits disclosure to Representatives who agree or are bound not to disclose.", "label": "Entailment", "evidence": [5, 14], "confidence": 0.9},
+"Q13": {"rationale": "Segment 33 permits retaining one copy of the Evaluation Material to show compliance or meet legal requirements, which is a carve-out permitting a copy.", "label": "Entailment", "evidence": [33], "confidence": 0.9},
+"Q14": {"rationale": "Segment 29 requires the party facing a legal or other required disclosure to give the other party prior written notice to the extent reasonable and practicable.", "label": "Entailment", "evidence": [29], "confidence": 0.97},
+"Q15": {"rationale": "Segment 10 excludes information available from a source other than the disclosing party, which permits acquiring similar information from a third party.", "label": "Entailment", "evidence": [10], "confidence": 0.9},
+"Q16": {"rationale": "Segments 5 and 14 permit disclosure to the party's Representatives, which include employees, provided they are bound not to disclose.", "label": "Entailment", "evidence": [5, 14], "confidence": 0.95},
+"Q17": {"rationale": "Segment 15 limits use of Evaluation Material to evaluating, negotiating, facilitating or pursuing a Transaction.", "label": "Entailment", "evidence": [15], "confidence": 0.95}
+}

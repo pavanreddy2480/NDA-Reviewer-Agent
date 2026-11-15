@@ -1,0 +1,104 @@
+{
+ "systems": {
+  "loop_1_round": {
+   "n_ndas": 1,
+   "remaining_per_nda": 1.0,
+   "remaining_ci95": [
+    1.0,
+    1.0
+   ],
+   "loopholes_left_per_nda": 0.0,
+   "regression_rate": 0.0,
+   "redlines": 15,
+   "repair_success": 0.0,
+   "restores_original": 0.0,
+   "edit_words_per_nda": 302.0,
+   "rounds_mean": 1.0,
+   "tokens_per_nda": 50263.0,
+   "stopped": {
+    "max_rounds": 1
+   },
+   "escalations_per_nda": 2.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": 0.0
+  },
+  "loop_no_attacker": {
+   "n_ndas": 5,
+   "remaining_per_nda": 2.4,
+   "remaining_ci95": [
+    1.6,
+    3.4
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.0,
+   "redlines": 48,
+   "repair_success": 0.5,
+   "restores_original": 0.3333,
+   "edit_words_per_nda": 211.4,
+   "rounds_mean": 2.2,
+   "tokens_per_nda": 74810.2,
+   "stopped": {
+    "clean": 2,
+    "conflict": 1,
+    "max_rounds": 1,
+    "stuck": 1
+   },
+   "escalations_per_nda": 1.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  },
+  "r1": {
+   "n_ndas": 5,
+   "remaining_per_nda": 2.6,
+   "remaining_ci95": [
+    2.0,
+    3.4
+   ],
+   "loopholes_left_per_nda": 0.2,
+   "regression_rate": 0.0488,
+   "redlines": 41,
+   "repair_success": 0.5833,
+   "restores_original": 0.5,
+   "edit_words_per_nda": 175.8,
+   "rounds_mean": 1.0,
+   "tokens_per_nda": 3796.0,
+   "stopped": {
+    "clean": 5
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  },
+  "r2": {
+   "n_ndas": 5,
+   "remaining_per_nda": 2.2,
+   "remaining_ci95": [
+    1.6,
+    2.8
+   ],
+   "loopholes_left_per_nda": 0.0,
+   "regression_rate": 0.0417,
+   "redlines": 48,
+   "repair_success": 0.5833,
+   "restores_original": 0.5,
+   "edit_words_per_nda": 198.6,
+   "rounds_mean": 2.2,
+   "tokens_per_nda": 14288.0,
+   "stopped": {
+    "clean": 5
+   },
+   "escalations_per_nda": 0.0,
+   "attacker_loophole_recall": null,
+   "attacker_precision": null
+  }
+ },
+ "comparisons": [],
+ "h2": {
+  "remaining_at_most_half_of_r1": null,
+  "remaining_at_most_half_of_r1_attacker": null,
+  "regression_rate_below_5pct": null,
+  "blind_acceptance": "needs two teammates: cc rq2 --acceptance-sheet, then cc rq2-kappa"
+ },
+ "pending_batch_items": 19,
+ "out_dir": "runs/20261115-123940-rq2-claude-haiku-agent"
+}

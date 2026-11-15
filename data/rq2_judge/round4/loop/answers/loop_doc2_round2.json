@@ -1,0 +1,11 @@
+{
+  "Q1": {"rationale": "V1 adds only a use restriction after segment 9; nothing in the NDA mentions verbal or oral information, and the definition in segments 16-17 lists only written or tangible categories.", "label": "NotMentioned", "evidence": [16, 17, 9], "confidence": 0.8},
+  "Q2": {"value": 24, "evidence": [24, 65]},
+  "Q3": {"rationale": "V2 replaces the termination sentence with a survival sentence; the Confidential Information definition (segments 16-17) never mentions verbally conveyed information.", "label": "NotMentioned", "evidence": [16, 17, 24], "confidence": 0.8},
+  "Q4": {"rationale": "V3 adds a legal-disclosure notice duty; it says nothing about verbal information, and the definition in segments 16-17 does not mention it.", "label": "NotMentioned", "evidence": [16, 17, 27], "confidence": 0.8},
+  "Q5": {"rationale": "V4 adds a duty not to disclose the negotiation fact; it does not address verbal information, and the definition in segments 16-17 does not mention it.", "label": "NotMentioned", "evidence": [16, 17, 48], "confidence": 0.8},
+  "Q6": {"rationale": "V5 adds a third-party sharing permission; it does not address verbal information, and the definition in segments 16-17 does not mention it.", "label": "NotMentioned", "evidence": [16, 17, 51], "confidence": 0.8},
+  "Q7": {"rationale": "V6 adds an employee sharing permission; it does not address verbal information, and the definition in segments 16-17 does not mention it.", "label": "NotMentioned", "evidence": [16, 17, 51], "confidence": 0.8},
+  "Q8": {"rationale": "V7 deletes the ownership clause in segment 51; the definition in segments 16-17 still does not mention verbally conveyed information.", "label": "NotMentioned", "evidence": [16, 17], "confidence": 0.8},
+  "Q9": {"rationale": "The base NDA's Confidential Information definition (segments 14-17) lists marked or reasonably-deemed-confidential information and tangible or written categories, with no reference to verbal or oral disclosure.", "label": "NotMentioned", "evidence": [14, 15, 16, 17], "confidence": 0.8}
+}

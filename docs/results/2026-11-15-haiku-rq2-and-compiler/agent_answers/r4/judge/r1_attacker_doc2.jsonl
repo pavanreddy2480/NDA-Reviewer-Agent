@@ -1,0 +1,2 @@
+{"key": "c8e3ae5fdee75fca42eba27c5b89df2f69d76ba2a9e5ca43e50dc452c156553c", "text": "{\"rationale\": \"Segment 25 states the Receiving Party shall not disclose that the Agreement was agreed or negotiated.\", \"label\": \"Entailment\", \"evidence\": [25], \"confidence\": 0.95}"}
+{"key": "44236fa27ab664ca4c1adba10a976a9277e183cb21cf93abeda67e9f499ff496", "text": "{\"rationale\": \"Segment 23 permits sharing Confidential Information with employees who need it for their work.\", \"label\": \"Entailment\", \"evidence\": [23], \"confidence\": 0.93}"}

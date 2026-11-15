@@ -1,0 +1,120 @@
+{
+ "strict": {
+  "overall": {
+   "tp": 9,
+   "fp": 0,
+   "fn": 44,
+   "precision": 1.0,
+   "recall": 0.1698,
+   "f1": 0.2903
+  },
+  "by_type": {
+   "approval_needed": {
+    "tp": 3,
+    "fp": 0,
+    "fn": 3,
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1": 0.6667
+   },
+   "omission": {
+    "tp": 1,
+    "fp": 0,
+    "fn": 34,
+    "precision": 1.0,
+    "recall": 0.0286,
+    "f1": 0.0556
+   },
+   "statutory_risk": {
+    "tp": 1,
+    "fp": 0,
+    "fn": 2,
+    "precision": 1.0,
+    "recall": 0.3333,
+    "f1": 0.5
+   },
+   "violation": {
+    "tp": 4,
+    "fp": 0,
+    "fn": 5,
+    "precision": 1.0,
+    "recall": 0.4444,
+    "f1": 0.6154
+   }
+  },
+  "false_alarms_per_nda": 0.0,
+  "n_ndas": 5,
+  "n_gold_defects": 53,
+  "n_gold_with_evidence": 6,
+  "per_doc": [
+   [
+    0,
+    0,
+    10
+   ],
+   [
+    0,
+    0,
+    8
+   ],
+   [
+    3,
+    0,
+    8
+   ],
+   [
+    3,
+    0,
+    11
+   ],
+   [
+    3,
+    0,
+    7
+   ]
+  ],
+  "ci95": {
+   "precision": [
+    1.0,
+    1.0
+   ],
+   "recall": [
+    0.06,
+    0.2679
+   ],
+   "f1": [
+    0.1132,
+    0.4225
+   ]
+  }
+ },
+ "rules": "oracle_rules",
+ "compiler": {},
+ "checks_per_nda": 0.0,
+ "applicable_rules_per_nda": 0.0,
+ "fact_accuracy": {},
+ "pending_batch_ndas": 0,
+ "usage": {
+  "backend": "claude-haiku-agent",
+  "model": "claude-haiku (agent)",
+  "calls": 61,
+  "cached_calls": 61,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 172453,
+  "cached_output_tokens": 5021,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "b3_single_agent": {
+    "calls": 61,
+    "cached_calls": 61,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 172453,
+    "cached_output_tokens": 5021
+   }
+  }
+ },
+ "out_dir": "runs/20261115-085551-rq1-b3-test-claude-haiku-agent"
+}

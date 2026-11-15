@@ -1,0 +1,1 @@
+{"key": "1b761ab129048b00ea11d97daf82d4e528a67d8ac58a8670847ea088e78c0337", "text": "{\"thought\": \"The request concerns rule C-24, an NDA confidentiality term of 9999 months against a limit of 120. I need the full rule text first.\", \"action\": \"rule_lookup\", \"args\": {\"rule_id\": \"C-24\"}}"}

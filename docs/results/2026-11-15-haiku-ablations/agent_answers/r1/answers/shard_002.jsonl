@@ -1,0 +1,40 @@
+{"key": "af4cadba3b52d7c0c4ed7b958f811d5a9f848ae8d5c6dc57f4af58e8cdf087cb", "text": "{\"findings\": []}"}
+{"key": "dbdc3a1d37f1c0257efc7e73a47da0ab036ede015cfeeb691dbc456bd969ce14", "text": "{\"findings\": []}"}
+{"key": "450feab128007b835a1d39156888cd794bd7376f02dcf936be76e7e743d1a238", "text": "{\"findings\": []}"}
+{"key": "392e565ee5814d0a55efa098063d06758f8e3d72c241355a6b3cf56734619142", "text": "{\"findings\": []}"}
+{"key": "597a7ebe2e2e688acf53b8647e587f4e6f153bd602c8905a64628a32aea064e2", "text": "{\"findings\": []}"}
+{"key": "986a52e0465b3f3f6d1bceac6f656b7e375b70c74d0eab6b9661897d1c4cc1d5", "text": "{\"findings\": []}"}
+{"key": "38e6cd60ae1c809e0700da9e0fdb2aae327f35cb3ffe318870bfd22d4dc025fa", "text": "{\"findings\": []}"}
+{"key": "9a8b5dc3720c68abdca76cce667fc9c416efe3dee2725a8d709640f132ff357d", "text": "{\"findings\": []}"}
+{"key": "c24fb67cfe8f862b0d16f08fd5badc97833b1000ba16929f631aaf312510c853", "text": "{\"findings\": []}"}
+{"key": "ac7048ad52d842c41abf777e0328f3701e5151b92124005f0ac8f240f7b51061", "text": "{\"thought\": \"I need the applicable company rules and law provisions before I can check the NDA, so I will start by listing them.\", \"action\": \"list_rules\", \"args\": {}}"}
+{"key": "63eb1a91485cf7560ee73003919f1995423b889382a5fe7e092269fefc6ba6d0", "text": "{\"findings\": []}"}
+{"key": "e15187e5b3029a99c95ec6c19356bcdaeaf6ee32bad0710bad575c25e0066f75", "text": "{\"findings\": []}"}
+{"key": "c9cc9ecdd5e226a6c56ca70ea2bc31a2fdb80f7ec396025c942739a3dd5fd224", "text": "{\"findings\": []}"}
+{"key": "7be5f36c0f735392c00986b7edec1648780c0f020cdd66dc0d2d41a9dbf28f48", "text": "{\"findings\": [{\"document\": \"Legal Review and Approval Policy\", \"quote\": \"Documents that Keystone signs must be governed by the law of Ohio or the law of Delaware. If the counterparty will not agree to either, the business owner must request the approval of the General Counsel before agreeing to any other governing law.\", \"type\": \"approval_needed\", \"evidence\": [27], \"explanation\": \"The clause selects Belgian law and the courts of Brussels. Policy section 6.1 requires Ohio or Delaware law, and any other governing law needs General Counsel approval.\"}]}"}
+{"key": "a82048702e658602070929b5bd7e7c2281e866891d6fa1f7baa3217322355e63", "text": "{\"findings\": [{\"document\": \"Contract Approval Matrix\", \"quote\": \"Disputes under customer and vendor agreements are heard in the state or federal courts located in New York County, New York, or in Delaware, unless the General Counsel approves arbitration or another forum.\", \"type\": \"approval_needed\", \"evidence\": [81], \"explanation\": \"The clause makes the state and federal courts of Michigan the exclusive forum. The matrix only allows New York County or Delaware, and any other forum needs General Counsel approval.\"}]}"}
+{"key": "1333a3146ca392a8af88c4370d71f801dff6e900c63a9513e941fc0fc472629d", "text": "{\"findings\": []}"}
+{"key": "4a4e7b049060af070acbcf928592368bfdf4a0553ee6cbfb224850eb2051994a", "text": "{\"findings\": []}"}
+{"key": "e243a8e3d128dccdf1d7237289b4aea10d9a460881b80484342265cd8881d99b", "text": "{\"findings\": []}"}
+{"key": "dbeab167c1fda01bfe4c246cc6bd5c4f9692df8aa73a4bc2b439b9a3867442d3", "text": "{\"findings\": []}"}
+{"key": "bcef1c9cc973d136005098c20f1b267bd0a91abcc0a01421f358f927d4ff96fc", "text": "{\"findings\": []}"}
+{"key": "573ba11e13d475a1ca8a256c32791b6bcdf84f1209cc4daae8eba3af4f7947ce", "text": "{\"findings\": []}"}
+{"key": "ff8bf1a69e7ee96b5ae6df5025b87334036bc66fa0e47417354dda485d09dddf", "text": "{\"findings\": []}"}
+{"key": "1ca1ba6de0979fb190e6ee98d558f4363694e33468deb342e222c7460dd081cd", "text": "{\"findings\": []}"}
+{"key": "08593d1d163bb8587f3a6b0ef0ff2ddd72d2cdfdafa4942df6a891d2a912a49f", "text": "{\"findings\": []}"}
+{"key": "25dbd07f4a57c061c8dd48ede32126ca02e34be301dd197939fed69aa457dd0f", "text": "{\"findings\": []}"}
+{"key": "a3947cb71d1e1a707530b19b92b5f8af6a87bb558151a09cba5c0cbf19ac51b0", "text": "{\"findings\": []}"}
+{"key": "6898fa8e85caeb9bc328ab33211ab4ff8ed5ab13312b6b9185eddee35273e9c7", "text": "{\"findings\": []}"}
+{"key": "8882fc6946722e5af00040fb415562d048963a9f4f1127680d932632b00b65b8", "text": "{\"findings\": []}"}
+{"key": "7e52d0167f4a160be1f10c81215a04f9d301c1d5f587fe603943244b0c924dcf", "text": "{\"findings\": []}"}
+{"key": "5bfe388da30dd112e4ce6cbe18224473f66556b047f2f312062724606d970453", "text": "{\"findings\": []}"}
+{"key": "7ef4700264d7f842f13513efe526b3df69cdb084f472474679161c4390f26f1c", "text": "{\"findings\": []}"}
+{"key": "cc6b6442a2087f9c3910793d9af11abf93e780c9634624ce20acb1c16dcf5a63", "text": "{\"findings\": [{\"rule_id\": \"LAW-CA-BPC-16600\", \"document\": \"California Business and Professions Code\", \"type\": \"statutory_risk\", \"evidence\": [65], \"explanation\": \"Clause 65 bars the Receiving Party, for 24 months after termination, from engaging in or assisting any business that competes with the Disclosing Party. That matches the risky pattern in LAW-CA-BPC-16600: a post-term restraint on competing. Such a restraint is void under California law if California law governs. The governing law is blank in the NDA, so this is a risk to confirm, not a confirmed violation.\"}]}"}
+{"key": "f02f743b55d921313f92c2cf5aa31a6dd1b1f588b70e0308382ad3c8dca3d236", "text": "{\"findings\": []}"}
+{"key": "4f83c466fc7343030a176307500fcfb6f4be478ab52e93c49836d4bc6d78a2aa", "text": "{\"findings\": [{\"document\": \"Engineering Data Handling Policy\", \"quote\": \"The time allowed to the other side for returning or destroying our materials must be at least 10 days, so that the recipient can find and process all of it.\", \"type\": \"violation\", \"evidence\": [86], \"explanation\": \"Clause 86 requires the Recipient to return all materials and copies immediately. Policy section 4.2 requires the time allowed for return or destruction to be at least 10 days, so an immediate return obligation falls below that floor.\"}]}"}
+{"key": "beee6e56e7444dd2afa64dc10e661aeaaa02fcd3d2cc539bbc1be3f36820e305", "text": "{\"findings\": []}"}
+{"key": "b09e7592f69b4602dd1289db56cab2bbc482f853083a597d78f2798e2624bbd4", "text": "{\"findings\": []}"}
+{"key": "514e3fd36701a2c8c5c09c2d82238edbf2c1cbde02524c2a6092f8d87a91fa92", "text": "{\"findings\": []}"}
+{"key": "7a3f3cb337e70e68c1c20ae3f2fe7d0bbb13aace1f0440d3e6a34473108d4391", "text": "{\"findings\": []}"}
+{"key": "49fc2431283f135f718acab187f62854cd48834d95a597b7e38dc0d4ce5775b2", "text": "{\"findings\": []}"}
+{"key": "fea60f1f834794a23a5c9d2ea5b4a2018f0200fde05b5eb4ab9b70a0d8fa110c", "text": "{\"findings\": [{\"rule_id\": \"LAW-PENALTY\", \"type\": \"statutory_risk\", \"evidence\": [29], \"explanation\": \"Clause 29 makes the breaching party pay a fixed US$500,000 as a penalty irrespective of the actual loss suffered. That matches the risky pattern in LAW-PENALTY, a fixed sum payable on breach regardless of loss. Such a sum is enforceable only if reasonable in light of the anticipated or actual loss, and the test varies by state. Governing law is blank, so enforceability is a risk to confirm.\"}]}"}

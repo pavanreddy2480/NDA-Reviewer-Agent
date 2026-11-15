@@ -1,0 +1,2 @@
+{"key": "7ed9bef230601c8e696c05a53528d39bf23b31b41176bf576aa2684d35f64a66", "text": "{\"rationale\": \"Segment 25 bars disclosing the fact that the Agreement was agreed or negotiated.\", \"label\": \"Entailment\", \"evidence\": [25], \"confidence\": 0.97}"}
+{"key": "324533a762cfcbc5ea1b5138020b8d1e6bbea881956ed6c7c09a7f278c4fc203", "text": "{\"rationale\": \"Segment 23 permits disclosure to the Recipient's employees who need it for their work, subject to confidentiality obligations.\", \"label\": \"Entailment\", \"evidence\": [23], \"confidence\": 0.96}"}

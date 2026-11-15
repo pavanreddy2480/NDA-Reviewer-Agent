@@ -2,6 +2,7 @@
 
     cc pipeline --pack P --doc-id N               full CounselCopilot review of one NDA (Figure 1)
     cc rq2 --pack P --planted F --evaluator-backend B   red-team repair loop vs R1, R1+A, R2
+    cc rq2-score DRAFTS --gold-pack P --evaluator-backend B   judge saved repairs only
     cc rq2-kappa SHEET_A SHEET_B KEY              blind acceptance and Cohen's kappa of two raters
     cc cascade LOCAL_RUN REMOTE_RUN --pack P       local-first cascade, simulated offline
     cc sweep --out DIR                             padded policy corpora for the size sweep
@@ -94,14 +95,16 @@ def cmd_rq2(args) -> None:
     if args.acceptance_sheet:
         print(acceptance_sheet(args.acceptance_sheet, args.sheet_out, args.n_sheet))
         return
-    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache)
+    # --batch-queue: batch mode for the repair systems too (agent backends): uncached requests are queued
+    llm = load_backend(args.backend, args.config, use_cache=not args.no_cache, batch_queue=args.batch_queue)
     # --evaluator-batch-queue: the repair systems run live, but every uncached judge request is stored
     # in the queue instead of being sent. Answer the queue later (cc batch submit/collect, or export/load),
     # then rerun the same command: repairs come from the cache and scoring finishes.
     ev = load_backend(args.evaluator_backend, args.config, use_cache=not args.no_cache,
                       batch_queue=args.evaluator_batch_queue)
     checker = load_backend(args.checker_backend, args.config) if args.checker_backend else None
-    attacker = load_backend(args.attacker_backend, args.config) if args.attacker_backend else None
+    attacker = (load_backend(args.attacker_backend, args.config, batch_queue=args.batch_queue)
+                if args.attacker_backend else None)
     hyps = None
     if not args.no_hypotheses:
         try:
@@ -121,6 +124,39 @@ def cmd_rq2(args) -> None:
     if m["pending_batch_items"]:
         print(f"{m['pending_batch_items']} system runs wait on judge answers in the queue; answer it "
               "(cc batch), load the answers and run this command again.", file=sys.stderr)
+
+
+def cmd_rq2_score(args) -> None:
+    """Judge saved repairs (repaired_drafts.jsonl) without re-running the repair systems."""
+    from .benchmark.planter import load_planted
+    from .experiments.rq2_rescore import rescore_rq2
+    from .llm import load_backend
+    from .policy.schema import PolicyPack
+
+    ev = load_backend(args.evaluator_backend, args.config, use_cache=not args.no_cache, batch_queue=args.batch_queue)
+    hyps, nli_docs = None, None
+    planted = load_planted(args.planted)
+    if not args.no_hypotheses or args.validate_nli:
+        try:
+            from .cli import _load_data
+
+            d = _load_data(args, ("test",))
+            hyps = {k: h.text for k, h in d.hypotheses.items()}
+            # validation NDAs: test documents the repairs did not use
+            from .experiments.rq2_rescore import load_repaired
+
+            used = {r["doc_id"] for r in load_repaired(args.repaired)}
+            nli_docs = [doc for doc in d["test"] if doc.id not in used]
+        except FileNotFoundError:
+            print("ContractNLI not found: natural loopholes are not re-checked", file=sys.stderr)
+    m = rescore_rq2(args.repaired, planted, [PolicyPack.load(p) for p in args.gold_pack], ev,
+                    _law(args.law_pack), args.labels, args.allow_auto, hyps,
+                    tuple(args.systems) if args.systems else None, args.originals_only,
+                    noise_floor=args.noise_floor, nli_docs=nli_docs, nli_n=args.validate_nli)
+    print(json.dumps(m, indent=1, default=str))
+    if m["pending_batch_items"]:
+        print(f"{m['pending_batch_items']} items wait on judge answers in the queue; answer it (cc batch), "
+              "load the answers and run this command again.", file=sys.stderr)
 
 
 def cmd_rq2_kappa(args) -> None:
@@ -227,6 +263,25 @@ def report_table(runs: list[str]) -> str:
     return "\n".join(out)
 
 
+def cmd_ablations(args) -> None:
+    from .experiments.ablations import ablation_report, report_markdown, rq2_markdown
+
+    parts = ["# Ablation results", ""]
+    rep = None
+    if args.runs:
+        rep = ablation_report(args.runs, base=args.base)
+        parts += ["## RQ1 ablations", "", report_markdown(rep), ""]
+    for r in args.rq2 or []:
+        parts += ["## RQ2 loop ablations", "", rq2_markdown(r), ""]
+    text = "\n".join(parts)
+    if args.out:
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(text + "\n")
+        if rep is not None:
+            Path(args.out).with_suffix(".json").write_text(json.dumps(rep, indent=1, default=str))
+    print(text)
+
+
 def cmd_report(args) -> None:
     text = report_table(args.runs)
     if args.out:
@@ -331,6 +386,8 @@ def register(sub, llm_args) -> None:
     r2.add_argument("--evaluator-batch-queue", default=None,
                     help="store judge requests here (as q.<backend>.jsonl) instead of sending them; answer the "
                          "queue with cc batch, then rerun. Repairs still run live")
+    r2.add_argument("--batch-queue", default=None,
+                    help="batch mode for the repair systems (agent backends): queue uncached requests here")
     r2.add_argument("--checker-backend", default=None)
     r2.add_argument("--attacker-backend", default=None, help="ablation: attacker on a different model")
     r2.add_argument("--systems", nargs="+", default=["loop", "r1", "r1_attacker", "r2"], choices=SYSTEMS)
@@ -345,6 +402,26 @@ def register(sub, llm_args) -> None:
     r2.add_argument("--sheet-out", default="runs/acceptance_sheet.csv")
     r2.add_argument("--n-sheet", type=int, default=50)
     r2.set_defaults(fn=cmd_rq2)
+
+    rs = sub.add_parser("rq2-score", help="judge saved RQ2 repairs (repaired_drafts.jsonl) without re-running them")
+    rs.add_argument("repaired", help="repaired_drafts.jsonl from a cc rq2 run")
+    rs.add_argument("--gold-pack", action="append", required=True, help="the rules the judge checks, per company")
+    rs.add_argument("--planted", default="data/planted/test_seed0.json")
+    rs.add_argument("--law-pack", default="packs/law/us_law_pack.yaml")
+    rs.add_argument("--evaluator-backend", default="gemini-pro")
+    rs.add_argument("--batch-queue", default=None, help="store judge requests here (as q.<backend>.jsonl)")
+    rs.add_argument("--no-cache", action="store_true")
+    rs.add_argument("--systems", nargs="+", default=None, choices=SYSTEMS, help="default: every system in the file")
+    rs.add_argument("--originals-only", action="store_true",
+                    help="only the judge's questions on the unrepaired NDAs (shared by every system)")
+    rs.add_argument("--labels", default=None)
+    rs.add_argument("--allow-auto", action="store_true")
+    rs.add_argument("--no-hypotheses", action="store_true", help="skip re-checking natural loopholes")
+    rs.add_argument("--noise-floor", type=int, default=0,
+                    help="ask the judge N (unrepaired NDA, rule) pairs twice and report the flip rate")
+    rs.add_argument("--validate-nli", type=int, default=0,
+                    help="judge every hypothesis of N unused ContractNLI test NDAs against the expert labels")
+    rs.set_defaults(fn=cmd_rq2_score)
 
     k = sub.add_parser("rq2-kappa", help="blind acceptance rate per system and kappa between two raters")
     k.add_argument("sheet_a")
@@ -394,6 +471,13 @@ def register(sub, llm_args) -> None:
     cm.add_argument("--score", default="strict", choices=["strict", "lenient", "rule_only"])
     cm.add_argument("--margin", type=float, default=None, help="TOST margin, e.g. 0.03 for H1")
     cm.set_defaults(fn=cmd_compare)
+
+    ab = sub.add_parser("ablations", help="every ablation run vs the full system: paired bootstrap, Holm-corrected")
+    ab.add_argument("runs", nargs="*", help="RQ1 run folders, optionally NAME=PATH")
+    ab.add_argument("--base", default="full")
+    ab.add_argument("--rq2", nargs="*", default=[], help="RQ2 run folders")
+    ab.add_argument("--out", default=None, help="markdown file (a .json with the numbers is written beside it)")
+    ab.set_defaults(fn=cmd_ablations)
 
     rp = sub.add_parser("report", help="markdown table over RQ1 and RQ2 run folders")
     rp.add_argument("runs", nargs="+")

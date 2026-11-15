@@ -1,0 +1,2 @@
+{"key": "adc8fb50177153acd0449b826bacf85d35c360f6993f4e4586290376713b7b5e", "text": "{\"rationale\": \"Recipient shall not disclose the fact that the Agreement was agreed or negotiated.\", \"label\": \"Entailment\", \"evidence\": [25], \"confidence\": 0.95}"}
+{"key": "86eef247e2e984f9cd4193d3b05a73f4250cb2d9dab4e41b4f848df4d4007c9b", "text": "{\"rationale\": \"Recipient may disclose Confidential Information to employees who need it for the Purpose.\", \"label\": \"Entailment\", \"evidence\": [23], \"confidence\": 0.95}"}

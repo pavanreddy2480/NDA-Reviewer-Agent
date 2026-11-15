@@ -1,0 +1,724 @@
+# Requirement cards for Bayview Health Partners, compiled by claude-haiku-agent from the prose policies
+# (policy/compiler.py). 34 cards from 11 documents; 0 dropped for a quote not in the policy.
+company: Bayview Health Partners
+description: ''
+version: compiled-1
+rules:
+- id: C-01
+  title: No restriction on hiring vendor personnel
+  requirement: The NDA must not contain a clause that bars the company from approaching or hiring the other side's
+    personnel.
+  kind: forbid
+  term: The NDA must not contain a clause that bars the company from approaching or hiring the other side's personnel.
+  applies_if: counterparty == 'vendor'
+  applies_when: vendor agreements
+  severity: medium
+  refs: []
+  source:
+    document: Business Associate and Vendor Policy
+    section: '3.1'
+    quote: A vendor agreement may not contain a clause that bars Bayview from approaching or hiring the vendor's
+      personnel, because we routinely recruit clinical and information technology staff from staffing vendors.
+  keywords:
+  - hiring restriction
+  - non-solicit vendor staff
+  - no-hire clause
+- id: C-02
+  title: Vendor must not reverse engineer our systems
+  requirement: The NDA must forbid the vendor from reverse engineering, decompiling or disassembling any system,
+    software or device the company makes available.
+  kind: require
+  term: The NDA must forbid the vendor from reverse engineering, decompiling or disassembling any system, software
+    or device the company makes available.
+  applies_if: counterparty == 'vendor'
+  applies_when: vendor agreements
+  severity: medium
+  refs: []
+  source:
+    document: Business Associate and Vendor Policy
+    section: '3.2'
+    quote: Each vendor agreement must forbid the vendor from reverse engineering, decompiling or disassembling any
+      system, software or device that Bayview makes available.
+  keywords:
+  - no reverse engineering
+  - no decompiling
+  - no disassembly
+- id: C-03
+  title: Return or destruction of personal data at end of relationship
+  requirement: The NDA must bind the vendor to return or destroy personal data at the end of the relationship.
+  kind: require
+  term: The NDA must bind the vendor to return or destroy personal data at the end of the relationship.
+  applies_if: counterparty == 'vendor' and personal_data
+  applies_when: agreements with vendors that involve personal data
+  severity: medium
+  refs: []
+  source:
+    document: Business Associate and Vendor Policy
+    section: '4.1'
+    quote: Where an agreement involves personal data, the vendor must be bound to return or destroy that data at
+      the end of the relationship.
+  keywords:
+  - return or destroy data
+  - data return
+  - destruction on termination
+- id: C-04
+  title: Return deadline when the company discloses
+  requirement: Return or destruction of the company's information must be completed within the 30-day limit after
+    our request or the end of the agreement.
+  kind: field
+  term: Return or destruction of the company's information must be completed within the 30-day limit after our request
+    or the end of the agreement.
+  applies_if: counterparty == 'vendor'
+  applies_when: vendor agreements
+  severity: medium
+  constraint:
+    field: return_deadline_days
+    op: <=
+    value: 30
+  approval: Privacy Office
+  refs: []
+  source:
+    document: Business Associate and Vendor Policy
+    section: '4.2'
+    quote: Return or destruction must be completed within 30 days after Bayview asks for it or the agreement ends.
+  keywords:
+  - return deadline
+  - destruction deadline
+  - days to return
+- id: C-05
+  title: Minimum return time when the company receives information
+  requirement: When the company is the receiving party, the NDA must give it at least the 10-day minimum to complete
+    return or destruction.
+  kind: field
+  term: When the company is the receiving party, the NDA must give it at least the 10-day minimum to complete return
+    or destruction.
+  applies_if: company_side == 'receiving'
+  applies_when: agreements where Bayview is the receiving party
+  severity: medium
+  constraint:
+    field: return_deadline_days
+    op: '>='
+    value: 10
+  refs: []
+  source:
+    document: Business Associate and Vendor Policy
+    section: '4.3'
+    quote: When Bayview is on the receiving side, the agreement must give Bayview at least 10 days to complete return
+      or destruction so that litigation and records holds can be checked first.
+  keywords:
+  - return period
+  - destruction period
+  - time to return
+- id: C-06
+  title: No offshore handling of personal data
+  requirement: The NDA must not permit the recipient to store, access or process personal data outside the United
+    States.
+  kind: forbid
+  term: The NDA must not permit the recipient to store, access or process personal data outside the United States.
+  applies_if: personal_data
+  applies_when: agreements where personal data is involved
+  severity: medium
+  approval: Chief Information Security Officer
+  refs: []
+  source:
+    document: Business Associate and Vendor Policy
+    section: '5.1'
+    quote: Where personal data is involved, the agreement may not permit the recipient to store, access or process
+      that data outside the United States, unless the Chief Information Security Officer has approved the arrangement.
+  keywords:
+  - data location
+  - offshore processing
+  - data outside United States
+- id: C-07
+  title: Verbal disclosures covered
+  requirement: The NDA must expressly extend its protection to information conveyed verbally.
+  kind: require
+  term: The NDA must expressly extend its protection to information conveyed verbally.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '3.1'
+    quote: Every agreement must expressly extend its protection to information that is conveyed verbally, including
+      remarks made during case conferences, committee meetings, site visits and telephone calls.
+  keywords:
+  - verbal disclosure
+  - oral information
+  - conversations protected
+- id: C-08
+  title: Advance notice of compelled disclosure
+  requirement: The NDA must require the receiving party to give the disclosing party advance notice of any legally
+    compelled disclosure of its information.
+  kind: require
+  term: The NDA must require the receiving party to give the disclosing party advance notice of any legally compelled
+    disclosure of its information.
+  applies_if: 'True'
+  applies_when: a counterparty is compelled by a statute, regulation, subpoena or other legal process to disclose
+    Bayview information
+  severity: high
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '3.2'
+    quote: If a counterparty is compelled by a statute, regulation, subpoena or other legal process to disclose
+      our information, the agreement must require it to give Bayview advance notice of that demand.
+  keywords:
+  - compelled disclosure notice
+  - subpoena notice
+  - legal process notice
+- id: C-09
+  title: Use limited to stated purpose
+  requirement: The NDA must restrict the recipient to using the disclosing party's information solely for the specific
+    purpose the agreement describes.
+  kind: require
+  term: The NDA must restrict the recipient to using the disclosing party's information solely for the specific
+    purpose the agreement describes.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '3.3'
+    quote: Each agreement must restrict the recipient to using our information solely for the specific purpose that
+      the agreement describes.
+  keywords:
+  - purpose limitation
+  - use restriction
+  - permitted purpose
+- id: C-10
+  title: Definition not limited to technical material
+  requirement: The NDA confines the definition of protected information to technical material such as source code,
+    schematics and specifications.
+  kind: forbid
+  term: The NDA confines the definition of protected information to technical material such as source code, schematics
+    and specifications.
+  applies_if: counterparty == 'vendor' or counterparty == 'partner'
+  applies_when: agreements with vendors and partners
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '4.1'
+    quote: In agreements with vendors and partners, the definition of protected information may not be confined
+      to technical material, since most of what Bayview shares is clinical, financial or operational.
+  keywords:
+  - confidential information definition
+  - technical material only
+  - source code definition
+- id: C-11
+  title: No marking condition where personal data is shared
+  requirement: The NDA makes protection of information conditional on it being labelled, stamped or otherwise identified
+    as confidential in advance.
+  kind: forbid
+  term: The NDA makes protection of information conditional on it being labelled, stamped or otherwise identified
+    as confidential in advance.
+  applies_if: personal_data
+  applies_when: personal data will be exchanged
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '4.2'
+    quote: Whenever personal data will be exchanged, the agreement may not make protection conditional on the information
+      being labelled, stamped or otherwise identified as confidential in advance.
+  keywords:
+  - marking requirement
+  - labelled as confidential
+  - marked confidential
+- id: C-12
+  title: Bayview not obliged to mark information
+  requirement: The NDA obliges the disclosing party to mark information as confidential as a condition of its protection.
+  kind: forbid
+  term: The NDA obliges the disclosing party to mark information as confidential as a condition of its protection.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '4.2'
+    quote: Business sponsors should not agree to a clause that obliges Bayview to mark information as a condition
+      of protection.
+  keywords:
+  - mark as condition
+  - marking obligation
+  - stamp confidential
+- id: C-13
+  title: Exclusions must not swallow the definition
+  requirement: The NDA excludes from Confidential Information anything that could be found in published literature,
+    even where the recipient's use of it is novel.
+  kind: forbid
+  term: The NDA excludes from Confidential Information anything that could be found in published literature, even
+    where the recipient's use of it is novel.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '4.3'
+    quote: Analysts raise a question only if an exclusion is so wide that it could swallow the definition, for example
+      one that excludes anything that "could be found in published literature" even where Bayview's use of it is
+      novel.
+  keywords:
+  - exclusions published literature
+  - public domain exclusion
+  - carve-out scope
+- id: C-14
+  title: Return or destruction on termination
+  requirement: The NDA must oblige the recipient, on termination or expiry, to return or destroy the information
+    it received from the disclosing party.
+  kind: require
+  term: The NDA must oblige the recipient, on termination or expiry, to return or destroy the information it received
+    from the disclosing party.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '5.1'
+    quote: On termination or expiry, the agreement must oblige the recipient either to return or to destroy the
+      information it received from Bayview.
+  keywords:
+  - return or destroy
+  - termination return
+  - destruction obligation
+- id: C-15
+  title: Bayview legally required records carved out
+  requirement: The NDA must exempt the Bayview party's legally required records and its copies of the signed agreement
+    and correspondence from any return or destruction obligation.
+  kind: require
+  term: The NDA must exempt the Bayview party's legally required records and its copies of the signed agreement
+    and correspondence from any return or destruction obligation.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '5.3'
+    quote: A letter of confirmation from a counterparty never obliges Bayview to destroy records that the law requires
+      it to keep, and a counterparty's destruction obligation does not extend to Bayview's own copies of the signed
+      agreement or its correspondence.
+  keywords:
+  - records retention carve-out
+  - legally required records
+  - destruction exemption
+- id: C-16
+  title: Minimum protection period
+  requirement: Protection period for Confidential Information under the NDA.
+  kind: field
+  term: Protection period for Confidential Information under the NDA.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  constraint:
+    field: confidentiality_term_months
+    op: '>='
+    value: 36
+  approval: Chief Compliance Officer
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '6.1'
+    quote: Protection obligations must remain in force for a minimum of 36 months, and the Chief Compliance Officer
+      is the only person who may approve a shorter term.
+  keywords:
+  - confidentiality period
+  - minimum term
+  - protection duration
+- id: C-17
+  title: Maximum protection period
+  requirement: Protection period for Confidential Information under the NDA.
+  kind: field
+  term: Protection period for Confidential Information under the NDA.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  constraint:
+    field: confidentiality_term_months
+    op: <=
+    value: 120
+  approval: General Counsel
+  refs: []
+  source:
+    document: Confidentiality Agreement Policy
+    section: '6.2'
+    quote: No agreement may set the protection period at more than 120 months.
+  keywords:
+  - confidentiality period
+  - maximum term
+  - protection duration
+- id: C-18
+  title: Governing law
+  requirement: The NDA must be governed by California or Delaware law unless the General Counsel approves another
+    governing law.
+  kind: field
+  term: The NDA must be governed by California or Delaware law unless the General Counsel approves another governing
+    law.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: governing_law
+    op: in
+    value:
+    - california
+    - delaware
+  approval: General Counsel
+  refs: []
+  source:
+    document: Delegation of Authority and Signature Policy
+    section: '4.1'
+    quote: Agreements must be governed by the law of California or Delaware, and the General Counsel alone may approve
+      any other governing law.
+  keywords:
+  - governing law
+  - choice of law
+  - governed by the laws of
+- id: C-19
+  title: No liquidated damages or penalties
+  requirement: The NDA must not impose liquidated damages or any other monetary penalty on a party for breaching
+    it.
+  kind: forbid
+  term: The NDA must not impose liquidated damages or any other monetary penalty on a party for breaching it.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  approval: Office of the General Counsel
+  refs: []
+  source:
+    document: Delegation of Authority and Signature Policy
+    section: '4.2'
+    quote: An agreement may not impose liquidated damages or any other monetary penalty on a party simply for breaching
+      it.
+  keywords:
+  - liquidated damages
+  - penalty clause
+  - monetary penalty for breach
+  - contractual penalty
+- id: C-20
+  title: No restraint on competing under California law
+  requirement: The NDA must not restrict either party from competing or from engaging in a lawful profession or
+    business.
+  kind: forbid
+  term: The NDA must not restrict either party from competing or from engaging in a lawful profession or business.
+  applies_if: governing_law == 'california'
+  applies_when: agreements governed by California law
+  severity: high
+  refs: []
+  source:
+    document: Delegation of Authority and Signature Policy
+    section: '4.3'
+    quote: If an agreement is governed by California law, it may not restrict either party from competing or from
+      engaging in a lawful profession or business.
+  keywords:
+  - non-compete
+  - restraint of trade
+  - non-competition clause
+  - limit profession
+- id: C-21
+  title: Confidentiality obligations continue after termination
+  requirement: The NDA must state that the recipient's confidentiality obligations carry on after the agreement
+    itself has ended.
+  kind: require
+  term: The NDA must state that the recipient's confidentiality obligations carry on after the agreement itself
+    has ended.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  refs: []
+  source:
+    document: Medical Records Retention Policy
+    section: '3.1'
+    quote: Every agreement must say that the recipient's confidentiality obligations carry on after the agreement
+      itself has ended.
+  keywords:
+  - survive termination
+  - obligations continue after termination
+  - survival clause
+- id: C-22
+  title: Maximum duration of continuing obligations
+  requirement: Confidentiality obligations that continue after the NDA ends must not extend beyond the 180-month
+    maximum.
+  kind: field
+  term: Confidentiality obligations that continue after the NDA ends must not extend beyond the 180-month maximum.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  constraint:
+    field: survival_months
+    op: <=
+    value: 180
+  refs: []
+  source:
+    document: Medical Records Retention Policy
+    section: '3.2'
+    quote: Those continuing obligations may not extend beyond 180 months.
+  keywords:
+  - survival period
+  - obligations survive termination
+  - surviving obligations
+  - survive termination
+- id: C-23
+  title: Notice of unauthorized use by outside party
+  requirement: The agreement must require the recipient to inform Bayview without delay of any use or disclosure
+    of Bayview information that was not authorized.
+  kind: require
+  term: The agreement must require the recipient to inform Bayview without delay of any use or disclosure of Bayview
+    information that was not authorized.
+  applies_if: 'True'
+  applies_when: ''
+  severity: high
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '3.1'
+    quote: Every agreement must require the recipient to inform Bayview without delay of any use or disclosure of
+      our information that was not authorized.
+  keywords:
+  - notice of unauthorized disclosure
+  - breach notification
+  - prompt notice
+- id: C-24
+  title: No residual copies of personal data
+  requirement: The agreement must not allow the recipient to hold back any residual copy of shared personal data
+    once the rest has been returned or destroyed.
+  kind: forbid
+  term: The agreement must not allow the recipient to hold back any residual copy of shared personal data once the
+    rest has been returned or destroyed.
+  applies_if: personal_data
+  applies_when: personal data is shared
+  severity: high
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '3.2'
+    quote: Where personal data is shared, the agreement may not allow the recipient to hold back any portion of
+      it once the rest has been returned or destroyed.
+  keywords:
+  - residual copy
+  - archival copy
+  - return or destroy
+- id: C-25
+  title: No copying of shared personal data
+  requirement: The agreement must not let the recipient make duplicates or reproductions of shared personal data.
+  kind: forbid
+  term: The agreement must not let the recipient make duplicates or reproductions of shared personal data.
+  applies_if: personal_data
+  applies_when: personal data is shared
+  severity: high
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '3.3'
+    quote: Where personal data is shared, the agreement may not let the recipient make duplicates or reproductions
+      of that data.
+  keywords:
+  - no copies
+  - duplicates
+  - reproduction of data
+- id: C-26
+  title: Recipient safeguards obligation
+  requirement: The agreement must oblige the recipient to protect Bayview information using administrative, physical
+    and technical safeguards.
+  kind: require
+  term: The agreement must oblige the recipient to protect Bayview information using administrative, physical and
+    technical safeguards.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '3.4'
+    quote: The recipient must be obliged to protect our information using administrative, physical and technical
+      safeguards.
+  keywords:
+  - administrative physical technical safeguards
+  - security safeguards
+  - information protection obligations
+- id: C-27
+  title: Minimum protection period for personal data
+  requirement: When personal data is shared, the agreement's protection obligations must continue after termination
+    for at least the required minimum period.
+  kind: field
+  term: When personal data is shared, the agreement's protection obligations must continue after termination for
+    at least the required minimum period.
+  applies_if: personal_data
+  applies_when: personal data is shared
+  severity: high
+  constraint:
+    field: survival_months
+    op: '>='
+    value: 72
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '4.1'
+    quote: When personal data is shared, protection must continue after termination for at least 72 months, and
+      only the Chief Privacy Officer may approve a shorter period.
+  keywords:
+  - survival after termination
+  - protection period
+  - post-termination obligations
+- id: C-28
+  title: No re-identification of de-identified data
+  requirement: The agreement must not permit the recipient to attempt to re-identify de-identified data.
+  kind: forbid
+  term: The agreement must not permit the recipient to attempt to re-identify de-identified data.
+  applies_if: 'True'
+  applies_when: Bayview shares de-identified data with a recipient
+  severity: medium
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '4.2'
+    quote: Data that has been de-identified by Bayview must not be re-identified, and recipients of de-identified
+      data may not attempt to re-identify it.
+  keywords:
+  - re-identification
+  - de-identified data
+  - no attempt to re-identify
+- id: C-29
+  title: Bayview may pass information to its own workforce
+  requirement: The agreement must allow Bayview to pass the information to its own employees, physicians and other
+    workforce members who need it to do their jobs.
+  kind: require
+  term: The agreement must allow Bayview to pass the information to its own employees, physicians and other workforce
+    members who need it to do their jobs.
+  applies_if: company_side in ['receiving', 'mutual']
+  applies_when: agreements under which Bayview receives information
+  severity: medium
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '5.1'
+    quote: The agreement must allow Bayview to pass the information to its own employees, physicians and other workforce
+      members who need it to do their jobs.
+  keywords:
+  - workforce access
+  - internal sharing
+  - need to do their jobs
+- id: C-30
+  title: Bayview may disclose to advisors and auditors
+  requirement: The agreement must allow Bayview to disclose the information to consultants, auditors, accreditation
+    bodies, outside counsel and other professional advisors.
+  kind: require
+  term: The agreement must allow Bayview to disclose the information to consultants, auditors, accreditation bodies,
+    outside counsel and other professional advisors.
+  applies_if: company_side in ['receiving', 'mutual']
+  applies_when: agreements under which Bayview receives information
+  severity: medium
+  approval: Chief Privacy Officer
+  refs: []
+  source:
+    document: Privacy and HIPAA Compliance Policy
+    section: '5.2'
+    quote: The agreement must also allow Bayview to disclose the information to consultants, auditors, accreditation
+      bodies, outside counsel and other professional advisors.
+  keywords:
+  - disclosure to advisors
+  - auditors
+  - accreditation bodies
+- id: C-31
+  title: Preserve Bayview's freedom to obtain information from third parties
+  requirement: When Bayview is the receiving party, the agreement must preserve Bayview's freedom to obtain similar
+    information lawfully from a third party.
+  kind: require
+  term: When Bayview is the receiving party, the agreement must preserve Bayview's freedom to obtain similar information
+    lawfully from a third party.
+  applies_if: company_side in ['receiving', 'mutual']
+  applies_when: agreements where Bayview is the receiving party
+  severity: medium
+  approval: Vice President for Research, with the General Counsel where a legal requirement is affected
+  refs: []
+  source:
+    document: Research Collaboration Policy
+    section: '3.1'
+    quote: When Bayview is the receiving party, the agreement must preserve Bayview's freedom to obtain similar
+      information lawfully from a third party.
+  keywords:
+  - freedom to obtain similar information
+  - independent source
+  - third party information
+- id: C-32
+  title: Preserve Bayview's right to independent development
+  requirement: The research agreement must preserve Bayview's right to develop similar information independently.
+  kind: require
+  term: The research agreement must preserve Bayview's right to develop similar information independently.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: Vice President for Research, with the General Counsel where a legal requirement is affected
+  refs: []
+  source:
+    document: Research Collaboration Policy
+    section: '3.2'
+    quote: Every research agreement must preserve Bayview's right to develop similar information independently,
+      so that our own investigators are not blocked from their programs.
+  keywords:
+  - independent development
+  - no restriction on research
+  - similar information
+- id: C-33
+  title: No license or rights granted to the recipient
+  requirement: The agreement must confirm that the recipient receives no license or other right in the information
+    Bayview shares.
+  kind: require
+  term: The agreement must confirm that the recipient receives no license or other right in the information Bayview
+    shares.
+  applies_if: company_side in ['disclosing', 'mutual']
+  applies_when: agreements where Bayview shares information
+  severity: high
+  refs: []
+  source:
+    document: Research Collaboration Policy
+    section: '3.3'
+    quote: The agreement must confirm that the recipient receives no license or other right in the information we
+      share.
+  keywords:
+  - no license granted
+  - no rights in information
+  - intellectual property rights
+- id: C-34
+  title: No disclosure of the collaboration
+  requirement: The agreement must prohibit the recipient from disclosing that the collaboration exists or that the
+    agreement was negotiated.
+  kind: require
+  term: The agreement must prohibit the recipient from disclosing that the collaboration exists or that the agreement
+    was negotiated.
+  applies_if: 'True'
+  applies_when: ''
+  severity: medium
+  approval: Vice President for Research, with the General Counsel where a legal requirement is affected
+  refs: []
+  source:
+    document: Research Collaboration Policy
+    section: '3.4'
+    quote: The agreement must prohibit the recipient from disclosing that the collaboration exists or that the agreement
+      was negotiated.
+  keywords:
+  - existence of collaboration
+  - publicity restriction
+  - confidentiality of negotiations
