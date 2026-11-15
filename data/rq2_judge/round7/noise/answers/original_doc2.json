@@ -1,0 +1,18 @@
+{
+"Q1": {"rationale": "Section 5.6.1 expressly allows disclosure in confidence to a government official or attorney to report a suspected violation of law, so the NDA does not bar such reports without exception.", "label": "Contradiction", "evidence": [37, 36], "confidence": 0.8},
+"Q2": {"rationale": "The NDA has no residuals clause permitting use of information retained in unaided memory.", "label": "NotMentioned", "evidence": [19, 53], "confidence": 0.85},
+"Q3": {"rationale": "Section 6 bars copying except for copies reasonably required for the Purpose, which allows copying in some circumstances.", "label": "Entailment", "evidence": [41], "confidence": 0.9},
+"Q4": {"rationale": "Sections 11 and 56 disclaim damages and provide no fixed sum or penalty for breach.", "label": "NotMentioned", "evidence": [55, 56], "confidence": 0.9},
+"Q5": {"rationale": "Section 2 limits use of Confidential Information to the Purpose set forth in the Agreement.", "label": "Entailment", "evidence": [19], "confidence": 0.95},
+"Q6": {"rationale": "Section 15 imposes a 24-month post-termination non-compete and section 6 keeps retained copies subject to the restrictions, though the Survival heading is blank.", "label": "Entailment", "evidence": [65, 42, 83], "confidence": 0.8},
+"Q7": {"rationale": "Section 9 states that the Disclosing Party retains all rights and the materials remain its property, which is incompatible with any transfer to the Receiving Party.", "label": "Contradiction", "evidence": [51], "confidence": 0.9},
+"Q8": {"rationale": "Section 7 requires the Recipient to promptly notify the Disclosing Party of any regulatory, governmental or court request or requirement to disclose.", "label": "Entailment", "evidence": [44], "confidence": 0.95},
+"Q9": {"rationale": "The NDA does not say verbal information expressly, but section 8 treats oral transfers of Confidential Information as exports, which implies oral conveyance is covered.", "label": "Entailment", "evidence": [49, 11], "confidence": 0.6},
+"Q10": {"rationale": "Section 2 permits access by contract workers, consultants or contractors if authorized in writing and bound by equivalent confidentiality obligations.", "label": "Entailment", "evidence": [21], "confidence": 0.9},
+"Q11": {"rationale": "No non-solicitation covenant appears; section 15 is a non-competition restriction only.", "label": "NotMentioned", "evidence": [65], "confidence": 0.85},
+"Q12": {"rationale": "The NDA contains no confidentiality term about the fact that the Agreement was negotiated.", "label": "NotMentioned", "evidence": [21], "confidence": 0.8},
+"Q13": {"rationale": "Section 10 states that no license or right to the Confidential Information is granted.", "label": "Entailment", "evidence": [53], "confidence": 0.95},
+"Q14": {"rationale": "Section 2 restricts only contract workers, consultants and contractors and gives no express permission to share with employees.", "label": "NotMentioned", "evidence": [21], "confidence": 0.55},
+"Q15": {"rationale": "Section 13 recognises that the Recipient may receive information from other parties that is similar to the Confidential Information.", "label": "Entailment", "evidence": [60, 61], "confidence": 0.95},
+"Q16": {"rationale": "Section 1 expressly includes business information, marketing plans and other non-technical items, so the scope is not limited to technical information.", "label": "Contradiction", "evidence": [17], "confidence": 0.9}
+}

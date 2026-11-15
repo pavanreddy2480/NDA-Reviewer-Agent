@@ -13,6 +13,8 @@ The same class runs the RQ1 comparison systems and ablations through `ReviewConf
     B4 exhaustive             every rule in the pack, whole NDA in the prompt, no filter
     B4+filter                 every *applicable* rule, whole NDA in the prompt. The fair
                               competitor: same applicability, no retrieval (review problem 3)
+    agentic                   full, plus an agent that searches again for any reverse check
+                              left unsettled (agentic.py). Field rules are not re-searched
 
 Fairness (review problem 9): every configuration sends its checks to the same `checker_llm`
 (the QLoRA model once it exists), so a difference between presets comes from retrieval and
@@ -28,6 +30,7 @@ from ..data.draft import Draft
 from ..llm import LLMClient, PendingBatch
 from ..policy.schema import DealContext, LawPack, PolicyPack, Rule, applicability
 from ..retrieval.index import Encoder, HybridIndex, Passage, Reranker
+from .agentic import EvidenceSearch, search_evidence
 from .checker import CheckResult, finding_from_check, run_check
 from .fields import extract_field, judge_field_rule
 from .applicability import judge_applicability
@@ -49,6 +52,15 @@ class ReviewConfig:
     neighbours: int = 1  # add +-n neighbouring segments around each hit (keeps exceptions with rules)
     forward_rules_per_segment: int = 3
     forward_min_score: float = 4.0  # BM25 score needed for a forward rule hit
+    agentic: bool = False  # an agent searches again when a reverse check is left unsettled
+    agentic_min_confidence: float = 0.7  # below this a check is unsettled whatever its label; NotMentioned always is
+    agentic_max_steps: int = 4  # model calls per search
+    agentic_max_segments: int = 8  # new segments per search, before ±neighbours
+    # The second check may change the first one's label only when it cites a segment the search added and
+    # is at least this confident (and no less confident than the first check). Otherwise the first result
+    # stands: in the 5-NDA llama3.1:8b run (docs/results/2026-11-15-ollama-llama3.1-8b) an always-trusted
+    # second check lost 2 true omissions and added 2 false violations for 5 fixed false alarms.
+    agentic_switch_confidence: float = 0.8
     max_workers: int = 8
     temperature: float = 0.0  # >0 for seed runs, so seeds give real variance (review problem 10)
     seed: int = 0
@@ -67,6 +79,7 @@ class ReviewConfig:
     def preset(cls, name: str) -> "ReviewConfig":
         presets = {
             "full": cls(),
+            "agentic": cls(agentic=True),
             "no_reverse": cls(reverse=False),
             "no_filter": cls(applicability_filter=False),
             "reverse_only": cls(forward=False),
@@ -81,6 +94,8 @@ class CheckLog:
     rule_id: str
     direction: str
     result: CheckResult
+    agent: EvidenceSearch | None = None  # the search this check set off, if any
+    accepted: bool | None = None  # agentic re-checks only: whether it replaced the first check's result
 
 
 @dataclass
@@ -102,6 +117,10 @@ class ReviewResult:
     @property
     def n_checks(self) -> int:
         return len(self.checks)
+
+    @property
+    def n_agent_searches(self) -> int:
+        return sum(c.agent is not None for c in self.checks)
 
 
 def rule_query(rule: Rule) -> str:
@@ -182,6 +201,25 @@ class PolicyReviewer:
         return HybridIndex([Passage(str(i), s) for i, s in enumerate(draft.segments)],
                            self.encoder, self.reranker)
 
+    def _unsettled(self, res: CheckResult) -> bool:
+        if res.error:  # a failed check says nothing about the NDA, so there is nothing to follow up
+            return False
+        return res.label == "NotMentioned" or res.confidence < self.cfg.agentic_min_confidence
+
+    def _accept_second(self, first: CheckResult, second: CheckResult, added: set[int]) -> bool:
+        """Whether the agentic re-check replaces the first check. A failed re-check never does. One that
+        keeps the label does (it saw more of the NDA). One that changes the label must earn it: cite a
+        segment the search added, with confidence at least `agentic_switch_confidence` and at least the
+        first check's, so wider but loosely related context cannot talk the checker out of its answer."""
+        if second.error:
+            return False
+        if second.label == first.label:
+            return True
+        floor = self.cfg.agentic_switch_confidence
+        if first.shown:  # a check that saw no segments was never put to the model; its 1.0 is not a judgement
+            floor = max(floor, first.confidence)
+        return bool(set(second.evidence) & added) and second.confidence >= floor
+
     # ------------------------------------------------------------------ main entry
     def review(self, draft: Draft, deal: DealContext) -> ReviewResult:
         seg_index = self._segment_index(draft)
@@ -206,7 +244,7 @@ class PolicyReviewer:
                 f, res = judge_field_rule(rule, draft.id, *v)
             if f is not None and f.type == FindingType.OMISSION and not (self.cfg.reverse or self.cfg.exhaustive):
                 f = None  # forward-only systems cannot report omissions, field rules included
-            return rule, "field", res, f
+            return [CheckLog(rule.id, "field", res)], f
 
         # Forward path: segment -> rules. In two-way mode its segments are merged into the
         # rule's reverse check (one call per rule); in forward-only mode it runs on its own
@@ -225,13 +263,28 @@ class PolicyReviewer:
                     ids, direction = sorted(set(ids) | set(forward[rule.id])), "two_way"
             res = run_check(self.checker, rule.check_term, draft, ids, tag="reverse_check",
                             temperature=self.cfg.temperature, seed=self.cfg.seed)
-            return rule, direction, res, finding_from_check(rule, res, draft.id, direction=direction)
+            checks = [CheckLog(rule.id, direction, res)]
+            if self.cfg.agentic and not self.cfg.exhaustive and self._unsettled(res):
+                found = search_evidence(self.llm, rule, rule_query(rule), draft, seg_index, ids,
+                                        self.cfg.agentic_max_steps, self.cfg.agentic_max_segments,
+                                        self.cfg.temperature, self.cfg.seed)
+                checks[0].agent = found
+                if found.segments:
+                    added = set(self._expand(found.segments, len(draft.segments))) - set(ids)
+                    wider = sorted(set(ids) | added)
+                    second = run_check(self.checker, rule.check_term, draft, wider, tag="agentic_check",
+                                       temperature=self.cfg.temperature, seed=self.cfg.seed)
+                    accepted = self._accept_second(res, second, added)
+                    checks.append(CheckLog(rule.id, "agentic", second, accepted=accepted))
+                    if accepted:
+                        res, direction = second, "agentic"
+            return checks, finding_from_check(rule, res, draft.id, direction=direction)
 
         def do_forward(rule: Rule):
             res = run_check(self.checker, rule.check_term, draft, forward[rule.id], tag="forward_check",
                             temperature=self.cfg.temperature, seed=self.cfg.seed)
             f = finding_from_check(rule, res, draft.id, direction="forward", allow_omission=False)
-            return rule, "forward", res, f
+            return [CheckLog(rule.id, "forward", res)], f
 
         jobs = [(do_field, r) for r in field_rules]
         if self.cfg.reverse or self.cfg.exhaustive:
@@ -239,8 +292,8 @@ class PolicyReviewer:
         else:
             jobs += [(do_forward, r) for r in term_rules if r.id in forward]
 
-        for rule, direction, res, f in self.llm.map(lambda j: j[0](j[1]), jobs, self.cfg.max_workers):
-            logs.append(CheckLog(rule.id, direction, res))
+        for checks, f in self.llm.map(lambda j: j[0](j[1]), jobs, self.cfg.max_workers):
+            logs += checks
             f = self._finish(f)
             if f is not None:
                 ledger.add(f)

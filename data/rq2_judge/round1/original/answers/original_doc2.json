@@ -1,0 +1,22 @@
+{
+"Q1": {"rationale": "The Recipient uses Confidential Information only in connection with the stated Purpose.", "label": "Entailment", "evidence": [19], "confidence": 0.95},
+"Q2": {"rationale": "If the Recipient is required by a regulator, government authority or court to disclose, it must promptly notify the Disclosing Party.", "label": "Entailment", "evidence": [44], "confidence": 0.9},
+"Q3": {"rationale": "The definition is not limited to written form and covers circumstances of disclosure, and oral transfers are referenced in the export clause, though verbal disclosure is not stated expressly.", "label": "Entailment", "evidence": [16, 49], "confidence": 0.6},
+"Q4": {"rationale": "The 24-month post-termination non-compete survives termination, so some obligations survive.", "label": "Entailment", "evidence": [65], "confidence": 0.9},
+"Q5": {"rationale": "The definition lists many non-technical items, including business information, so it is not limited to technical information.", "label": "Contradiction", "evidence": [17], "confidence": 0.9},
+"Q6": {"rationale": "No license or right to Confidential Information is granted by the Agreement or by disclosure.", "label": "Entailment", "evidence": [53], "confidence": 0.95},
+"Q7": {"rationale": "The NDA contains no non-solicitation covenant.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q8": {"rationale": "The NDA contains no restriction on disclosing the fact that the Agreement was agreed or negotiated.", "label": "NotMentioned", "evidence": [], "confidence": 0.85},
+"Q9": {"rationale": "The NDA has no residuals clause; use of Confidential Information is restricted to the Purpose, and residuals are not addressed.", "label": "NotMentioned", "evidence": [19], "confidence": 0.6},
+"Q10": {"value": "blank", "evidence": [6, 24]},
+"Q11": {"value": 24, "evidence": [65]},
+"Q12": {"value": null, "evidence": [40, 42]},
+"Q13": {"rationale": "Disclosure to consultants and contractors is permitted with written authorization and equivalent confidentiality obligations; agents and professional advisors are not expressly listed.", "label": "Entailment", "evidence": [21], "confidence": 0.6},
+"Q14": {"rationale": "The NDA restricts disclosure to contract workers and consultants but does not expressly address sharing with the Recipient's own employees.", "label": "NotMentioned", "evidence": [21], "confidence": 0.55},
+"Q15": {"value": "michigan", "evidence": [80]},
+"Q16": {"rationale": "Disclosing Party retains all rights and the Confidential Information and derivative materials remain its property, which is incompatible with transfer of ownership to the Recipient.", "label": "Contradiction", "evidence": [51], "confidence": 0.85},
+"Q17": {"rationale": "The NDA expressly contemplates the Recipient receiving information from other parties that is similar to the Confidential Information.", "label": "Entailment", "evidence": [60], "confidence": 0.85},
+"Q18": {"rationale": "Copies may be made as reasonably required for the Purpose.", "label": "Entailment", "evidence": [41], "confidence": 0.9},
+"Q19": {"rationale": "The NDA expressly permits disclosure in confidence to government officials to report suspected violations of law, so there is an exception.", "label": "Contradiction", "evidence": [36, 37], "confidence": 0.9},
+"Q20": {"rationale": "Remedies are injunctive relief; no fixed sum or penalty is payable on breach.", "label": "NotMentioned", "evidence": [78], "confidence": 0.9}
+}

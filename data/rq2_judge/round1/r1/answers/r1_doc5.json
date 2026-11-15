@@ -1,0 +1,21 @@
+{
+"Q1": {"rationale": "Confidential Information covers information 'whether in oral, written or electronic form', which includes verbally conveyed information.", "label": "Entailment", "evidence": [6], "confidence": 0.95},
+"Q2": {"rationale": "The Disclosee's obligations run after signing until they expire at the earlier of a fixed period or completion of the Sale, so some obligations continue beyond the Agreement's operative period.", "label": "Entailment", "evidence": [17, 18], "confidence": 0.75},
+"Q3": {"rationale": "The NDA contains no reverse engineering prohibition.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q4": {"value": 36, "evidence": [18]},
+"Q5": {"rationale": "The NDA has no general restriction on use to the stated purposes, and segment 30 expressly permits use of information retained in unaided memory for any purpose, which is incompatible with the restriction for that information.", "label": "Contradiction", "evidence": [30], "confidence": 0.5},
+"Q6": {"rationale": "The NDA says it is not a commitment to supply information, but contains no statement about rights or licences in Confidential Information.", "label": "NotMentioned", "evidence": [16], "confidence": 0.75},
+"Q7": {"rationale": "Segment 28 states that Confidential Information is limited to technical information and excludes business or financial information, although segment 6 is broader.", "label": "Entailment", "evidence": [28], "confidence": 0.7},
+"Q8": {"rationale": "Segment 22 requires the Disclosee to immediately notify the Sellers before disclosing information it is legally compelled to disclose.", "label": "Entailment", "evidence": [22], "confidence": 0.95},
+"Q9": {"value": 36, "evidence": [18]},
+"Q10": {"rationale": "Segment 9 makes the fact of the Disclosee's involvement in Sale negotiations and any fact concerning the Sale Confidential Information, so it cannot be disclosed.", "label": "Entailment", "evidence": [9], "confidence": 0.8},
+"Q11": {"rationale": "Segment 3 permits disclosure to other persons including professional advisors once they are made aware of the Agreement, and segment 6 includes advisors in Representatives.", "label": "Entailment", "evidence": [3, 6], "confidence": 0.85},
+"Q12": {"rationale": "The exclusions cover public information and prior lawful possession, but do not address acquiring similar information from a third party.", "label": "NotMentioned", "evidence": [12], "confidence": 0.75},
+"Q13": {"rationale": "Segment 21 requires payment of a US$500,000 penalty on any breach, irrespective of the actual loss suffered.", "label": "Entailment", "evidence": [21], "confidence": 0.97},
+"Q14": {"value": "ohio or delaware", "evidence": [27]},
+"Q15": {"rationale": "Segment 6 covers all information of any kind provided, and segment 9 covers facts about the Sale, with no requirement that it be expressly identified, which is incompatible with the term.", "label": "Contradiction", "evidence": [6, 9], "confidence": 0.7},
+"Q16": {"rationale": "The NDA contains no export control provision.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q17": {"rationale": "Segment 6 includes the Disclosee's employees among its Representatives who may receive Confidential Information.", "label": "Entailment", "evidence": [3, 6], "confidence": 0.85},
+"Q18": {"rationale": "The NDA contains no provision permitting copies of Confidential Information, only mentions of analyses and notes prepared by the Advisors.", "label": "NotMentioned", "evidence": [7], "confidence": 0.75},
+"Q19": {"rationale": "Segment 22 covers only compelled disclosure with prior notice and gives no exception for voluntary reports of suspected violations to regulators, which are therefore restricted.", "label": "Entailment", "evidence": [2, 22], "confidence": 0.6}
+}

@@ -1,0 +1,18 @@
+{
+"Q1": {"rationale": "The NDA contains no grant or denial of any right or licence to Confidential Information, so the term is not addressed.", "label": "NotMentioned", "evidence": [16], "confidence": 0.6},
+"Q2": {"rationale": "Clause 3 bars disclosure to any other person, and the only regulator-related carve-out (clause 22) covers legally compelled disclosure with prior notice, not voluntary reports of violations.", "label": "Contradiction", "evidence": [3, 22], "confidence": 0.6},
+"Q3": {"rationale": "Clauses 1(a) and 1(c) define Confidential Information by its nature and subject matter, with no requirement that it be expressly identified.", "label": "Contradiction", "evidence": [6, 9], "confidence": 0.7},
+"Q4": {"rationale": "The NDA restricts disclosure and keeps information confidential but contains no express use restriction limited to stated purposes.", "label": "NotMentioned", "evidence": [2, 30], "confidence": 0.6},
+"Q5": {"rationale": "The NDA does not address copying or reproduction of Confidential Information.", "label": "NotMentioned", "evidence": [2], "confidence": 0.7},
+"Q6": {"rationale": "Clause 1(a) contemplates information being provided to the Disclosee's employees as Representatives, subject to clause 3 awareness requirements.", "label": "Entailment", "evidence": [6, 3], "confidence": 0.75},
+"Q7": {"rationale": "Clause 3 expressly contemplates disclosure to professional advisors, and Representatives include financial, legal and tax advisors.", "label": "Entailment", "evidence": [3, 6], "confidence": 0.9},
+"Q8": {"rationale": "Clause 1(c) treats the fact of the negotiations and any fact concerning the Sale as Confidential Information.", "label": "Entailment", "evidence": [9], "confidence": 0.8},
+"Q9": {"rationale": "Clauses 17 to 19 set a fixed duration that expires on the earlier of three years or completion of the Sale, with no survival or termination clause.", "label": "NotMentioned", "evidence": [17, 18, 19], "confidence": 0.55},
+"Q10": {"rationale": "Clause 22 requires the Disclosee to notify the Sellers immediately before disclosing when legally compelled.", "label": "Entailment", "evidence": [22], "confidence": 0.95},
+"Q11": {"rationale": "Clause 21 provides a US$500,000 penalty payable on any breach, irrespective of actual loss.", "label": "Entailment", "evidence": [21], "confidence": 0.95},
+"Q12": {"rationale": "The NDA contains no export control provision.", "label": "NotMentioned", "evidence": [27], "confidence": 0.9},
+"Q13": {"rationale": "The NDA contains no reverse engineering prohibition.", "label": "NotMentioned", "evidence": [2], "confidence": 0.9},
+"Q14": {"rationale": "Clause 10(b) excludes prior lawful possession, but the NDA does not address acquiring similar information from third parties.", "label": "NotMentioned", "evidence": [12], "confidence": 0.8},
+"Q15": {"rationale": "Clause 1(a) expressly covers information in oral form.", "label": "Entailment", "evidence": [6], "confidence": 0.95},
+"Q16": {"rationale": "Clause 28 expressly limits Confidential Information to technical information and excludes business or financial information, although clause 1(a) is broader.", "label": "Entailment", "evidence": [28, 6], "confidence": 0.85}
+}

@@ -1,0 +1,19 @@
+{
+"Q1": {"rationale": "The NDA contains no reverse engineering prohibition; the restrictions cover copying, disclosure and use only.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q2": {"rationale": "Segment 81 requires return or destruction within five days of Discloser's request, not upon termination of the Agreement, so the termination trigger is absent.", "label": "NotMentioned", "evidence": [81], "confidence": 0.55},
+"Q3": {"rationale": "Segment 29 defines Confidential Information as any information of whatever form, including existence and identity facts, which is incompatible with a technical-only scope.", "label": "Contradiction", "evidence": [29], "confidence": 0.9},
+"Q4": {"rationale": "Segments 30 and 31 make the existence of the Project and the willingness to negotiate Confidential Information, so disclosure of that fact is restricted.", "label": "Entailment", "evidence": [30, 31], "confidence": 0.9},
+"Q5": {"rationale": "Segment 63 states that disclosure does not give any licence or other rights beyond those in the Agreement.", "label": "Entailment", "evidence": [63], "confidence": 0.97},
+"Q6": {"rationale": "Segment 29 protects information regardless of whether it is identified as confidential, which is incompatible with a requirement of express identification.", "label": "Contradiction", "evidence": [29], "confidence": 0.9},
+"Q7": {"rationale": "Segment 77 states that confidentiality, non-disclosure and non-use obligations survive termination or expiration.", "label": "Entailment", "evidence": [77], "confidence": 0.97},
+"Q8": {"rationale": "The NDA's exclusions in segment 52 and elsewhere do not include independent development, and no clause permits it.", "label": "NotMentioned", "evidence": [47], "confidence": 0.75},
+"Q9": {"rationale": "Segments 84 and 85 allow retention where mandatory law requires storage or where routine backup copies exist, subject to continuing obligations.", "label": "Entailment", "evidence": [84, 85], "confidence": 0.85},
+"Q10": {"rationale": "Segment 29 covers information of whatever form supplied, which includes verbally conveyed information.", "label": "Entailment", "evidence": [29], "confidence": 0.7},
+"Q11": {"rationale": "The NDA contains no non-solicitation covenant regarding Discloser's representatives.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q12": {"rationale": "Segments 38 and 46 permit disclosure to Representatives, defined to include consultants and professional advisors, who are strictly required for the Project.", "label": "Entailment", "evidence": [38, 46], "confidence": 0.97},
+"Q13": {"rationale": "Segment 85 permits routine backup copies of Confidential Information, a carve-out allowing a copy in some circumstances.", "label": "Entailment", "evidence": [85], "confidence": 0.7},
+"Q14": {"rationale": "Segment 53 requires the Recipient to inform the Discloser of the circumstances of any legally required disclosure, as soon as reasonably practicable.", "label": "Entailment", "evidence": [53, 55], "confidence": 0.97},
+"Q15": {"rationale": "Segment 51 excludes information available on a non-confidential basis from a source not bound by confidentiality, which permits acquiring similar information from a third party.", "label": "Entailment", "evidence": [51], "confidence": 0.9},
+"Q16": {"rationale": "Segments 38 and 46 permit disclosure to the Recipient's employees strictly required for the Project.", "label": "Entailment", "evidence": [38, 46], "confidence": 0.97},
+"Q17": {"rationale": "Segment 45 requires use of Confidential Information only for the Project.", "label": "Entailment", "evidence": [45], "confidence": 0.97}
+}

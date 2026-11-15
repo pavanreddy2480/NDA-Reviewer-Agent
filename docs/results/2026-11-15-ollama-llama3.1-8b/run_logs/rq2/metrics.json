@@ -1,0 +1,156 @@
+{
+ "systems": {},
+ "comparisons": [],
+ "h2": {
+  "remaining_at_most_half_of_r1": null,
+  "remaining_at_most_half_of_r1_attacker": null,
+  "regression_rate_below_5pct": null,
+  "blind_acceptance": "needs two teammates: cc rq2 --acceptance-sheet, then cc rq2-kappa"
+ },
+ "pending_batch_items": 20,
+ "usage": {
+  "backend": "llama-ollama",
+  "model": "llama3.1:8b",
+  "calls": 603,
+  "cached_calls": 603,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 701280,
+  "cached_output_tokens": 90815,
+  "cost_usd_full": 0.0,
+  "by_agent": {
+   "field_extract": {
+    "calls": 69,
+    "cached_calls": 69,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 19741,
+    "cached_output_tokens": 1056
+   },
+   "planner": {
+    "calls": 5,
+    "cached_calls": 5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 1746,
+    "cached_output_tokens": 323
+   },
+   "frames": {
+    "calls": 36,
+    "cached_calls": 36,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 19792,
+    "cached_output_tokens": 18283
+   },
+   "reverse_check": {
+    "calls": 345,
+    "cached_calls": 345,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 416089,
+    "cached_output_tokens": 28757
+   },
+   "verifier": {
+    "calls": 43,
+    "cached_calls": 43,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 26167,
+    "cached_output_tokens": 3972
+   },
+   "approval_agent": {
+    "calls": 25,
+    "cached_calls": 25,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 28954,
+    "cached_output_tokens": 1034
+   },
+   "attacker": {
+    "calls": 24,
+    "cached_calls": 24,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 62771,
+    "cached_output_tokens": 17690
+   },
+   "repairer": {
+    "calls": 15,
+    "cached_calls": 15,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 44376,
+    "cached_output_tokens": 8697
+   },
+   "one_shot_repair": {
+    "calls": 9,
+    "cached_calls": 9,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 22416,
+    "cached_output_tokens": 3739
+   },
+   "self_refine_repair": {
+    "calls": 12,
+    "cached_calls": 12,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 27728,
+    "cached_output_tokens": 4044
+   },
+   "self_critique": {
+    "calls": 12,
+    "cached_calls": 12,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 27800,
+    "cached_output_tokens": 2669
+   },
+   "deal_facts": {
+    "calls": 8,
+    "cached_calls": 8,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 3700,
+    "cached_output_tokens": 551
+   }
+  }
+ },
+ "evaluator_usage": {
+  "backend": "gemini-flash",
+  "model": "gemini-3.8-flash",
+  "calls": 8,
+  "cached_calls": 8,
+  "input_tokens_uncached": 0,
+  "output_tokens_uncached": 0,
+  "cost_usd_uncached": 0.0,
+  "cached_input_tokens": 30412,
+  "cached_output_tokens": 608,
+  "cost_usd_full": 0.0251,
+  "by_agent": {
+   "independent_eval": {
+    "calls": 8,
+    "cached_calls": 8,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cached_input_tokens": 30412,
+    "cached_output_tokens": 608
+   }
+  }
+ },
+ "config": {
+  "systems": [
+   "loop",
+   "r1",
+   "r1_attacker",
+   "r2"
+  ],
+  "max_rounds": 3,
+  "token_budget": null,
+  "n_ndas": 5,
+  "evaluator": "gemini-flash",
+  "attacker": "llama-ollama"
+ }
+}

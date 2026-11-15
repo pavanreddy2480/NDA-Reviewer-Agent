@@ -116,6 +116,40 @@ def test_score_repair_finds_fix_and_regression():
     assert out["edit_segments_changed"] == 1
 
 
+def test_batch_mode_queues_a_whole_scoring_stage_at_once(tmp_path):
+    """With the judge in batch mode, one pass stores every before/after check, not just the first
+    (otherwise ~1,200 judge requests would need ~1,200 answer-and-rerun rounds)."""
+    from counselcopilot.llm import BatchQueue, PendingBatch, ResponseCache
+
+    rules = PACK.applicable(deal(counterparty_type="vendor"))
+    live = evaluator()
+    expected = live.score_repair(BEFORE, AFTER, list(PACK.rules), deal(counterparty_type="vendor"))
+    first_stage = 2 * len(rules)  # a check (or field extraction) per rule, on each draft
+
+    ev = evaluator()
+    ev.llm.cache, ev.llm.batch_queue = ResponseCache(tmp_path / "c.sqlite"), BatchQueue(tmp_path / "q.jsonl")
+    with pytest.raises(PendingBatch):
+        ev.score_repair(BEFORE, AFTER, list(PACK.rules), deal(counterparty_type="vendor"))
+    queued = [json.loads(l) for l in (tmp_path / "q.jsonl").read_text().splitlines() if l.strip()]
+    assert len(queued) >= first_stage - 2  # identical requests (a field unchanged by the repair) are stored once
+
+    # answer the queue round by round, as cc batch load would, until scoring completes
+    answerer = evaluator()
+    for _ in range(5):
+        for item in [json.loads(l) for l in (tmp_path / "q.jsonl").read_text().splitlines() if l.strip()]:
+            if ev.llm.cache.get(item["key"]) is None:
+                r = item["request"]
+                from counselcopilot.llm.base import LLMRequest, Message
+                req = LLMRequest(**{**r, "messages": [Message(**m) for m in r["messages"]]})
+                ev.llm.cache.put(item["key"], ev.llm.model, answerer.llm._call(req).to_cache())
+        try:
+            out = ev.score_repair(BEFORE, AFTER, list(PACK.rules), deal(counterparty_type="vendor"))
+            break
+        except PendingBatch:
+            continue
+    assert out == expected
+
+
 def test_score_repair_only_checks_applicable_rules():
     out = evaluator().score_repair(BEFORE, BEFORE, list(PACK.rules), deal(counterparty_type="vendor"))
     assert out["fixed"] == [] and out["regressions"] == []
@@ -185,3 +219,20 @@ def test_evaluator_must_not_be_the_loop_checker_backend():
 
     r = roles()
     assert r["evaluator"] not in r["backbones"]
+
+
+
+def test_noise_floor_takes_rules_per_draft_and_validation_can_sample_whole_documents():
+    """rq2-score asks each NDA about its own company's rules; ContractNLI validation can take every
+    hypothesis of N documents (fewer NDAs for agents to read)."""
+    drafts = [BEFORE, AFTER.__class__("2", AFTER.segments)]
+    deals = {"1": deal(), "2": deal()}
+    out = evaluator().noise_floor(drafts, {"1": list(PACK.rules), "2": []}, deals, n=100)
+    n_term = len([r for r in PACK.rules if r.kind != "field" and r.applies_to(deal())])
+    assert out["flip_rate"] == 0.0 and out["n"] == n_term and out["label_agreement"] == 1.0
+    doc = make_doc(["Confidential Information includes information disclosed orally.", "Costs."],
+                   labels={"nda-3": ("Entailment", (0,))})
+    hyps = {h: f"hypothesis {h}" for h in doc.annotations}
+    hyps["nda-3"] = ORAL_TERM
+    v = evaluator().validate_on_contractnli([doc], hyps, n=1, per_doc=True)
+    assert v["n"] == len(doc.annotations) and v["n_docs"] == 1

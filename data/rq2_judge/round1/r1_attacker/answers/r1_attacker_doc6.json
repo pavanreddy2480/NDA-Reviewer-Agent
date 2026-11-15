@@ -1,0 +1,21 @@
+{
+"Q1": {"rationale": "Segment 13 covers information 'in whatever form (including electronic data)' disclosed to facilitate the transaction, which reaches verbally conveyed information although 'verbal' is not named.", "label": "Entailment", "evidence": [13], "confidence": 0.7},
+"Q2": {"rationale": "Segment 20 excepts disclosures 'required by law' but imposes no duty to notify the Disclosing Party when such disclosure is required.", "label": "NotMentioned", "evidence": [20], "confidence": 0.85},
+"Q3": {"rationale": "Segment 32 refers to the return of Confidential Information only as an event after which obligations survive; no duty to destroy or return upon termination is stated.", "label": "NotMentioned", "evidence": [32], "confidence": 0.75},
+"Q4": {"rationale": "Segment 19 provides that Confidential Information shall be used only for the purposes of facilitating the business relationship between the Parties.", "label": "Entailment", "evidence": [19], "confidence": 0.97},
+"Q5": {"value": "unspecified", "evidence": [32]},
+"Q6": {"value": null, "evidence": []},
+"Q7": {"rationale": "The NDA contains no duty to notify the Disclosing Party of unauthorized use or disclosure.", "label": "NotMentioned", "evidence": [], "confidence": 0.85},
+"Q8": {"rationale": "Segment 0 requires appropriate technical and organizational measures to ensure security, and segment 21 requires at least a reasonable degree of care.", "label": "Entailment", "evidence": [0, 21], "confidence": 0.9},
+"Q9": {"rationale": "Segment 23 makes the Receiving Party responsible for its agents, representatives and consultants, and segment 20 permits disclosure to third parties with prior written approval, so sharing with consultants and agents is contemplated; professional advisors are not named.", "label": "Entailment", "evidence": [20, 23], "confidence": 0.8},
+"Q10": {"rationale": "Segment 23 refers to the Receiving Party's employees acting within the scope of their employment, so sharing with its employees is contemplated; segment 19 limits use to the business purpose.", "label": "Entailment", "evidence": [23], "confidence": 0.9},
+"Q11": {"rationale": "Segment 32 states that the Receiving Party's obligations survive termination of the Agreement.", "label": "Entailment", "evidence": [32], "confidence": 0.98},
+"Q12": {"value": "unspecified", "evidence": [37]},
+"Q13": {"value": "unspecified", "evidence": [32]},
+"Q14": {"rationale": "Segment 35 states the Agreement does not create any implied or express license from either Party to the other.", "label": "Entailment", "evidence": [35], "confidence": 0.9},
+"Q15": {"rationale": "Segment 28 expressly permits the Receiving Party to develop products or services similar to those of the Disclosing Party, whether or not ideas learned from the Disclosing Party are used.", "label": "Entailment", "evidence": [28], "confidence": 0.85},
+"Q16": {"rationale": "Segment 30 requires the breaching party to pay a US$500,000 penalty in addition to other remedies.", "label": "Entailment", "evidence": [30], "confidence": 0.97},
+"Q17": {"rationale": "The NDA contains no restriction on disclosing the fact that the agreement was agreed or negotiated.", "label": "NotMentioned", "evidence": [], "confidence": 0.8},
+"Q18": {"rationale": "Segment 20 bars disclosure to any third party without prior written approval except as permitted under section 4 or required by law, with no exception for voluntary reports of violations of law to government agencies.", "label": "Entailment", "evidence": [20], "confidence": 0.6},
+"Q19": {"value": null, "evidence": []}
+}

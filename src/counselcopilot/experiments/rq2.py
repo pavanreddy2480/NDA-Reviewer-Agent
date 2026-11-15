@@ -203,7 +203,7 @@ def run_rq2(llm: LLMClient, packs: list[PolicyPack], planted: dict[int, PlantedN
     det_cfg = detection or PipelineConfig()
     regress_cfg = replace(PipelineConfig(), verifier=False, tool_agent=False, planner="fixed", review=det_cfg.review)
     docs = sorted(planted)[:limit] if limit else sorted(planted)
-    rows, detections, pending = [], [], 0
+    rows, detections, drafts_out, pending = [], [], [], 0
     for doc_id in docs:
         p = planted[doc_id]
         pack = by_company[p.deal.company]
@@ -226,7 +226,18 @@ def run_rq2(llm: LLMClient, packs: list[PolicyPack], planted: dict[int, PlantedN
             run = make_system(name, repairer, attacker, regress_pipe.detect, rules, max_rounds, token_budget, clients)
             try:
                 res = run(p.draft, p.deal, findings)
-                res.system = name
+            except PendingBatch:
+                pending += 1
+                continue
+            res.system = name
+            # saved before scoring, so the repaired NDA is on disk even while the judge's answers are pending
+            drafts_out.append({"doc_id": doc_id, "system": name, "company": p.deal.company,
+                               "stopped": res.stopped, "rounds": len(res.rounds),
+                               "edits": [{"round": r.round, "op": e.op, "segment": e.segment, "text": e.text,
+                                          "fixes": e.reason} for r in res.rounds for e in r.edits],
+                               "original": list(p.draft.segments), "repaired": list(res.final.segments),
+                               "repaired_text": "\n".join(res.final.segments)})
+            try:
                 rows.append(score_one(ev, res, p, eval_rules, deal, hypotheses))
             except PendingBatch:
                 pending += 1
@@ -253,6 +264,7 @@ def run_rq2(llm: LLMClient, packs: list[PolicyPack], planted: dict[int, PlantedN
     out = run_dir(f"rq2-{llm.name}", out_root)
     write_jsonl(out / "repairs.jsonl", rows)
     write_jsonl(out / "detections.jsonl", detections)
+    write_jsonl(out / "repaired_drafts.jsonl", drafts_out)  # every repaired NDA, scored or still pending
     (out / "metrics.json").write_text(json.dumps(metrics, indent=1, default=str))
     metrics["out_dir"] = str(out)
     return metrics

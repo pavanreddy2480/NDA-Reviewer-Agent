@@ -1,0 +1,19 @@
+{
+"Q1": {"rationale": "Segment 26 requires return or certified destruction of all copies upon completion of the Business Purpose or written request, which is a close analogue of return on termination.", "label": "Entailment", "evidence": [26], "confidence": 0.6},
+"Q2": {"rationale": "The NDA contains no prohibition on reverse engineering, disassembling or decompiling objects embodying Confidential Information.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q3": {"rationale": "Segment 32 states nothing in the Agreement grants any rights by licence or otherwise in the Information except as provided herein.", "label": "Entailment", "evidence": [32], "confidence": 0.9},
+"Q4": {"rationale": "Segments 8 and 9 protect only information marked or identified as confidential, so the disclosing party must identify it, though the rule is not stated for all information.", "label": "Entailment", "evidence": [8, 9], "confidence": 0.7},
+"Q5": {"rationale": "Exhibit A segments 69 and 70 cover business support services, commercial and business opportunities, and prices and monetary matters, which goes beyond technical information.", "label": "Contradiction", "evidence": [2, 69, 70], "confidence": 0.85},
+"Q6": {"rationale": "Segment 26 requires all copies to be returned or certified destroyed, with no right to retain any Information after return or destruction.", "label": "Contradiction", "evidence": [26], "confidence": 0.5},
+"Q7": {"rationale": "Segment 40 prohibits any public announcement or disclosure relating to the Agreement without prior written consent, which is close to a restriction on disclosing that the Agreement exists; segment 70 covers discussions on monetary matters.", "label": "Entailment", "evidence": [40, 70], "confidence": 0.55},
+"Q8": {"rationale": "Segment 15 excludes information independently developed by the recipient without use of the other party's Information.", "label": "Entailment", "evidence": [15], "confidence": 0.9},
+"Q9": {"rationale": "Segment 7 keeps the protection obligations running for five years from receipt of the information, which operates beyond the end of the business relationship.", "label": "Entailment", "evidence": [7], "confidence": 0.6},
+"Q10": {"rationale": "Segment 9 covers oral information identified as confidential at disclosure and later reduced to writing.", "label": "Entailment", "evidence": [9], "confidence": 0.9},
+"Q11": {"rationale": "The NDA contains no non-solicitation provision covering the other party's representatives.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q12": {"rationale": "Segment 6 permits sharing with a parent corporation, subsidiaries and their employees, but does not mention consultants, agents or professional advisors.", "label": "NotMentioned", "evidence": [6], "confidence": 0.5},
+"Q13": {"rationale": "The NDA does not expressly permit making copies; segment 26 only refers to returning all copies.", "label": "NotMentioned", "evidence": [26], "confidence": 0.6},
+"Q14": {"rationale": "Segments 18 and 24 require the disclosing party to give written notice before disclosure required by a governmental or legal requirement.", "label": "Entailment", "evidence": [18, 24], "confidence": 0.9},
+"Q15": {"rationale": "Segment 14 excludes information rightfully received from a third party, which implies the recipient may acquire such information.", "label": "Entailment", "evidence": [14], "confidence": 0.85},
+"Q16": {"rationale": "Segment 6 permits use and provision of information to the employees of the parent and subsidiaries for the Business Purpose, but does not expressly name the Receiving Party's own employees.", "label": "Entailment", "evidence": [6], "confidence": 0.5},
+"Q17": {"rationale": "Segment 6 limits use of the information to use only in connection with the Business Purpose.", "label": "Entailment", "evidence": [6], "confidence": 0.95}
+}

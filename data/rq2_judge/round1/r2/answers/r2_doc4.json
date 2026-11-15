@@ -1,0 +1,21 @@
+{
+"Q1": {"rationale": "Segment 16 keeps the undertakings in force indefinitely and segments 20-21 require survival obligations for at least 24 months after the agreement ends.", "label": "Entailment", "evidence": [16, 20, 21], "confidence": 0.97},
+"Q2": {"rationale": "Segment 9 applies the undertakings regardless of the way or form in which information is disclosed, which covers verbal disclosure.", "label": "Entailment", "evidence": [9], "confidence": 0.85},
+"Q3": {"rationale": "The NDA does not deal with disclosure of the fact that the agreement was agreed or negotiated.", "label": "NotMentioned", "evidence": [], "confidence": 0.9},
+"Q4": {"rationale": "No residual knowledge or unaided memory exception appears; the NDA has only public domain and prior knowledge carve-outs.", "label": "NotMentioned", "evidence": [11, 12], "confidence": 0.9},
+"Q5": {"value": 24, "evidence": [1, 22]},
+"Q6": {"rationale": "Segment 15 states that neither the agreement nor the supply of information grants any licence, interest or right in the intellectual property.", "label": "Entailment", "evidence": [15], "confidence": 0.85},
+"Q7": {"rationale": "Segment 13 allows disclosure required by law but imposes no duty to notify the Discloser.", "label": "NotMentioned", "evidence": [13], "confidence": 0.85},
+"Q8": {"rationale": "Segment 7 limits use of the Confidential Information to the Purpose without the Discloser's written agreement.", "label": "Entailment", "evidence": [7], "confidence": 0.97},
+"Q9": {"value": 24, "evidence": [20, 21]},
+"Q10": {"value": "delaware", "evidence": [23]},
+"Q11": {"rationale": "Segment 8 prohibits disclosure to any third party, which is incompatible with sharing with consultants, agents and professional advisors.", "label": "Contradiction", "evidence": [8], "confidence": 0.75},
+"Q12": {"value": "unspecified", "evidence": [14]},
+"Q13": {"rationale": "Segment 8 bars disclosure to any third party and the Recipient is an individual, so sharing with its employees is not permitted; the NDA does not address employees by name.", "label": "Contradiction", "evidence": [8], "confidence": 0.55},
+"Q14": {"rationale": "Segment 15 states that no interest is granted in intellectual property rights, which is incompatible with transferring ownership to the Recipient.", "label": "Contradiction", "evidence": [15], "confidence": 0.8},
+"Q15": {"rationale": "Segments 17 and 18 state that the receiving party may acquire information similar to Confidential Information from a third party.", "label": "Entailment", "evidence": [17, 18], "confidence": 0.97},
+"Q16": {"rationale": "Segment 15 grants the right to copy the Confidential Information solely for the Purpose.", "label": "Entailment", "evidence": [15], "confidence": 0.9},
+"Q17": {"rationale": "The NDA contains no notice of immunity for confidential trade secret disclosures to government officials or attorneys.", "label": "NotMentioned", "evidence": [], "confidence": 0.92},
+"Q18": {"rationale": "Segment 8 bars disclosure to any third party, and a government agency is one; the only carve-out (segment 13) covers disclosures required by law or competent authority, not voluntary reports of suspected violations.", "label": "Entailment", "evidence": [8, 13], "confidence": 0.7},
+"Q19": {"rationale": "The NDA does not mention sexual harassment or sexual assault.", "label": "NotMentioned", "evidence": [], "confidence": 0.7}
+}

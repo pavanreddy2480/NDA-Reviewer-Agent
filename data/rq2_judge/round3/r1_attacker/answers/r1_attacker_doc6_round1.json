@@ -1,0 +1,7 @@
+{
+  "Q1": {"rationale": "Base NDA section 3 bars disclosure to any third party without prior written approval and has no express exception for reports to regulators; the only carve-outs (section 4 auditors and providers, section 10 FOIPOP) do not create a reporting right.", "label": "Entailment", "evidence": [19, 32], "confidence": 0.55},
+  "Q2": {"rationale": "V2 changes only the governing law clause (segment 36); the section 3 bar on third-party disclosure with no regulator-reporting exception remains.", "label": "Entailment", "evidence": [19, 32], "confidence": 0.55},
+  "Q3": {"rationale": "V3 inserts a new security and uniqueness acknowledgement; the section 3 bar on third-party disclosure with no regulator-reporting exception remains.", "label": "Entailment", "evidence": [19, 32], "confidence": 0.55},
+  "Q4": {"rationale": "V4 replaces segment 19 with an exception for disclosures 'as required by law', which is a carve-out the term excludes, so the NDA is incompatible with the no-exception term.", "label": "Contradiction", "evidence": [19, 32], "confidence": 0.55},
+  "Q5": {"rationale": "V5 changes only the penalty clause (segment 29); the section 3 bar on third-party disclosure with no regulator-reporting exception remains.", "label": "Entailment", "evidence": [19, 32], "confidence": 0.55}
+}
